@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Refer & Earn — Client Generator v2</title>
+<style>
+:root{--bg:#0f0f17;--surface:#1a1a27;--surface2:#22223a;--border:#2e2e4a;--text:#e8e8f0;--muted:#8888aa;--green:#22c55e;--green-bg:rgba(34,197,94,.12);--blue:#3b82f6;--blue-bg:rgba(59,130,246,.12);--radius:12px;--radius-sm:8px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh;padding:20px}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:22px;font-weight:800;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:28px}
+.tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--surface2);padding:4px;border-radius:var(--radius-sm);width:fit-content}
+.tab{padding:8px 18px;border-radius:6px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.tab.active{background:var(--surface);color:var(--text)}
+.section{display:none}
+.section.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.card-sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+input,select{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-size:13px;outline:none;transition:border .2s;width:100%}
+input:focus,select:focus{border-color:var(--blue)}
+.btn{padding:10px 20px;border-radius:var(--radius-sm);border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{opacity:.85}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-green{background:var(--green);color:#fff}
+.output-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-top:16px;display:none}
+.output-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.url-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;background:var(--surface2);padding:10px 12px;border-radius:var(--radius-sm)}
+.url-label{font-size:11px;color:var(--muted);font-weight:600;min-width:80px}
+.url-val{flex:1;font-size:12px;word-break:break-all}
+.copy-btn{background:var(--blue-bg);color:var(--blue);border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;font-weight:600;white-space:nowrap}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--blue);color:#fff;border-radius:50%;font-size:12px;font-weight:700;margin-right:8px;flex-shrink:0}
+.step-row{display:flex;align-items:flex-start;gap:0;margin-bottom:16px;padding:12px;background:var(--surface2);border-radius:var(--radius-sm)}
+.step-content{flex:1}
+.step-title{font-weight:600;margin-bottom:4px}
+.step-desc{font-size:12px;color:var(--muted)}
+code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px;font-family:monospace}
+.status{padding:8px 12px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;margin-top:8px;display:none}
+.status.ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green);display:block}
+.status.err{background:rgba(239,68,68,.12);color:#ef4444;border:1px solid #ef4444;display:block}
+/* Client log */
+.client-table{width:100%;border-collapse:collapse}
+.client-table th{font-size:11px;color:var(--muted);text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2)}
+.client-table td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.client-table tr:last-child td{border-bottom:none}
+.client-table tr:hover td{background:var(--surface2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎓 Refer & Earn — Client Generator v2</h1>
+  <div class="sub">One master script · Shared dashboards · Register new clients in seconds</div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('setup')">Step 1 — Code.gs</button>
+    <button class="tab" onclick="showTab('register')">Step 2 — Register Client</button>
+    <button class="tab" onclick="showTab('clients')">Client Log</button>
+  </div>
+
+  <!-- STEP 1: Generate Code.gs -->
+  <div class="section active" id="tab-setup">
+    <div class="card">
+      <div class="card-title">Generate Client Sheet Script (Code.gs)</div>
+      <div class="card-sub">Each client needs their own Google Sheet. The Code.gs below handles per-client data — no changes needed unless you update business logic.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Client Brand Name</label>
+          <input id="s1-brand" placeholder="e.g. Bhushan Science">
+        </div>
+        <div class="form-group">
+          <label>Org Code (short, unique)</label>
+          <input id="s1-org" placeholder="e.g. BSCI001" oninput="this.value=this.value.toUpperCase()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Client Google Sheet ID</label>
+          <input id="s1-sheet" placeholder="Paste Sheet ID from URL">
+        </div>
+        <div class="form-group">
+          <label>Play Store App ID</label>
+          <input id="s1-appid" placeholder="e.g. co.loki.bsci">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="genCode()">↓ Download Code.gs</button>
+      </div>
+      <div class="status" id="s1-status"></div>
+
+      <div style="margin-top:24px">
+        <div style="font-weight:700;margin-bottom:12px">After downloading:</div>
+        <div class="step-row"><span class="step-num">1</span><div class="step-content"><div class="step-title">Paste Code.gs into a new Apps Script project</div><div class="step-desc">script.google.com → New project → replace all code → save</div></div></div>
+        <div class="step-row"><span class="step-num">2</span><div class="step-content"><div class="step-title">Run <code>setupSheets()</code></div><div class="step-desc">This creates all 6 tabs in the client sheet with correct headers + sets up hourly sync trigger</div></div></div>
+        <div class="step-row"><span class="step-num">3</span><div class="step-content"><div class="step-title">Deploy as Web App</div><div class="step-desc">Deploy → New deployment → Web app → Execute as: Me → Who has access: Anyone → Copy URL</div></div></div>
+        <div class="step-row"><span class="step-num">4</span><div class="step-content"><div class="step-title">Go to Step 2 → Register Client</div><div class="step-desc">Paste the Web App URL — dashboard URLs are auto-generated</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Register client -->
+  <div class="section" id="tab-register">
+    <div class="card">
+      <div class="card-title">Register New Client</div>
+      <div class="card-sub">Saves client config to master sheet. No HTML files to generate or upload. Dashboard URLs are auto-built using shared admin/referrer pages.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Brand Name</label>
+          <input id="s2-brand" placeholder="e.g. Bhushan Science">
+        </div>
+        <div class="form-group">
+          <label>Org Code</label>
+          <input id="s2-org" placeholder="e.g. BSCI001" oninput="this.value=this.value.toUpperCase()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Google Sheet ID</label>
+          <input id="s2-sheet" placeholder="Paste Sheet ID">
+        </div>
+        <div class="form-group">
+          <label>Play Store App ID</label>
+          <input id="s2-appid" placeholder="e.g. co.loki.bsci">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Admin Password</label>
+          <input id="s2-pw" type="text" placeholder="Set admin password">
+        </div>
+        <div class="form-group">
+          <label>GitHub Pages Base URL</label>
+          <input id="s2-host" placeholder="https://yourusername.github.io/refer-earn" oninput="previewUrls()">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <button class="btn btn-primary" onclick="registerClient()">Register Client</button>
+      </div>
+
+      <div class="status" id="s2-status"></div>
+
+      <div class="output-box" id="s2-output">
+        <div class="output-title">Client URLs — share these</div>
+        <div class="url-row">
+          <span class="url-label">Admin URL</span>
+          <span class="url-val" id="out-admin">—</span>
+          <button class="copy-btn" onclick="copyEl('out-admin')">Copy</button>
+        </div>
+        <div class="url-row">
+          <span class="url-label">Referrer URL</span>
+          <span class="url-val" id="out-earn">—</span>
+          <button class="copy-btn" onclick="copyEl('out-earn')">Copy</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:10px">
+          ✅ Config saved to master sheet. Referrers open the Earn URL. Admin opens Admin URL.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT LOG -->
+  <div class="section" id="tab-clients">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div class="card-title" style="margin-bottom:0">All Clients</div>
+        <button class="btn btn-ghost" onclick="loadClients()">↻ Refresh</button>
+      </div>
+      <div class="table-wrap" style="overflow-x:auto">
+        <table class="client-table">
+          <thead><tr><th>Org</th><th>Brand</th><th>Sheet ID</th><th>Added</th><th>Admin URL</th><th>Earn URL</th></tr></thead>
+          <tbody id="clients-tbody">
+            <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">Click Refresh to load</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG — set this before hosting ─────────────────────────
+var MASTER_URL = 'https://script.google.com/macros/s/AKfycbz8AUqmXYOnCqv5cmoLssTnJP_hwChHg8fYuj1l5BSJDgAxag7jFRQcfMJzD6sE6CZc/exec';
+var HOST_BASE  = 'GITHUB_PAGES_BASE_PLACEHOLDER'; // e.g. https://yourusername.github.io/refer-earn
+
+// ── Tab navigation ────────────────────────────────────────────
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'clients') loadClients();
+}
