@@ -5,747 +5,752 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Refer & Earn — Admin</title>
 <style>
-:root {
-  --bg:#0f0f17; --surface:#1a1a27; --surface2:#22223a; --border:#2e2e4a;
-  --text:#e8e8f0; --muted:#8888aa; --green:#22c55e; --green-bg:rgba(34,197,94,.12);
-  --blue:#3b82f6; --blue-bg:rgba(59,130,246,.12); --purple:#a855f7; --purple-bg:rgba(168,85,247,.12);
-  --red:#ef4444; --red-bg:rgba(239,68,68,.12); --amber:#f59e0b; --amber-bg:rgba(245,158,11,.12);
-  --radius:12px; --radius-sm:8px;
-}
+:root{--bg:#f8f9fc;--surface:#ffffff;--surface2:#f1f3f9;--border:#e3e6f0;--text:#1e2235;--text2:#4a5172;--muted:#8b93b0;--blue:#3b5bdb;--blue-light:#eef2ff;--blue-mid:#4c6ef5;--green:#2f9e44;--green-light:#ebfbee;--amber:#e67700;--amber-light:#fff8e7;--red:#c92a2a;--red-light:#fff0f0;--purple:#6741d9;--purple-light:#f3f0ff;--shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--shadow:0 4px 12px rgba(0,0,0,.08);--radius:10px;--radius-sm:6px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh}
-/* ── Login ── */
-#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg)}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;width:360px;text-align:center}
-.login-logo{font-size:32px;margin-bottom:8px}
-.login-title{font-size:20px;font-weight:700;margin-bottom:4px}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(145deg,#eef2ff 0%,#f8f9fc 60%)}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:44px 40px;width:400px;text-align:center;box-shadow:var(--shadow)}
+.login-logo{font-size:40px;margin-bottom:10px}
+.login-brand{font-size:24px;font-weight:800;letter-spacing:-.5px;color:var(--text);margin-bottom:4px}
 .login-sub{color:var(--muted);font-size:13px;margin-bottom:28px}
-.login-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text);font-size:14px;outline:none;transition:border .2s}
-.login-input:focus{border-color:var(--blue)}
-.login-btn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:12px;transition:opacity .2s}
-.login-btn:hover{opacity:.85}
-.login-err{color:var(--red);font-size:12px;margin-top:8px;min-height:18px}
-.loading-state{color:var(--muted);font-size:13px;margin-top:8px}
-/* ── Layout ── */
+.login-loading{color:var(--muted);font-size:13px}
+.field{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text);font-size:14px;outline:none;transition:border .2s}
+.field:focus{border-color:var(--blue);background:var(--surface)}
+.btn-primary{width:100%;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:13px;font-size:14px;font-weight:700;cursor:pointer;margin-top:12px;transition:background .2s}
+.btn-primary:hover{background:var(--blue-mid)}
+.err-msg{color:var(--red);font-size:12px;margin-top:8px;min-height:18px}
 #app{display:none}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:200px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 0;z-index:100}
-.sidebar-logo{padding:0 20px 24px;font-size:18px;font-weight:800;letter-spacing:-.5px}
-.sidebar-logo span{color:var(--blue)}
-.sidebar-sub{font-size:11px;color:var(--muted);font-weight:400;display:block;margin-top:2px}
-.nav-section{padding:0 12px 8px;font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-top:8px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:var(--radius-sm);margin:0 8px 2px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:500;transition:all .15s;text-decoration:none}
-.nav-item:hover{background:var(--surface2);color:var(--text)}
-.nav-item.active{background:var(--blue-bg);color:var(--blue)}
-.nav-item svg{width:16px;height:16px;flex-shrink:0}
-.sidebar-bottom{margin-top:auto;padding:12px 20px;border-top:1px solid var(--border)}
-.org-badge{font-size:11px;color:var(--muted);word-break:break-all}
-.main{margin-left:200px;padding:28px;min-height:100vh}
-/* ── Top bar ── */
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.topbar-title{font-size:20px;font-weight:700}
-.topbar-right{display:flex;align-items:center;gap:12px}
-.sync-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
-.sync-btn:hover{border-color:var(--blue);color:var(--blue)}
-.logout-btn{background:transparent;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:8px}
-.logout-btn:hover{color:var(--red)}
-/* ── Cards ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
-.stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
-.stat-val{font-size:26px;font-weight:700}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;box-shadow:var(--shadow-sm)}
+.sidebar-header{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.sidebar-logo{font-size:20px;font-weight:900;letter-spacing:-.5px}
+.logo-r{color:var(--blue)}.logo-e{color:var(--text)}
+.sidebar-brand{font-size:12px;color:var(--muted);font-weight:500;margin-top:2px}
+.nav{padding:12px 10px;flex:1}
+.nav-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;padding:6px 10px 4px}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:var(--radius-sm);border:none;background:transparent;color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:all .15s;margin-bottom:2px}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.active{background:var(--blue-light);color:var(--blue);font-weight:600}
+.nav-btn svg{width:16px;height:16px;flex-shrink:0}
+.sidebar-footer{padding:14px 20px;border-top:1px solid var(--border)}
+.org-tag{font-size:11px;color:var(--muted);font-weight:500}
+.main{margin-left:230px;padding:28px 32px;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.topbar-left h1{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.topbar-left p{font-size:13px;color:var(--muted);margin-top:2px}
+.topbar-actions{display:flex;align-items:center;gap:10px}
+.btn-sync{background:var(--surface);border:1.5px solid var(--border);color:var(--text2);border-radius:var(--radius-sm);padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .2s}
+.btn-sync:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+.btn-logout{background:transparent;border:1.5px solid var(--border);color:var(--muted);border-radius:var(--radius-sm);padding:9px 14px;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-card.blue::before{background:var(--blue)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.amber::before{background:var(--amber)}
+.stat-card.purple::before{background:var(--purple)}
+.stat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px}
+.stat-icon.blue{background:var(--blue-light)}.stat-icon.green{background:var(--green-light)}.stat-icon.amber{background:var(--amber-light)}.stat-icon.purple{background:var(--purple-light)}
+.stat-label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.stat-val{font-size:28px;font-weight:800;letter-spacing:-.5px;color:var(--text)}
 .stat-sub{font-size:12px;color:var(--muted);margin-top:4px}
-/* ── Section ── */
-.section{display:none}
-.section.active{display:block}
-/* ── Tables ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border)}
+.card-title{font-size:15px;font-weight:700}
+.card-body{padding:20px}
+.section{display:none}.section.active{display:block}
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{position:relative}
+.search-box svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);pointer-events:none}
+.search-inp{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px 8px 34px;color:var(--text);font-size:13px;outline:none;width:230px;transition:border .2s}
+.search-inp:focus{border-color:var(--blue)}
+.filter-group{display:flex;align-items:center;gap:4px;background:var(--surface2);border-radius:var(--radius-sm);padding:3px;border:1px solid var(--border)}
+.filter-pill{padding:5px 12px;border-radius:5px;border:none;background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.filter-pill.active{background:var(--surface);color:var(--blue);box-shadow:var(--shadow-sm)}
+.date-inp{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;transition:border .2s}
+.date-inp:focus{border-color:var(--blue)}
+.btn-sm{padding:7px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-sm:hover{border-color:var(--blue);color:var(--blue)}
+.btn-sm.danger{border-color:var(--red);color:var(--red)}
+.btn-sm.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-sm.primary:hover{background:var(--blue-mid)}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
-th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
-th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;background:var(--surface2)}
-td{font-size:13px}
+th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:700;padding:11px 16px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap}
+td{font-size:13px;padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--surface2)}
-/* ── Badges ── */
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-green{background:var(--green-bg);color:var(--green)}
-.badge-blue{background:var(--blue-bg);color:var(--blue)}
-.badge-amber{background:var(--amber-bg);color:var(--amber)}
-.badge-red{background:var(--red-bg);color:var(--red)}
-.badge-muted{background:var(--surface2);color:var(--muted)}
-/* ── Filter bar ── */
-.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.filter-btn{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;transition:all .15s}
-.filter-btn.active{border-color:var(--blue);background:var(--blue-bg);color:var(--blue)}
-.search-input{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text);font-size:13px;outline:none;width:200px}
-.search-input:focus{border-color:var(--blue)}
-/* ── Policy ── */
-.policy-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.range-wrap label{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:6px}
-.range-wrap input[type=range]{width:100%;accent-color:var(--blue)}
-.policy-preview{background:var(--green-bg);border:1px solid var(--green);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--green);margin-top:12px}
-.version-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-.version-row{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--surface2);border-radius:var(--radius-sm)}
-.version-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
-.rate-tag{display:inline-block;padding:2px 6px;border-radius:10px;font-size:11px;font-weight:600;margin-right:4px;margin-top:4px}
-/* ── Button ── */
-.btn{padding:9px 16px;border-radius:var(--radius-sm);border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
-.btn-primary{background:var(--blue);color:#fff}
-.btn-primary:hover{opacity:.85}
-.btn-sm{padding:5px 10px;font-size:12px}
-.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
-.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
-/* ── Toast ── */
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
-#toast.show{opacity:1}
-/* ── Loading ── */
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.section-loading{display:flex;align-items:center;justify-content:center;padding:60px;color:var(--muted);gap:12px}
-/* ── Live status bar ── */
-.live-bar{background:var(--green-bg);border:1px solid var(--green);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--green);display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+tbody tr:hover td{background:var(--bg)}
+td code{background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px;font-family:'SF Mono',monospace;color:var(--blue)}
+.empty-row td{text-align:center;color:var(--muted);padding:40px;font-size:14px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.03em}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%}
+.badge-green{background:var(--green-light);color:var(--green)}.badge-green::before{background:var(--green)}
+.badge-blue{background:var(--blue-light);color:var(--blue)}.badge-blue::before{background:var(--blue)}
+.badge-amber{background:var(--amber-light);color:var(--amber)}.badge-amber::before{background:var(--amber)}
+.badge-red{background:var(--red-light);color:var(--red)}.badge-red::before{background:var(--red)}
+.badge-muted{background:var(--surface2);color:var(--muted)}.badge-muted::before{background:var(--muted)}
+.policy-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.live-bar{background:var(--green-light);border:1.5px solid #86efac;border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--green);display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;font-weight:500}
+.live-pulse{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:8px;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-/* Responsive */
-@media(max-width:768px){
-  .sidebar{display:none}
-  .main{margin-left:0}
-  .stat-grid{grid-template-columns:1fr 1fr}
-}
+.model-row{display:flex;gap:8px;margin-bottom:20px}
+.model-btn{flex:1;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.model-btn.active{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
+.slider-row{margin-bottom:18px}
+.slider-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);font-weight:600;margin-bottom:7px}
+.slider-val{color:var(--blue);font-weight:700}
+input[type=range]{width:100%;accent-color:var(--blue)}
+.preview-box{background:var(--green-light);border:1.5px solid #86efac;border-radius:var(--radius-sm);padding:14px 16px;font-size:13px;color:var(--green);margin-top:16px;line-height:1.6}
+.policy-name-inp{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:13px;outline:none;margin-top:14px;transition:border .2s}
+.policy-name-inp:focus{border-color:var(--blue)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--surface);border-radius:14px;width:440px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-title{font-weight:700;font-size:15px}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;padding:2px 6px}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:22px}
+.tnc-student-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.tnc-student-header{background:linear-gradient(135deg,var(--blue) 0%,var(--purple) 100%);padding:22px;color:#fff;text-align:center}
+.tnc-student-header h3{font-size:18px;font-weight:800;margin-bottom:4px}
+.tnc-student-header p{font-size:13px;opacity:.85}
+.tnc-row{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.tnc-row:last-child{border-bottom:none}
+.tnc-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;margin-top:1px}
+.tnc-text strong{display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.tnc-text span{font-size:12px;color:var(--muted);line-height:1.5}
+.ver-item{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:8px}
+.ver-item:last-child{margin-bottom:0}
+.ver-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ver-name{font-weight:700;font-size:13px}
+.ver-date{font-size:11px;color:var(--muted);margin-top:2px}
+.ver-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.ver-tag{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.ver-tag.ref{background:var(--green-light);color:var(--green)}
+.ver-tag.ree{background:var(--blue-light);color:var(--blue)}
+.ver-tag.win{background:var(--amber-light);color:var(--amber)}
+.ver-tag.min{background:var(--surface2);color:var(--muted)}
+.ver-actions{display:flex;gap:6px}
+.top-ref-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.top-ref-row:last-child{border-bottom:none}
+.rank-badge{width:30px;height:30px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ref-info{flex:1}
+.ref-name{font-weight:600;font-size:14px}
+.ref-stats{font-size:12px;color:var(--muted);margin-top:2px}
+.ref-earning{font-size:15px;font-weight:800;color:var(--green)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1e2235;color:#fff;border-radius:8px;padding:11px 22px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:var(--shadow)}
+#toast.show{opacity:1}
+#toast.success{background:var(--green)}
+#toast.error{background:var(--red)}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:16px}.stat-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 
-<!-- Login -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">🎓</div>
-    <div class="login-title" id="login-brand">Refer & Earn</div>
-    <div class="login-sub" id="login-org">Admin Dashboard</div>
-    <div id="login-loading" class="loading-state">Loading config…</div>
+    <div class="login-brand" id="login-brand">Refer &amp; Earn</div>
+    <div class="login-sub">Admin Dashboard</div>
+    <div id="login-loading" class="login-loading">Loading config…</div>
     <div id="login-form" style="display:none">
-      <input class="login-input" type="password" id="pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkPw()">
-      <button class="login-btn" onclick="checkPw()">Sign In</button>
-      <div class="login-err" id="login-err"></div>
+      <input class="field" type="password" id="pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkPw()" style="margin-top:4px">
+      <button class="btn-primary" onclick="checkPw()">Sign In</button>
+      <div class="err-msg" id="login-err"></div>
     </div>
   </div>
 </div>
 
-<!-- App -->
 <div id="app">
   <nav class="sidebar">
-    <div class="sidebar-logo">refer<span>&earn</span><span class="sidebar-sub" id="sb-brand"></span></div>
-    <div class="nav-section">Main</div>
-    <a class="nav-item active" onclick="showSection('overview')" id="nav-overview">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Overview
-    </a>
-    <a class="nav-item" onclick="showSection('referrers')" id="nav-referrers">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      All Referrers
-    </a>
-    <a class="nav-item" onclick="showSection('leads')" id="nav-leads">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Leads
-    </a>
-    <a class="nav-item" onclick="showSection('payouts')" id="nav-payouts">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      Payouts
-    </a>
-    <div class="nav-section">Config</div>
-    <a class="nav-item" onclick="showSection('policy')" id="nav-policy">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93L4.93 19.07"/></svg>
-      Reward Settings
-    </a>
-    <div class="sidebar-bottom">
-      <div class="org-badge" id="sb-org"></div>
+    <div class="sidebar-header">
+      <div class="sidebar-logo"><span class="logo-r">refer</span><span class="logo-e">&amp;earn</span></div>
+      <div class="sidebar-brand" id="sb-brand"></div>
     </div>
+    <div class="nav">
+      <div class="nav-label">Main</div>
+      <button class="nav-btn active" onclick="showSection('overview')" id="nav-overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview
+      </button>
+      <button class="nav-btn" onclick="showSection('referrers')" id="nav-referrers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>All Referrers
+      </button>
+      <button class="nav-btn" onclick="showSection('leads')" id="nav-leads">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Leads
+      </button>
+      <button class="nav-btn" onclick="showSection('payouts')" id="nav-payouts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Payouts
+      </button>
+      <div class="nav-label" style="margin-top:10px">Settings</div>
+      <button class="nav-btn" onclick="showSection('policy')" id="nav-policy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Reward Policy
+      </button>
+    </div>
+    <div class="sidebar-footer"><div class="org-tag" id="sb-org"></div></div>
   </nav>
 
   <main class="main">
     <div class="topbar">
-      <div class="topbar-title" id="page-title">Overview</div>
-      <div class="topbar-right">
-        <button class="sync-btn" onclick="doSync()" id="sync-btn">
-          <span id="sync-icon">↻</span> Sync Now
-        </button>
-        <button class="logout-btn" onclick="logout()">Sign out</button>
+      <div class="topbar-left">
+        <h1 id="page-title">Overview</h1>
+        <p id="page-sub">Today's snapshot</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-sync" onclick="doSync()" id="sync-btn"><span id="sync-icon">↻</span> Sync Now</button>
+        <button class="btn-logout" onclick="logout()">Sign out</button>
       </div>
     </div>
 
-    <!-- Overview -->
+    <!-- OVERVIEW -->
     <div class="section active" id="s-overview">
-      <div class="stat-grid" id="stat-grid">
-        <div class="stat-card"><div class="stat-label">Total Referrers</div><div class="stat-val" id="st-refs">—</div></div>
-        <div class="stat-card"><div class="stat-label">Total Leads</div><div class="stat-val" id="st-leads">—</div></div>
-        <div class="stat-card"><div class="stat-label">Downloads</div><div class="stat-val" id="st-dl">—</div><div class="stat-sub" id="st-dlr">—</div></div>
-        <div class="stat-card"><div class="stat-label">Conversions</div><div class="stat-val" id="st-conv">—</div><div class="stat-sub" id="st-convr">—</div></div>
-        <div class="stat-card"><div class="stat-label">Total Earned (Referrers)</div><div class="stat-val" id="st-earned">—</div></div>
-        <div class="stat-card"><div class="stat-label">Paid Out</div><div class="stat-val" id="st-paid">—</div></div>
-        <div class="stat-card"><div class="stat-label">Pending Payouts</div><div class="stat-val" id="st-pend">—</div></div>
-        <div class="stat-card"><div class="stat-label">Tutor Revenue</div><div class="stat-val" id="st-rev">—</div></div>
-      </div>
-      <div class="card" id="top3-card" style="margin-bottom:20px">
-        <div style="font-weight:600;margin-bottom:12px">Top Referrers</div>
-        <div id="top3">—</div>
-      </div>
-    </div>
-
-    <!-- Referrers -->
-    <div class="section" id="s-referrers">
-      <div class="filter-bar">
-        <input class="search-input" placeholder="Search name, mobile, UID…" oninput="searchRef(this.value)">
-        <select class="search-input" style="width:auto" onchange="sortRefs(this.value)">
-          <option value="name">Sort: Name</option>
-          <option value="converted">Sort: Converted</option>
-          <option value="earned">Sort: Earned</option>
-        </select>
+      <div class="stat-grid">
+        <div class="stat-card blue"><div class="stat-icon blue">👥</div><div class="stat-label">Total Referrers</div><div class="stat-val" id="st-refs">—</div></div>
+        <div class="stat-card green"><div class="stat-icon green">📋</div><div class="stat-label">Total Leads</div><div class="stat-val" id="st-leads">—</div><div class="stat-sub" id="st-dlr"></div></div>
+        <div class="stat-card amber"><div class="stat-icon amber">🎯</div><div class="stat-label">Conversions</div><div class="stat-val" id="st-conv">—</div><div class="stat-sub" id="st-convr"></div></div>
+        <div class="stat-card purple"><div class="stat-icon purple">💰</div><div class="stat-label">Tutor Revenue</div><div class="stat-val" id="st-rev">—</div></div>
+        <div class="stat-card blue"><div class="stat-icon blue">📥</div><div class="stat-label">Downloads</div><div class="stat-val" id="st-dl">—</div></div>
+        <div class="stat-card green"><div class="stat-icon green">💸</div><div class="stat-label">Total Earned</div><div class="stat-val" id="st-earned">—</div></div>
+        <div class="stat-card amber"><div class="stat-icon amber">✅</div><div class="stat-label">Paid Out</div><div class="stat-val" id="st-paid">—</div></div>
+        <div class="stat-card purple"><div class="stat-icon purple">⏳</div><div class="stat-label">Pending Payouts</div><div class="stat-val" id="st-pend">—</div></div>
       </div>
       <div class="card">
+        <div class="card-header"><div class="card-title">🏆 Top Referrers</div></div>
+        <div class="card-body"><div id="top3">—</div></div>
+      </div>
+    </div>
+
+    <!-- REFERRERS -->
+    <div class="section" id="s-referrers">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Referrers</div>
+          <div style="font-size:12px;color:var(--muted)" id="ref-count"></div>
+        </div>
+        <div class="card-body" style="padding-bottom:0">
+          <div class="toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input class="search-inp" id="ref-search" placeholder="Search name, mobile, UID…" oninput="searchRef(this.value)">
+            </div>
+            <select class="date-inp" id="ref-sort" onchange="sortRefs(this.value)">
+              <option value="name">Sort: Name A–Z</option>
+              <option value="converted">Sort: Most Converted</option>
+              <option value="earned">Sort: Most Earned</option>
+              <option value="referred">Sort: Most Referred</option>
+            </select>
+            <button class="btn-sm" onclick="clearRefSearch()">Clear</button>
+          </div>
+        </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Mobile</th><th>UID</th><th>Referred</th><th>Downloaded</th><th>Converted</th><th>Earned</th><th>PIN</th></tr></thead>
+            <thead><tr><th>#</th><th>Name</th><th>Mobile</th><th>UID</th><th>Referred</th><th>Downloaded</th><th>Converted</th><th>Earned (₹)</th><th>Joined</th><th>PIN</th></tr></thead>
             <tbody id="ref-tbody"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- Leads -->
+    <!-- LEADS -->
     <div class="section" id="s-leads">
-      <div class="filter-bar">
-        <button class="filter-btn active" onclick="filterLeads('all',this)">All</button>
-        <button class="filter-btn" onclick="filterLeads('referred',this)">Referred</button>
-        <button class="filter-btn" onclick="filterLeads('downloaded',this)">Downloaded</button>
-        <button class="filter-btn" onclick="filterLeads('converted',this)">Converted</button>
-        <button class="filter-btn" onclick="filterLeads('expired',this)">Expired</button>
-        <input class="search-input" placeholder="Search name, mobile…" oninput="searchLeads(this.value)">
-      </div>
       <div class="card">
+        <div class="card-header">
+          <div class="card-title">Leads</div>
+          <div style="font-size:12px;color:var(--muted)" id="leads-count"></div>
+        </div>
+        <div class="card-body" style="padding-bottom:0">
+          <div class="toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input class="search-inp" id="lead-search" placeholder="Search name, mobile, UID…" oninput="searchLeads(this.value)">
+            </div>
+            <div class="filter-group">
+              <button class="filter-pill active" onclick="filterLeads('all',this)">All</button>
+              <button class="filter-pill" onclick="filterLeads('referred',this)">Referred</button>
+              <button class="filter-pill" onclick="filterLeads('downloaded',this)">Downloaded</button>
+              <button class="filter-pill" onclick="filterLeads('converted',this)">Converted</button>
+              <button class="filter-pill" onclick="filterLeads('expired',this)">Expired</button>
+            </div>
+          </div>
+          <div class="toolbar" style="margin-bottom:16px">
+            <span style="font-size:12px;color:var(--muted);font-weight:600">Date range (Referred On):</span>
+            <input class="date-inp" type="date" id="lead-date-from" onchange="applyLeadDateFilter()">
+            <span style="color:var(--muted);font-size:12px">to</span>
+            <input class="date-inp" type="date" id="lead-date-to" onchange="applyLeadDateFilter()">
+            <button class="btn-sm" onclick="clearLeadDates()">Clear dates</button>
+          </div>
+        </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Mobile</th><th>Referrer</th><th>Status</th><th>Referred</th><th>Downloaded</th><th>Purchased</th><th>Course</th><th>Reward</th></tr></thead>
+            <thead><tr><th>#</th><th>Lead Name</th><th>Mobile</th><th>Referrer UID</th><th>Status</th><th>Referred On</th><th>Downloaded</th><th>Purchased</th><th>Course</th><th>Reward</th></tr></thead>
             <tbody id="leads-tbody"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- Payouts -->
+    <!-- PAYOUTS -->
     <div class="section" id="s-payouts">
-      <div class="filter-bar">
-        <button class="filter-btn active" onclick="filterPay('all',this)">All</button>
-        <button class="filter-btn" onclick="filterPay('pending',this)">Pending</button>
-        <button class="filter-btn" onclick="filterPay('paid',this)">Paid</button>
-      </div>
       <div class="card">
+        <div class="card-header">
+          <div class="card-title">Payouts</div>
+          <div style="font-size:12px;color:var(--muted)" id="pay-count"></div>
+        </div>
+        <div class="card-body" style="padding-bottom:0">
+          <div class="toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input class="search-inp" id="pay-search" placeholder="Search name, UPI, ID…" oninput="searchPayouts(this.value)">
+            </div>
+            <div class="filter-group">
+              <button class="filter-pill active" onclick="filterPay('all',this)">All</button>
+              <button class="filter-pill" onclick="filterPay('pending',this)">Pending</button>
+              <button class="filter-pill" onclick="filterPay('paid',this)">Paid</button>
+            </div>
+            <input class="date-inp" type="date" id="pay-date-from" onchange="renderPayouts()" title="From date">
+            <span style="color:var(--muted);font-size:12px">to</span>
+            <input class="date-inp" type="date" id="pay-date-to" onchange="renderPayouts()" title="To date">
+            <button class="btn-sm" onclick="clearPayDates()">Clear</button>
+          </div>
+        </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Payout ID</th><th>Name</th><th>UPI</th><th>Amount</th><th>Status</th><th>Claimed</th><th>Action</th></tr></thead>
+            <thead><tr><th>#</th><th>Payout ID</th><th>Name</th><th>UPI</th><th>Amount (₹)</th><th>Status</th><th>Claimed On</th><th>Paid On</th><th>Action</th></tr></thead>
             <tbody id="pay-tbody"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- Policy -->
+    <!-- POLICY -->
     <div class="section" id="s-policy">
-      <div class="policy-grid">
-        <!-- Left: Editor -->
+      <div class="policy-layout">
         <div>
           <div class="card" style="margin-bottom:16px">
-            <div style="font-weight:700;font-size:15px;margin-bottom:16px">Reward Model</div>
-            <div id="live-bar" class="live-bar"><span><span class="live-dot"></span><span id="live-text">Loading policy…</span></span><span id="live-ver" class="badge badge-green"></span></div>
-            <div style="display:flex;gap:10px;margin-bottom:20px">
-              <button class="btn" id="model-pct" onclick="setModel('pct')" style="flex:1;border:1px solid var(--blue);background:var(--blue-bg);color:var(--blue)">% Percentage</button>
-              <button class="btn btn-ghost" id="model-flat" onclick="setModel('flat')" style="flex:1">₹ Flat Amount</button>
+            <div class="card-header">
+              <div class="card-title">Reward Settings</div>
+              <button class="btn-sm" onclick="openTnCPreview()">👁 Preview (Student View)</button>
             </div>
-            <div id="pct-controls">
-              <div class="range-wrap" style="margin-bottom:16px">
-                <label>Referrer Reward % <span id="v-ref">10%</span></label>
-                <input type="range" id="s-ref" min="1" max="50" value="10" oninput="updatePreview()">
+            <div class="card-body">
+              <div class="live-bar">
+                <span><span class="live-pulse"></span><span id="live-text">Loading…</span></span>
+                <span id="live-ver" class="badge badge-green"></span>
               </div>
-              <div class="range-wrap" style="margin-bottom:16px">
-                <label>Referee Reward (% of referrer reward) <span id="v-ree">0%</span></label>
-                <input type="range" id="s-ree" min="0" max="100" step="5" value="0" oninput="updatePreview()">
+              <div class="model-row">
+                <button class="model-btn active" id="model-pct" onclick="setModel('pct')">% Percentage</button>
+                <button class="model-btn" id="model-flat" onclick="setModel('flat')">₹ Flat Amount</button>
               </div>
+              <div id="pct-controls">
+                <div class="slider-row">
+                  <div class="slider-label">Referrer gets (% of course price) <span class="slider-val" id="v-ref">10%</span></div>
+                  <input type="range" id="s-ref" min="1" max="50" value="10" oninput="updatePreview()">
+                </div>
+                <div class="slider-row">
+                  <div class="slider-label">Referee discount (% of referrer reward) <span class="slider-val" id="v-ree">0%</span></div>
+                  <input type="range" id="s-ree" min="0" max="100" step="5" value="0" oninput="updatePreview()">
+                </div>
+              </div>
+              <div class="slider-row">
+                <div class="slider-label">Referral window <span class="slider-val" id="v-win">15 days</span></div>
+                <input type="range" id="s-win" min="7" max="60" value="15" oninput="updatePreview()">
+              </div>
+              <div class="slider-row">
+                <div class="slider-label">Minimum payout claim <span class="slider-val" id="v-min">₹500</span></div>
+                <input type="range" id="s-min" min="100" max="5000" step="100" value="500" oninput="updatePreview()">
+              </div>
+              <div class="preview-box" id="policy-preview"></div>
+              <input class="policy-name-inp" id="s-pname" placeholder="Policy name (e.g. Summer 2025)">
+              <button class="btn-sm primary" style="width:100%;margin-top:12px;padding:12px" onclick="savePol()">Save &amp; Publish New Policy</button>
             </div>
-            <div class="range-wrap" style="margin-bottom:16px">
-              <label>Referral Window (days) <span id="v-win">15d</span></label>
-              <input type="range" id="s-win" min="7" max="60" value="15" oninput="updatePreview()">
-            </div>
-            <div class="range-wrap" style="margin-bottom:16px">
-              <label>Minimum Claim (₹) <span id="v-min">₹500</span></label>
-              <input type="range" id="s-min" min="100" max="5000" step="100" value="500" oninput="updatePreview()">
-            </div>
-            <div id="policy-preview" class="policy-preview"></div>
-            <input id="s-pname" class="search-input" style="width:100%;margin-top:12px" placeholder="Policy name (optional)">
-            <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="savePol()">Save & Publish New Policy</button>
           </div>
         </div>
-        <!-- Right: Version history -->
         <div class="card">
-          <div style="font-weight:700;font-size:15px;margin-bottom:12px">Version History</div>
-          <div id="ver-list"><div class="section-loading"><div class="spinner"></div> Loading…</div></div>
+          <div class="card-header"><div class="card-title">Version History</div></div>
+          <div class="card-body"><div id="ver-list"><div style="color:var(--muted);font-size:13px">No versions yet</div></div></div>
         </div>
       </div>
     </div>
-
   </main>
+</div>
+
+<!-- T&C Preview Modal -->
+<div class="modal-overlay" id="tnc-modal" onclick="closeTnCIfOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Student View — Reward T&amp;C</div>
+      <button class="modal-close" onclick="closeTnC()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5">This is exactly how the reward policy appears to students on their referral dashboard.</p>
+      <div class="tnc-student-card" id="tnc-card">
+        <div class="tnc-student-header">
+          <h3 id="tnc-brand-name">Refer &amp; Earn</h3>
+          <p id="tnc-policy-name">Current Reward Policy</p>
+        </div>
+        <div id="tnc-rows"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-// ── Config (loaded from master sheet) ────────────────────────
-var MASTER_URL = 'https://script.google.com/macros/s/AKfycbz8AUqmXYOnCqv5cmoLssTnJP_hwChHg8fYuj1l5BSJDgAxag7jFRQcfMJzD6sE6CZc/exec';
-var _org = '', _sheetId = '', _brand = '', _apiPw = '', _loggedIn = false;
-var _allRefs = [], _allLeads = [], _allPays = [], _leadFilter = 'all', _leadSearch = '', _refSearch = '', _refSort = 'name';
+var MASTER_URL='https://script.google.com/macros/s/AKfycbz8AUqmXYOnCqv5cmoLssTnJP_hwChHg8fYuj1l5BSJDgAxag7jFRQcfMJzD6sE6CZc/exec';
+var _org='',_sheetId='',_brand='',_apiPw='';
+var _allRefs=[],_allLeads=[],_allPays=[];
+var _leadFilter='all',_leadSearch='',_leadDateFrom='',_leadDateTo='';
+var _refSearch='',_refSort='name';
+var _payFilter='all',_paySearch='';
+var _currentModel='pct',_polVersions=[],_currentPolicy=null;
 
-// ── Boot ─────────────────────────────────────────────────────
-window.onload = function() {
-  _org = (new URLSearchParams(location.search).get('org') || '').trim().toUpperCase();
-  if (!_org) {
-    document.getElementById('login-loading').textContent = 'Error: No ?org= in URL. Use ?org=ORGCODE';
-    return;
-  }
+window.onload=function(){
+  _org=(new URLSearchParams(location.search).get('org')||'').trim().toUpperCase();
+  if(!_org){document.getElementById('login-loading').textContent='Error: No ?org= in URL';return;}
   loadConfig();
 };
 
-function loadConfig() {
-  document.getElementById('login-loading').textContent = 'Loading config for ' + _org + '…';
-  jsonp(MASTER_URL + '?action=getClient&org=' + _org, function(res) {
-    if (!res.ok) {
-      document.getElementById('login-loading').textContent = 'Error: ' + (res.error || 'Client not found');
-      return;
-    }
-    var c = res.data;
-    _sheetId = (c.SheetID || '').toString().trim();
-    _brand   = (c.Brand   || _org).toString().trim();
-    _apiPw   = (c.AdminPassword || '').toString().trim();
-    document.getElementById('login-brand').textContent = _brand + ' — Refer & Earn';
-    document.getElementById('login-loading').style.display = 'none';
-    document.getElementById('login-form').style.display = 'block';
-    document.getElementById('sb-brand').textContent = _brand;
-    document.getElementById('sb-org').textContent   = 'org: ' + _org;
-    // Check saved session
-    try {
-      var saved = sessionStorage.getItem('rea_' + _org);
-      if (saved === 'ok') { unlockDashboard(); }
-    } catch(e) {}
-  }, function() {
-    document.getElementById('login-loading').textContent = 'Network error. Check MASTER_URL.';
-  });
+function loadConfig(){
+  document.getElementById('login-loading').textContent='Loading config for '+_org+'…';
+  jsonp(MASTER_URL+'?action=getClient&org='+_org,function(res){
+    if(!res.ok){document.getElementById('login-loading').textContent='Error: '+(res.error||'Client not found');return;}
+    var c=res.data;
+    _sheetId=(c.SheetID||'').trim();_brand=(c.Brand||_org).trim();_apiPw=(c.AdminPassword||'').trim();
+    document.getElementById('login-brand').textContent=_brand+' — Admin';
+    document.getElementById('login-loading').style.display='none';
+    document.getElementById('login-form').style.display='block';
+    document.getElementById('sb-brand').textContent=_brand;
+    document.getElementById('sb-org').textContent='org: '+_org;
+    try{if(sessionStorage.getItem('rea_adm_'+_org)==='ok')unlockDashboard();}catch(e){}
+  },function(){document.getElementById('login-loading').textContent='Network error. Retry.';});
 }
 
-function checkPw() {
-  var entered = document.getElementById('pw-input').value.trim();
-  if (!entered) { document.getElementById('login-err').textContent = 'Enter password'; return; }
-  if (!_apiPw) {
-    // Fetch from API as fallback
-    api('getAdminPassword', {}, function(res) {
-      _apiPw = (res.data && res.data.pw) ? res.data.pw : '';
-      verifyPw(entered);
-    });
-  } else {
-    verifyPw(entered);
-  }
+function checkPw(){
+  var v=document.getElementById('pw-input').value.trim();
+  if(!v){document.getElementById('login-err').textContent='Enter password';return;}
+  if(_apiPw){verifyPw(v);return;}
+  api('getAdminPassword',{},function(res){_apiPw=(res.ok&&res.data&&res.data.pw)?res.data.pw:'';verifyPw(v);});
 }
-
-function verifyPw(entered) {
-  if (entered === _apiPw) {
-    try { sessionStorage.setItem('rea_' + _org, 'ok'); } catch(e) {}
-    unlockDashboard();
-  } else {
-    document.getElementById('login-err').textContent = 'Incorrect password';
-    document.getElementById('pw-input').value = '';
-  }
+function verifyPw(v){
+  if(v===_apiPw){try{sessionStorage.setItem('rea_adm_'+_org,'ok');}catch(e){}unlockDashboard();}
+  else{document.getElementById('login-err').textContent='Incorrect password';document.getElementById('pw-input').value='';}
 }
-
-function unlockDashboard() {
-  _loggedIn = true;
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('page-title').textContent = 'Overview — ' + _brand;
+function unlockDashboard(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
   loadAll();
 }
+function logout(){try{sessionStorage.removeItem('rea_adm_'+_org);}catch(e){}location.reload();}
 
-function logout() {
-  try { sessionStorage.removeItem('rea_' + _org); } catch(e) {}
-  location.reload();
+function api(action,params,cb,errCb){
+  var url=MASTER_URL+'?action='+action+'&sheetId='+encodeURIComponent(_sheetId);
+  Object.keys(params||{}).forEach(function(k){url+='&'+k+'='+encodeURIComponent(params[k]);});
+  jsonp(url,cb,errCb);
 }
-
-// ── API ───────────────────────────────────────────────────────
-function api(action, params, cb, errCb) {
-  var url = MASTER_URL + '?action=' + action + '&sheetId=' + encodeURIComponent(_sheetId);
-  Object.keys(params || {}).forEach(function(k) {
-    url += '&' + k + '=' + encodeURIComponent(params[k]);
-  });
-  jsonp(url, cb, errCb);
-}
-
-function jsonp(url, cb, errCb) {
-  var cbName = 'rea_cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  var tid;
-  window[cbName] = function(data) {
-    clearTimeout(tid);
-    delete window[cbName];
-    if (tag && tag.parentNode) tag.parentNode.removeChild(tag);
-    cb(data);
-  };
-  var tag = document.createElement('script');
-  tag.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + cbName;
-  tag.onerror = function() {
-    clearTimeout(tid);
-    delete window[cbName];
-    if (tag.parentNode) tag.parentNode.removeChild(tag);
-    if (errCb) errCb(new Error('Network error'));
-    else showToast('API error — check connection', 'red');
-  };
-  tid = setTimeout(function() {
-    delete window[cbName];
-    if (tag.parentNode) tag.parentNode.removeChild(tag);
-    if (errCb) errCb(new Error('Timeout'));
-    else showToast('Request timed out', 'red');
-  }, 15000);
+function jsonp(url,cb,errCb){
+  var n='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);var tid;
+  window[n]=function(d){clearTimeout(tid);delete window[n];if(tag&&tag.parentNode)tag.parentNode.removeChild(tag);cb(d);};
+  var tag=document.createElement('script');
+  tag.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+n;
+  tag.onerror=function(){clearTimeout(tid);delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(errCb)errCb();else showToast('API error','error');};
+  tid=setTimeout(function(){delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(errCb)errCb();else showToast('Request timed out','error');},15000);
   document.head.appendChild(tag);
 }
 
-// ── Load all sections ─────────────────────────────────────────
-function loadAll() {
-  loadOverview();
-  loadRefs();
-  loadLeads();
-  loadPayouts();
-  loadPolicy();
-}
+function loadAll(){loadOverview();loadRefs();loadLeads();loadPayouts();loadPolicy();}
 
-// ── Overview ──────────────────────────────────────────────────
-function loadOverview() {
-  api('getStats', {}, function(res) {
-    if (!res.ok) return;
-    var s = res.data;
-    document.getElementById('st-refs').textContent  = s.totalReferrers;
-    document.getElementById('st-leads').textContent = s.totalLeads;
-    document.getElementById('st-dl').textContent    = s.downloaded;
-    document.getElementById('st-dlr').textContent   = s.downloadRate + '% of leads';
-    document.getElementById('st-conv').textContent  = s.converted;
-    document.getElementById('st-convr').textContent = s.conversionRate + '% of downloads';
-    document.getElementById('st-earned').textContent = '₹' + num(s.totalEarned);
-    document.getElementById('st-paid').textContent   = '₹' + num(s.totalPaidOut);
-    document.getElementById('st-pend').textContent   = '₹' + num(s.pendingPayouts);
-    document.getElementById('st-rev').textContent    = '₹' + num(s.tutorRevenue);
+function loadOverview(){
+  api('getStats',{},function(res){
+    if(!res.ok)return;var s=res.data;
+    setText('st-refs',s.totalReferrers);setText('st-leads',s.totalLeads);
+    setText('st-dl',s.downloaded);setText('st-dlr',s.downloadRate+'% download rate');
+    setText('st-conv',s.converted);setText('st-convr',s.conversionRate+'% conversion rate');
+    setText('st-earned','₹'+num(s.totalEarned));setText('st-paid','₹'+num(s.totalPaidOut));
+    setText('st-pend','₹'+num(s.pendingPayouts));setText('st-rev','₹'+num(s.tutorRevenue));
   });
 }
 
-// ── Referrers ─────────────────────────────────────────────────
-function loadRefs() {
-  api('getAllReferrers', {}, function(res) {
-    if (!res.ok) return;
-    _allRefs = res.data || [];
-    renderRefs();
-    renderTop3();
+function loadRefs(){
+  api('getAllReferrers',{},function(res){
+    if(!res.ok)return;
+    _allRefs=res.data||[];
+    renderRefs();renderTop3();
   });
 }
-
-function renderTop3() {
-  var sorted = _allRefs.slice().sort(function(a,b) { return (Number(b.TotalConverted)||0)-(Number(a.TotalConverted)||0); }).slice(0,3);
-  if (!sorted.length) { document.getElementById('top3').textContent = 'No referrers yet'; return; }
-  document.getElementById('top3').innerHTML = sorted.map(function(r,i) {
-    return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">' +
-      '<span style="font-size:18px">' + ['🥇','🥈','🥉'][i] + '</span>' +
-      '<div><div style="font-weight:600">' + esc(r.Name) + '</div><div style="font-size:12px;color:var(--muted)">' + r.TotalConverted + ' converted · ₹' + num(r.TotalEarned) + ' earned</div></div></div>';
+function renderTop3(){
+  var sorted=_allRefs.slice().sort(function(a,b){return(Number(b.TotalConverted)||0)-(Number(a.TotalConverted)||0);}).slice(0,3);
+  var el=document.getElementById('top3');
+  if(!sorted.length){el.innerHTML='<div style="color:var(--muted);font-size:13px">No referrers yet</div>';return;}
+  el.innerHTML=sorted.map(function(r,i){
+    var medals=['🥇','🥈','🥉'];
+    return '<div class="top-ref-row"><div class="rank-badge">'+medals[i]+'</div>'+
+      '<div class="ref-info"><div class="ref-name">'+esc(r.Name)+'</div>'+
+      '<div class="ref-stats">'+esc(r.Mobile)+' · UID: '+esc(r.UID)+' · '+(r.TotalConverted||0)+' converted</div></div>'+
+      '<div class="ref-earning">₹'+num(r.TotalEarned)+'</div></div>';
   }).join('');
 }
-
-function renderRefs() {
-  var list = _allRefs.filter(function(r) {
-    if (!_refSearch) return true;
-    var q = _refSearch.toLowerCase();
-    return (r.Name||'').toLowerCase().includes(q) || (r.Mobile||'').includes(q) || (r.UID||'').toLowerCase().includes(q);
+function renderRefs(){
+  var q=_refSearch.toLowerCase();
+  var list=_allRefs.filter(function(r){
+    if(!q)return true;
+    return(r.Name||'').toLowerCase().includes(q)||(r.Mobile||'').includes(q)||(r.UID||'').toLowerCase().includes(q);
   });
-  if (_refSort === 'converted') list.sort(function(a,b){ return (Number(b.TotalConverted)||0)-(Number(a.TotalConverted)||0); });
-  else if (_refSort === 'earned') list.sort(function(a,b){ return (Number(b.TotalEarned)||0)-(Number(a.TotalEarned)||0); });
-  else list.sort(function(a,b){ return (a.Name||'').localeCompare(b.Name||''); });
-
-  document.getElementById('ref-tbody').innerHTML = list.length ? list.map(function(r) {
-    return '<tr><td>' + esc(r.Name) + '</td><td>' + esc(r.Mobile) + '</td><td><code>' + esc(r.UID) + '</code></td>' +
-      '<td>' + (r.TotalReferred||0) + '</td><td>' + (r.TotalDownloaded||0) + '</td><td>' + (r.TotalConverted||0) + '</td>' +
-      '<td>₹' + num(r.TotalEarned) + '</td>' +
-      '<td><button class="btn btn-ghost btn-sm" onclick="showPin(this,\'' + esc(r.Mobile) + '\')" data-mobile="' + esc(r.Mobile) + '">Show PIN</button></td></tr>';
-  }).join('') : '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:30px">No referrers found</td></tr>';
+  if(_refSort==='converted')list.sort(function(a,b){return(Number(b.TotalConverted)||0)-(Number(a.TotalConverted)||0);});
+  else if(_refSort==='earned')list.sort(function(a,b){return(Number(b.TotalEarned)||0)-(Number(a.TotalEarned)||0);});
+  else if(_refSort==='referred')list.sort(function(a,b){return(Number(b.TotalReferred)||0)-(Number(a.TotalReferred)||0);});
+  else list.sort(function(a,b){return(a.Name||'').localeCompare(b.Name||'');});
+  setText('ref-count',list.length+' of '+_allRefs.length);
+  document.getElementById('ref-tbody').innerHTML=list.length?list.map(function(r,i){
+    return '<tr><td style="color:var(--muted)">'+(i+1)+'</td>'+
+      '<td style="font-weight:600">'+esc(r.Name)+'</td><td>'+esc(r.Mobile)+'</td>'+
+      '<td><code>'+esc(r.UID)+'</code></td>'+
+      '<td style="text-align:center">'+(r.TotalReferred||0)+'</td>'+
+      '<td style="text-align:center">'+(r.TotalDownloaded||0)+'</td>'+
+      '<td style="text-align:center"><strong>'+(r.TotalConverted||0)+'</strong></td>'+
+      '<td style="text-align:right;font-weight:700;color:var(--green)">'+num(r.TotalEarned)+'</td>'+
+      '<td style="color:var(--muted);white-space:nowrap">'+cleanDate(r.JoinedDate)+'</td>'+
+      '<td><button class="btn-sm" onclick="showPin(this,''+esc(r.Mobile)+'')">Show</button></td></tr>';
+  }).join(''):'<tr class="empty-row"><td colspan="10">No referrers found'+(q?' matching "'+esc(_refSearch)+'"':'')+'</td></tr>';
+}
+function searchRef(q){_refSearch=q;renderRefs();}
+function sortRefs(v){_refSort=v;renderRefs();}
+function clearRefSearch(){document.getElementById('ref-search').value='';_refSearch='';renderRefs();}
+function showPin(btn,mobile){
+  if(btn.dataset.pin){btn.textContent=btn.dataset.shown==='1'?'Show':btn.dataset.pin;btn.dataset.shown=btn.dataset.shown==='1'?'0':'1';return;}
+  btn.textContent='…';
+  api('getPin',{mobile:mobile},function(res){var pin=(res.ok&&res.data&&res.data.pin)?res.data.pin:'—';btn.dataset.pin=pin;btn.dataset.shown='1';btn.textContent=pin;});
 }
 
-function showPin(btn, mobile) {
-  if (btn.dataset.pin) { btn.textContent = btn.dataset.shown === '1' ? 'Show PIN' : btn.dataset.pin; btn.dataset.shown = btn.dataset.shown === '1' ? '0' : '1'; return; }
-  btn.textContent = '…';
-  api('getPin', { mobile: mobile }, function(res) {
-    var pin = (res.ok && res.data && res.data.pin) ? res.data.pin : '—';
-    btn.dataset.pin = pin; btn.dataset.shown = '1'; btn.textContent = pin;
-  });
+function loadLeads(){
+  api('getAllLeads',{},function(res){if(!res.ok)return;_allLeads=res.data||[];renderLeads();});
 }
-
-function searchRef(q) { _refSearch = q; renderRefs(); }
-function sortRefs(v)   { _refSort = v;   renderRefs(); }
-
-// ── Leads ─────────────────────────────────────────────────────
-function loadLeads() {
-  api('getAllLeads', {}, function(res) {
-    if (!res.ok) return;
-    _allLeads = res.data || [];
-    renderLeads();
-  });
-}
-
-function renderLeads() {
-  var list = _allLeads.filter(function(l) {
-    var st = (l.Status||'').toLowerCase();
-    if (_leadFilter !== 'all' && st !== _leadFilter) return false;
-    if (_leadSearch) {
-      var q = _leadSearch.toLowerCase();
-      return (l.LeadName||'').toLowerCase().includes(q) || (l.LeadMobile||'').includes(q) || (l.ReferrerUID||'').toLowerCase().includes(q);
-    }
+function renderLeads(){
+  var q=_leadSearch.toLowerCase();
+  var dateFrom=_leadDateFrom?new Date(_leadDateFrom):null;
+  var dateTo=_leadDateTo?new Date(_leadDateTo+'T23:59:59'):null;
+  var list=_allLeads.filter(function(l){
+    var st=(l.Status||'').toLowerCase();
+    if(_leadFilter!=='all'&&st!==_leadFilter)return false;
+    if(q&&!((l.LeadName||'').toLowerCase().includes(q)||(l.LeadMobile||'').includes(q)||(l.ReferrerUID||'').toLowerCase().includes(q)||(l.CourseName||'').toLowerCase().includes(q)))return false;
+    if(dateFrom||dateTo){var d=parseDate(l.ReferredDate);if(!d)return false;if(dateFrom&&d<dateFrom)return false;if(dateTo&&d>dateTo)return false;}
     return true;
   });
-
-  document.getElementById('leads-tbody').innerHTML = list.length ? list.map(function(l) {
-    var st = (l.Status||'').toLowerCase();
-    var bc = st==='converted'?'badge-green':st==='downloaded'?'badge-blue':st==='expired'?'badge-red':'badge-muted';
-    return '<tr><td>' + esc(l.LeadName) + '</td><td>' + esc(l.LeadMobile) + '</td>' +
-      '<td><code>' + esc(l.ReferrerUID) + '</code></td>' +
-      '<td><span class="badge ' + bc + '">' + st + '</span></td>' +
-      '<td>' + fmt(l.ReferredDate) + '</td><td>' + fmt(l.DownloadDate) + '</td>' +
-      '<td>' + fmt(l.PurchaseDate) + '</td><td>' + esc(l.CourseName||'—') + '</td>' +
-      '<td>' + (l.ReferrerReward ? '₹'+num(l.ReferrerReward) : '—') + '</td></tr>';
-  }).join('') : '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">No leads found</td></tr>';
+  setText('leads-count',list.length+' of '+_allLeads.length);
+  document.getElementById('leads-tbody').innerHTML=list.length?list.map(function(l,i){
+    var st=(l.Status||'').toLowerCase();
+    var bc=st==='converted'?'badge-green':st==='downloaded'?'badge-blue':st==='expired'?'badge-red':'badge-muted';
+    return '<tr><td style="color:var(--muted)">'+(i+1)+'</td>'+
+      '<td style="font-weight:600">'+esc(l.LeadName)+'</td><td>'+esc(l.LeadMobile)+'</td>'+
+      '<td><code>'+esc(l.ReferrerUID)+'</code></td>'+
+      '<td><span class="badge '+bc+'">'+st+'</span></td>'+
+      '<td>'+cleanDate(l.ReferredDate)+'</td><td>'+cleanDate(l.DownloadDate)+'</td>'+
+      '<td>'+cleanDate(l.PurchaseDate)+'</td>'+
+      '<td style="color:var(--muted)">'+esc(l.CourseName||'—')+'</td>'+
+      '<td style="font-weight:700;color:var(--green)">'+(l.ReferrerReward?'₹'+num(l.ReferrerReward):'—')+'</td></tr>';
+  }).join(''):'<tr class="empty-row"><td colspan="10">No leads found'+(q?' matching "'+esc(_leadSearch)+'"':'')+'</td></tr>';
 }
-
-function filterLeads(f, btn) {
-  _leadFilter = f;
-  document.querySelectorAll('#s-leads .filter-btn').forEach(function(b) { b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
+function filterLeads(f,btn){
+  _leadFilter=f;
+  document.querySelectorAll('#s-leads .filter-pill').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
   renderLeads();
 }
-function searchLeads(q) { _leadSearch = q; renderLeads(); }
+function searchLeads(q){_leadSearch=q;renderLeads();}
+function applyLeadDateFilter(){_leadDateFrom=document.getElementById('lead-date-from').value;_leadDateTo=document.getElementById('lead-date-to').value;renderLeads();}
+function clearLeadDates(){document.getElementById('lead-date-from').value='';document.getElementById('lead-date-to').value='';_leadDateFrom='';_leadDateTo='';renderLeads();}
 
-// ── Payouts ───────────────────────────────────────────────────
-var _payFilter = 'all';
-function loadPayouts() {
-  api('getPayouts', {}, function(res) {
-    if (!res.ok) return;
-    _allPays = res.data || [];
-    renderPayouts();
+function loadPayouts(){
+  api('getPayouts',{},function(res){if(!res.ok)return;_allPays=res.data||[];renderPayouts();});
+}
+function renderPayouts(){
+  var q=_paySearch.toLowerCase();
+  var dateFrom=document.getElementById('pay-date-from').value?new Date(document.getElementById('pay-date-from').value):null;
+  var dateTo=document.getElementById('pay-date-to').value?new Date(document.getElementById('pay-date-to').value+'T23:59:59'):null;
+  var list=_allPays.filter(function(p){
+    if(_payFilter!=='all'&&(p.Status||'').toLowerCase()!==_payFilter)return false;
+    if(q&&!((p.Name||'').toLowerCase().includes(q)||(p.UPI||'').toLowerCase().includes(q)||(p.PayoutID||'').toLowerCase().includes(q)||(p.ReferrerUID||'').toLowerCase().includes(q)))return false;
+    if(dateFrom||dateTo){var d=parseDate(p.ClaimDate);if(!d)return false;if(dateFrom&&d<dateFrom)return false;if(dateTo&&d>dateTo)return false;}
+    return true;
+  });
+  setText('pay-count',list.length+' of '+_allPays.length);
+  document.getElementById('pay-tbody').innerHTML=list.length?list.map(function(p,i){
+    var st=(p.Status||'').toLowerCase();
+    var bc=st==='paid'?'badge-green':st==='pending'?'badge-amber':'badge-muted';
+    var action=st==='pending'?'<button class="btn-sm primary" onclick="markPaid(''+esc(p.PayoutID)+'')">Mark Paid</button>':'—';
+    return '<tr><td style="color:var(--muted)">'+(i+1)+'</td>'+
+      '<td><code>'+esc(p.PayoutID)+'</code></td>'+
+      '<td style="font-weight:600">'+esc(p.Name)+'</td>'+
+      '<td style="color:var(--blue)">'+esc(p.UPI)+'</td>'+
+      '<td style="font-weight:700;text-align:right">'+num(p.Amount)+'</td>'+
+      '<td><span class="badge '+bc+'">'+st+'</span></td>'+
+      '<td>'+cleanDate(p.ClaimDate)+'</td><td>'+cleanDate(p.PaidDate)+'</td>'+
+      '<td>'+action+'</td></tr>';
+  }).join(''):'<tr class="empty-row"><td colspan="9">No payouts found'+(q?' matching "'+esc(_paySearch)+'"':'')+'</td></tr>';
+}
+function filterPay(f,btn){
+  _payFilter=f;
+  document.querySelectorAll('#s-payouts .filter-pill').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');renderPayouts();
+}
+function searchPayouts(q){_paySearch=q;renderPayouts();}
+function clearPayDates(){document.getElementById('pay-date-from').value='';document.getElementById('pay-date-to').value='';renderPayouts();}
+function markPaid(payoutID){
+  if(!confirm('Mark payout '+payoutID+' as paid?'))return;
+  api('updatePayoutStatus',{payoutID:payoutID,status:'paid'},function(res){
+    if(res.ok){showToast('Marked as paid ✓','success');loadPayouts();loadOverview();}
+    else showToast('Error: '+res.error,'error');
   });
 }
 
-function renderPayouts() {
-  var list = _allPays.filter(function(p) {
-    return _payFilter === 'all' || (p.Status||'').toLowerCase() === _payFilter;
-  });
-  document.getElementById('pay-tbody').innerHTML = list.length ? list.map(function(p) {
-    var st   = (p.Status||'').toLowerCase();
-    var bc   = st==='paid'?'badge-green':st==='pending'?'badge-amber':'badge-muted';
-    var btn  = st==='pending' ? '<button class="btn btn-ghost btn-sm" onclick="markPaid(\'' + esc(p.PayoutID) + '\')">Mark Paid</button>' : '—';
-    return '<tr><td><code>' + esc(p.PayoutID) + '</code></td><td>' + esc(p.Name) + '</td><td>' + esc(p.UPI) + '</td>' +
-      '<td>₹' + num(p.Amount) + '</td>' +
-      '<td><span class="badge ' + bc + '">' + st + '</span></td>' +
-      '<td>' + fmt(p.ClaimDate) + '</td><td>' + btn + '</td></tr>';
-  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">No payouts found</td></tr>';
-}
-
-function markPaid(payoutID) {
-  if (!confirm('Mark payout ' + payoutID + ' as paid?')) return;
-  api('updatePayoutStatus', { payoutID: payoutID, status: 'paid' }, function(res) {
-    if (res.ok) { showToast('Payout marked paid ✓'); loadPayouts(); loadOverview(); }
-    else showToast('Error: ' + res.error, 'red');
+function loadPolicy(){
+  api('getAllPolicies',{},function(res){
+    if(!res.ok||!res.data||!res.data.length){loadPolicyFallback();return;}
+    _polVersions=res.data;
+    var active=_polVersions.filter(function(p){return(p.Status||'').toLowerCase()==='active';});
+    var cur=active.length?active[active.length-1]:_polVersions[_polVersions.length-1];
+    _currentPolicy=cur;applyPolicy(cur);renderVersionHistory(_polVersions);
   });
 }
-
-function filterPay(f, btn) {
-  _payFilter = f;
-  document.querySelectorAll('#s-payouts .filter-btn').forEach(function(b) { b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
-  renderPayouts();
+function loadPolicyFallback(){api('getPolicy',{},function(res){if(res.ok){_currentPolicy=res.data;applyPolicy(res.data);}else updatePreview();});}
+function applyPolicy(p){
+  _currentModel=(p.Model||'pct').toLowerCase();
+  document.getElementById('s-ref').value=Number(p.ReferrerPct)||10;
+  document.getElementById('s-ree').value=Number(p.RefereePct)||0;
+  document.getElementById('s-win').value=Number(p.WindowDays)||15;
+  document.getElementById('s-min').value=Number(p.MinClaim)||500;
+  setModel(_currentModel,true);updatePreview();
+  setText('live-text','Referrers earn '+(Number(p.ReferrerPct)||10)+'% · Window: '+(Number(p.WindowDays)||15)+' days · Min: ₹'+(Number(p.MinClaim)||500));
+  setText('live-ver','v'+(Number(p.Version)||1)+' live');
 }
-
-// ── Policy ────────────────────────────────────────────────────
-var _currentModel = 'pct', _polVersions = [];
-
-function loadPolicy() {
-  api('getAllPolicies', {}, function(res) {
-    if (!res.ok) { loadPolicyFallback(); return; }
-    _polVersions = res.data || [];
-    if (!_polVersions.length) { loadPolicyFallback(); return; }
-    // Get last active
-    var active = _polVersions.filter(function(p) { return (p.Status||'').toLowerCase() === 'active'; });
-    var current = active.length ? active[active.length-1] : _polVersions[_polVersions.length-1];
-    applyPolicy(current);
-    renderVersionHistory(_polVersions);
-  });
+function setModel(m,silent){
+  _currentModel=m;var isPct=m==='pct';
+  document.getElementById('pct-controls').style.display=isPct?'block':'none';
+  document.getElementById('model-pct').classList.toggle('active',isPct);
+  document.getElementById('model-flat').classList.toggle('active',!isPct);
+  if(!silent)updatePreview();
 }
-
-function loadPolicyFallback() {
-  api('getPolicy', {}, function(res) {
-    if (res.ok) { applyPolicy(res.data); }
-    else { updatePreview(); } // just show defaults
-  });
+function updatePreview(){
+  var ref=parseInt(document.getElementById('s-ref').value)||10;
+  var ree=parseInt(document.getElementById('s-ree').value)||0;
+  var win=parseInt(document.getElementById('s-win').value)||15;
+  var min=parseInt(document.getElementById('s-min').value)||500;
+  setText('v-ref',ref+'%');setText('v-ree',ree+'%');setText('v-win',win+' days');setText('v-min','₹'+num(min));
+  var refE=Math.round(5000*ref/100);var reeE=Math.round(refE*ree/100);
+  document.getElementById('policy-preview').innerHTML='Example — ₹5,000 course: Referrer earns <strong>₹'+num(refE)+'</strong>'+(ree>0?', Referee discount <strong>₹'+num(reeE)+'</strong>':'')+' · Window: <strong>'+win+' days</strong> · Min payout: <strong>₹'+num(min)+'</strong>';
 }
-
-function applyPolicy(p) {
-  _currentModel = (p.Model || 'pct').toString().toLowerCase();
-  document.getElementById('s-ref').value = Number(p.ReferrerPct) || 10;
-  document.getElementById('s-ree').value = Number(p.RefereePct)  || 0;
-  document.getElementById('s-win').value = Number(p.WindowDays)  || 15;
-  document.getElementById('s-min').value = Number(p.MinClaim)    || 500;
-  setModel(_currentModel, true);
-  updatePreview();
-  // Update live bar
-  var ref  = Number(p.ReferrerPct) || 10;
-  var win  = Number(p.WindowDays)  || 15;
-  var ver  = Number(p.Version)     || 1;
-  var liveText = _currentModel === 'flat'
-    ? 'Flat amount model is live'
-    : 'Percentage model — referrers earn ' + ref + '% per referral · Window: ' + win + ' days';
-  document.getElementById('live-text').textContent = liveText;
-  document.getElementById('live-ver').textContent  = 'v' + ver + ' active';
+function renderVersionHistory(versions){
+  var rev=versions.slice().reverse();
+  document.getElementById('ver-list').innerHTML=rev.length?rev.map(function(p,i){
+    var isLive=(p.Status||'').toLowerCase()==='active';
+    var pname=p.PolicyName?'"'+esc(p.PolicyName)+'"':'Version '+p.Version;
+    return '<div class="ver-item">'+
+      '<div class="ver-top"><div><div class="ver-name">'+pname+(isLive?' <span class="badge badge-green" style="font-size:10px">Live</span>':'')+'</div>'+
+      '<div class="ver-date">'+cleanDate(p.CreatedDate)+'</div></div>'+
+      (!isLive?'<div class="ver-actions"><button class="btn-sm" onclick="reuseVer('+i+')">↩ Reuse</button><button class="btn-sm danger" onclick="delVer('+p.Version+')">Delete</button></div>':'<span class="badge badge-green">Active</span>')+'</div>'+
+      '<div class="ver-tags"><span class="ver-tag ref">Ref '+(p.ReferrerPct||10)+'%</span>'+
+      '<span class="ver-tag ree">Ree '+(p.RefereePct||0)+'%</span>'+
+      '<span class="ver-tag win">'+(p.WindowDays||15)+' days</span>'+
+      '<span class="ver-tag min">Min ₹'+(p.MinClaim||500)+'</span></div></div>';
+  }).join(''):'<div style="color:var(--muted);font-size:13px">No versions yet</div>';
 }
-
-function setModel(m, silent) {
-  _currentModel = m;
-  var isPct = m === 'pct';
-  document.getElementById('pct-controls').style.display = isPct ? 'block' : 'none';
-  document.getElementById('model-pct').style.background = isPct ? 'var(--blue-bg)' : 'transparent';
-  document.getElementById('model-pct').style.color      = isPct ? 'var(--blue)'    : 'var(--muted)';
-  document.getElementById('model-pct').style.border     = isPct ? '1px solid var(--blue)' : '1px solid var(--border)';
-  document.getElementById('model-flat').style.background = !isPct ? 'var(--purple-bg)' : 'transparent';
-  document.getElementById('model-flat').style.color      = !isPct ? 'var(--purple)'    : 'var(--muted)';
-  document.getElementById('model-flat').style.border     = !isPct ? '1px solid var(--purple)' : '1px solid var(--border)';
-  if (!silent) updatePreview();
-}
-
-function updatePreview() {
-  var ref  = parseInt(document.getElementById('s-ref').value) || 10;
-  var ree  = parseInt(document.getElementById('s-ree').value) || 0;
-  var win  = parseInt(document.getElementById('s-win').value) || 15;
-  var min  = parseInt(document.getElementById('s-min').value) || 500;
-  document.getElementById('v-ref').textContent = ref + '%';
-  document.getElementById('v-ree').textContent = ree + '%';
-  document.getElementById('v-win').textContent = win + 'd';
-  document.getElementById('v-min').textContent = '₹' + min;
-
-  var refEarns = Math.round(5000 * ref / 100);
-  var reeEarns = Math.round(refEarns * ree / 100);
-  document.getElementById('policy-preview').innerHTML =
-    'On a ₹5,000 course: Referrer earns <strong>₹' + num(refEarns) + '</strong>' +
-    (ree > 0 ? ', Referee gets <strong>₹' + num(reeEarns) + '</strong>' : '') +
-    ' · Window: <strong>' + win + ' days</strong> · Min claim: <strong>₹' + min + '</strong>';
-}
-
-function renderVersionHistory(versions) {
-  var reversed = versions.slice().reverse();
-  document.getElementById('ver-list').innerHTML = reversed.map(function(p, i) {
-    var isLive = (p.Status||'').toLowerCase() === 'active';
-    var pname  = p.PolicyName ? '"' + esc(p.PolicyName) + '"' : 'v' + p.Version;
-    return '<div class="version-row">' +
-      '<div class="version-dot" style="background:' + (isLive ? 'var(--green)' : 'var(--border)') + '"></div>' +
-      '<div style="flex:1">' +
-        '<div style="font-weight:600;font-size:13px">' + pname + (isLive ? ' <span class="badge badge-green" style="font-size:10px">Live</span>' : '') + '</div>' +
-        '<div style="font-size:11px;color:var(--muted);margin-top:2px">' + (p.CreatedDate||'') + '</div>' +
-        '<div style="margin-top:4px">' +
-          '<span class="rate-tag" style="background:var(--green-bg);color:var(--green)">Ref ' + (p.ReferrerPct||10) + '%</span>' +
-          '<span class="rate-tag" style="background:var(--blue-bg);color:var(--blue)">Ree ' + (p.RefereePct||0) + '%</span>' +
-          '<span class="rate-tag" style="background:var(--surface2);color:var(--muted)">' + (p.WindowDays||15) + 'd</span>' +
-          '<span class="rate-tag" style="background:var(--surface2);color:var(--muted)">Min ₹' + (p.MinClaim||500) + '</span>' +
-        '</div>' +
-        (!isLive ? '<div style="margin-top:6px"><button class="btn btn-ghost btn-sm" onclick="reuseVersion(' + i + ')">↩ Reuse</button> ' +
-          '<button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:var(--red)" onclick="delVersion(' + p.Version + ')">Delete</button></div>' : '') +
-      '</div></div>';
-  }).join('');
-}
-
-function reuseVersion(idx) {
-  var reversed = _polVersions.slice().reverse();
-  applyPolicy(reversed[idx]);
-  showToast('Settings loaded — review and save to publish');
-}
-
-function delVersion(ver) {
-  if (!confirm('Delete policy v' + ver + '?')) return;
-  api('deletePolicy', { version: ver }, function(res) {
-    if (res.ok) { showToast('Policy deleted'); loadPolicy(); }
-    else showToast('Error: ' + res.error, 'red');
+function reuseVer(idx){var rev=_polVersions.slice().reverse();applyPolicy(rev[idx]);showToast('Settings loaded — review and save to publish');}
+function delVer(ver){if(!confirm('Delete v'+ver+'?'))return;api('deletePolicy',{version:ver},function(res){if(res.ok){showToast('Deleted');loadPolicy();}else showToast('Error: '+res.error,'error');});}
+function savePol(){
+  var ref=parseInt(document.getElementById('s-ref').value)||10;
+  var ree=parseInt(document.getElementById('s-ree').value)||0;
+  var win=parseInt(document.getElementById('s-win').value)||15;
+  var min=parseInt(document.getElementById('s-min').value)||500;
+  var pname=document.getElementById('s-pname').value.trim();
+  api('savePolicy',{referrerPct:ref,refereePct:ree,windowDays:win,minClaim:min,model:_currentModel,policyName:pname},function(res){
+    if(res.ok){showToast('Policy v'+res.data.version+' published ✓','success');document.getElementById('s-pname').value='';loadPolicy();loadOverview();}
+    else showToast('Error: '+res.error,'error');
   });
 }
 
-function savePol() {
-  var ref   = parseInt(document.getElementById('s-ref').value) || 10;
-  var ree   = parseInt(document.getElementById('s-ree').value) || 0;
-  var win   = parseInt(document.getElementById('s-win').value) || 15;
-  var min   = parseInt(document.getElementById('s-min').value) || 500;
-  var pname = document.getElementById('s-pname').value.trim();
-  api('savePolicy', {
-    referrerPct: ref, refereePct: ree, windowDays: win,
-    minClaim: min, model: _currentModel, policyName: pname
-  }, function(res) {
-    if (res.ok) {
-      showToast('Policy v' + res.data.version + ' published ✓');
-      document.getElementById('s-pname').value = '';
-      loadPolicy();
-      loadOverview();
-    } else {
-      showToast('Error: ' + res.error, 'red');
-    }
+function openTnCPreview(){
+  var ref=parseInt(document.getElementById('s-ref').value)||10;
+  var ree=parseInt(document.getElementById('s-ree').value)||0;
+  var win=parseInt(document.getElementById('s-win').value)||15;
+  var min=parseInt(document.getElementById('s-min').value)||500;
+  var pname=document.getElementById('s-pname').value.trim()||(_currentPolicy&&_currentPolicy.PolicyName?_currentPolicy.PolicyName:'Current Reward Policy');
+  var refE=Math.round(5000*ref/100);var reeE=Math.round(refE*ree/100);
+  setText('tnc-brand-name',_brand+' — Refer & Earn');
+  setText('tnc-policy-name',pname);
+  document.getElementById('tnc-rows').innerHTML=
+    '<div class="tnc-row"><div class="tnc-icon" style="background:#fff3e0">💰</div>'+
+    '<div class="tnc-text"><strong>You earn</strong><span>'+ref+'% of the course price when your referral purchases. For example, you get ₹'+num(refE)+' on a ₹5,000 course.</span></div></div>'+
+    (ree>0?'<div class="tnc-row"><div class="tnc-icon" style="background:#e8f5e9">🎁</div>'+
+    '<div class="tnc-text"><strong>Your friend gets a discount</strong><span>₹'+num(reeE)+' off on their first purchase.</span></div></div>':'')+
+    '<div class="tnc-row"><div class="tnc-icon" style="background:#e3f2fd">⏱</div>'+
+    '<div class="tnc-text"><strong>Time window</strong><span>Your friend must purchase within '+win+' days of downloading the app via your link.</span></div></div>'+
+    '<div class="tnc-row"><div class="tnc-icon" style="background:#fce4ec">💳</div>'+
+    '<div class="tnc-text"><strong>Minimum payout</strong><span>Claim your earnings once they reach ₹'+num(min)+'. Paid directly to your UPI ID.</span></div></div>'+
+    '<div class="tnc-row"><div class="tnc-icon" style="background:#f3e5f5">📊</div>'+
+    '<div class="tnc-text"><strong>Track in real time</strong><span>Your referral status updates automatically every hour on this dashboard.</span></div></div>';
+  document.getElementById('tnc-modal').classList.add('open');
+}
+function closeTnC(){document.getElementById('tnc-modal').classList.remove('open');}
+function closeTnCIfOutside(e){if(e.target.id==='tnc-modal')closeTnC();}
+
+function doSync(){
+  var btn=document.getElementById('sync-btn');var icon=document.getElementById('sync-icon');
+  btn.disabled=true;icon.innerHTML='<span class="spinner"></span>';
+  api('syncAll',{},function(res){
+    btn.disabled=false;icon.innerHTML='↻';
+    if(res.ok){var d=res.data;showToast('Sync complete · '+(d.downloads?d.downloads.updated:0)+' downloads · '+(d.transactions?d.transactions.converted:0)+' converted','success');loadAll();}
+    else showToast('Sync error: '+res.error,'error');
   });
 }
 
-// ── Sync ─────────────────────────────────────────────────────
-function doSync() {
-  var btn  = document.getElementById('sync-btn');
-  var icon = document.getElementById('sync-icon');
-  btn.disabled = true;
-  icon.style.animation = 'spin .6s linear infinite';
-  icon.style.display = 'inline-block';
-  api('syncAll', {}, function(res) {
-    btn.disabled = false;
-    icon.style.animation = '';
-    if (res.ok) {
-      var d = res.data;
-      showToast('Sync done ✓ — ' + (d.downloads ? d.downloads.updated : 0) + ' downloaded, ' + (d.transactions ? d.transactions.converted : 0) + ' converted');
-      loadAll();
-    } else {
-      showToast('Sync error: ' + res.error, 'red');
-    }
-  });
+var _sectionSubs={overview:"Today's snapshot",referrers:'All registered referrers',leads:'Lead pipeline',payouts:'Payout requests',policy:'Reward policy settings'};
+function showSection(id){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('s-'+id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+  var titles={overview:'Overview',referrers:'All Referrers',leads:'Leads',payouts:'Payouts',policy:'Reward Policy'};
+  setText('page-title',(titles[id]||id)+' — '+_brand);
+  setText('page-sub',_sectionSubs[id]||'');
 }
 
-// ── Navigation ────────────────────────────────────────────────
-function showSection(id) {
-  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
-  document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
-  document.getElementById('s-' + id).classList.add('active');
-  document.getElementById('nav-' + id).classList.add('active');
-  var titles = { overview:'Overview', referrers:'All Referrers', leads:'Leads', payouts:'Payouts', policy:'Reward Settings' };
-  document.getElementById('page-title').textContent = (titles[id] || id) + ' — ' + _brand;
+function setText(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+function esc(s){return(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function num(n){return(Number(n)||0).toLocaleString('en-IN');}
+
+// cleanDate: strips timestamps, returns date only
+function cleanDate(v){
+  if(!v)return'—';
+  var s=v.toString().trim();
+  if(!s||s==='0')return'—';
+  // ISO with T
+  if(s.includes('T'))s=s.split('T')[0];
+  // Has space - likely "DD MMM YYYY HH:MM" or "YYYY-MM-DD HH:MM"
+  else if(s.includes(' ')){
+    // Remove trailing time portion HH:MM(:SS)( AM/PM)
+    s=s.replace(/s+d{1,2}:d{2}(:d{2})?(s*(AM|PM))?$/i,'').trim();
+  }
+  return s||'—';
 }
 
-// ── Helpers ───────────────────────────────────────────────────
-function esc(s) { return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function num(n) { return (Number(n)||0).toLocaleString('en-IN'); }
-function fmt(d) {
-  if (!d) return '—';
-  var s = d.toString().trim();
-  if (!s || s === '0') return '—';
-  return s;
+// parseDate for date range filtering
+function parseDate(v){
+  if(!v)return null;
+  var s=v.toString().trim();
+  if(!s||s==='0')return null;
+  var d=new Date(s);
+  if(!isNaN(d.getTime()))return d;
+  // "21 Apr 2026" format
+  var m=s.match(/(d{1,2})s+(w{3})s+(d{4})/);
+  if(m){d=new Date(m[1]+' '+m[2]+' '+m[3]);if(!isNaN(d.getTime()))return d;}
+  return null;
 }
 
 var _toastTid;
-function showToast(msg, type) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.borderColor = type === 'red' ? 'var(--red)' : 'var(--border)';
-  t.classList.add('show');
-  clearTimeout(_toastTid);
-  _toastTid = setTimeout(function() { t.classList.remove('show'); }, 3500);
+function showToast(msg,type){
+  var t=document.getElementById('toast');t.textContent=msg;t.className=type||'';t.classList.add('show');
+  clearTimeout(_toastTid);_toastTid=setTimeout(function(){t.classList.remove('show');},3500);
 }
 </script>
 </body>
