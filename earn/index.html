@@ -414,7 +414,8 @@ window.onload=function(){
     g("hdr-brand").textContent=BRAND.toLowerCase();
     g("login-title").textContent=BRAND+" - Refer & Earn";
     if(REF){
-      // Referral landing — show name+mobile form, then redirect to Play Store
+      // Referral landing — hide login, show only the name+mobile landing screen
+      g("login-overlay").style.display="none";
       showLanding(REF);
     } else {
       // Normal login flow
@@ -429,24 +430,28 @@ window.onload=function(){
 };
 
 // ── LOGIN FLOW ──
+var _isNewUser=false; // flag — never rely on display style for this
+
 function loginNext(){
   var mob=g("login-mobile").value.trim();
   if(!/^\d{10}$/.test(mob)){setLE("Enter a valid 10-digit mobile number");return;}
   MOBILE=mob;
   var btn=g("login-btn1");btn.disabled=true;btn.textContent="Checking...";setLE("");
-  // Check if user exists
   api("getMobileUser",{mobile:mob},function(r){
     btn.disabled=false;btn.textContent="Continue \u2192";
     if(r.ok&&r.data&&r.data.exists){
-      // Returning user - ask PIN only
+      // Returning user — PIN only
+      _isNewUser=false;
       g("login-step1").style.display="none";
       g("login-step2").style.display="block";
       g("name-field").style.display="none";
       g("pin-label").textContent="Enter your 4-digit Login PIN";
       g("login-sub").textContent="Welcome back! Enter your PIN to continue.";
+      g("login-pin").value="";
       g("login-pin").focus();
     } else {
-      // New user - ask name + set PIN
+      // New user — name + PIN
+      _isNewUser=true;
       g("login-step1").style.display="none";
       g("login-step2").style.display="block";
       g("name-field").style.display="block";
@@ -459,10 +464,9 @@ function loginNext(){
 
 function loginSubmit(){
   var pin=g("login-pin").value.trim();
-  var nameEl=g("login-name");
-  var isNew=nameEl.style.display!=="none";
-  if(isNew){
-    var nm=nameEl.value.trim();
+  if(_isNewUser){
+    // New user — register with name + PIN
+    var nm=g("login-name").value.trim();
     if(!nm){setLE("Enter your name");return;}
     if(!/^\d{4}$/.test(pin)){setLE("PIN must be exactly 4 digits");return;}
     var btn=g("login-btn2");btn.disabled=true;btn.textContent="Registering...";setLE("");
@@ -472,9 +476,9 @@ function loginSubmit(){
       else setLE(r.error||"Registration failed");
     },function(){btn.disabled=false;btn.textContent="Sign In \u2192";setLE("Network error. Retry.");});
   } else {
+    // Returning user — verify PIN
     if(!/^\d{4}$/.test(pin)){setLE("Enter your 4-digit PIN");return;}
     var btn=g("login-btn2");btn.disabled=true;btn.textContent="Signing in...";setLE("");
-    // Fetch referrer record and compare PIN locally — avoids verifyPin API issues
     api("getReferrer",{mobile:MOBILE},function(r){
       btn.disabled=false;btn.textContent="Sign In \u2192";
       if(!r.ok||!r.data){setLE("Mobile not found. Contact admin.");return;}
