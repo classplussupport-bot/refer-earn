@@ -53,7 +53,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 .cards-wrap{padding:0 16px;margin-top:-28px;position:relative;z-index:2}
 
 /* REFER & EARN CARD */
-.re-card{background:#fff;border-radius:20px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;background:linear-gradient(135deg,#fff 0%,#f8f0ff 100%);border:1.5px solid #ede0ff}
+.re-card{background:rgba(255,255,255,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;border:1.5px solid rgba(237,224,255,.7)}
 .re-card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .re-card-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--p1),var(--pk));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(124,58,237,.3)}
 .re-card-title{font-size:18px;font-weight:900;color:var(--tx)}
@@ -61,12 +61,12 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 
 /* STAT CARDS */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.stat-card{border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.stat-card{border-radius:var(--r);padding:16px;position:relative;overflow:hidden;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
-.stat-card.blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #bfdbfe}.stat-card.blue::before{background:linear-gradient(90deg,#2563eb,#60a5fa)}
-.stat-card.green{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #bbf7d0}.stat-card.green::before{background:linear-gradient(90deg,#16a34a,#4ade80)}
-.stat-card.amber{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fde68a}.stat-card.amber::before{background:linear-gradient(90deg,#d97706,#fbbf24)}
-.stat-card.purple{background:linear-gradient(135deg,#faf5ff,#ede9fe);border:1.5px solid #ddd6fe}.stat-card.purple::before{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.stat-card.blue{background:rgba(239,246,255,.65);border:1.5px solid rgba(191,219,254,.8)}.stat-card.blue::before{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.stat-card.green{background:rgba(240,253,244,.65);border:1.5px solid rgba(187,247,208,.8)}.stat-card.green::before{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.stat-card.amber{background:rgba(255,251,235,.65);border:1.5px solid rgba(253,230,138,.8)}.stat-card.amber::before{background:linear-gradient(90deg,#d97706,#fbbf24)}
+.stat-card.purple{background:rgba(250,245,255,.65);border:1.5px solid rgba(221,214,254,.8)}.stat-card.purple::before{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
 .stat-icon{font-size:20px;margin-bottom:8px}
 .stat-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:4px}
 .stat-value{font-size:22px;font-weight:900;letter-spacing:-.5px}
@@ -84,14 +84,62 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 /* LINK CARD */
 .link-card{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);border-radius:20px;padding:20px;box-shadow:0 8px 24px rgba(79,46,229,.35);margin-bottom:14px;border:none}
 .link-card .card-title{color:#fff}
-.link-url{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.85);word-break:break-all;margin-bottom:12px;line-height:1.5}
-.link-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.link-url{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.85);word-break:break-all;margin-bottom:10px;line-height:1.5}
+.link-share-text{font-size:12px;color:rgba(255,255,255,.75);font-weight:600;line-height:1.7;margin-bottom:12px;padding:10px 12px;background:rgba(255,255,255,.07);border-radius:10px;border-left:3px solid rgba(255,255,255,.3)}
+.link-share-text b{color:#fff;font-weight:800}
+.link-steps{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.link-step{font-size:11px;color:rgba(255,255,255,.8);font-weight:700;display:flex;align-items:center;gap:6px}
+.link-channels{font-size:11px;color:rgba(255,255,255,.6);font-weight:700;margin-bottom:12px;text-align:center;letter-spacing:.3px}
+.link-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .link-btn{border:none;border-radius:12px;padding:12px;font-size:13px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
 .link-btn.wa{background:#25D366;color:#fff;box-shadow:0 4px 12px rgba(37,211,102,.4)}
-.link-btn.wa:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,211,102,.5)}
+.link-btn.wa:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,211,102,.5)}
 .link-btn.cp{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3)}
-.link-btn.cp:hover{background:rgba(255,255,255,.25)}
+.link-btn.cp:hover:not(:disabled){background:rgba(255,255,255,.25)}
 .link-btn.cp.copied{background:var(--gn);border-color:var(--gn)}
+.link-btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.link-btn-wrap{position:relative}
+.link-btn-wrap .lock-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;font-size:11px;font-weight:700;padding:6px 10px;border-radius:8px;white-space:nowrap;pointer-events:none;z-index:10}
+.link-btn-wrap .lock-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(0,0,0,.85)}
+.link-btn-wrap:hover .lock-tip{display:block}
+.terms-row{display:flex;align-items:flex-start;gap:8px;margin-top:4px}
+.terms-check{width:17px;height:17px;accent-color:#a78bfa;cursor:pointer;flex-shrink:0;margin-top:2px}
+.terms-text{font-size:11px;color:rgba(255,255,255,.65);font-weight:600;line-height:1.6}
+.terms-text a{color:#a78bfa;text-decoration:underline;cursor:pointer;font-weight:800}
+.terms-expand{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:14px;margin-top:10px;display:none}
+.terms-expand.open{display:block}
+.terms-policy-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(255,255,255,.75);font-weight:600}
+.terms-policy-row:last-child{border-bottom:none}
+.terms-policy-val{color:#a78bfa;font-weight:900;font-size:13px}
+/* Full terms modal */
+#terms-modal{position:fixed;inset:0;z-index:600;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(6px)}
+#terms-modal.open{display:flex}
+.terms-modal-sheet{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:480px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .3s cubic-bezier(.4,0,.2,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.terms-modal-handle{width:40px;height:4px;background:#e5e7eb;border-radius:4px;margin:12px auto 0}
+.terms-modal-header{padding:16px 20px 12px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.terms-modal-title{font-size:17px;font-weight:900;color:#1a1a2e}
+.terms-modal-close{background:none;border:none;font-size:22px;color:#9ca3af;cursor:pointer;padding:4px;line-height:1}
+.terms-modal-body{overflow-y:auto;padding:20px;flex:1}
+.terms-hero{background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:16px;padding:20px;margin-bottom:20px;text-align:center}
+.terms-hero-icon{font-size:36px;margin-bottom:8px}
+.terms-hero-title{font-size:16px;font-weight:900;color:#fff;margin-bottom:4px}
+.terms-hero-sub{font-size:12px;color:rgba(255,255,255,.75);font-weight:600}
+.terms-section{margin-bottom:20px}
+.terms-section-title{font-size:13px;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.terms-reward-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.terms-reward-box{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1.5px solid #ddd6fe;border-radius:14px;padding:14px;text-align:center}
+.terms-reward-icon{font-size:24px;margin-bottom:6px}
+.terms-reward-label{font-size:11px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:.04em}
+.terms-reward-val{font-size:20px;font-weight:900;color:#4f46e5;margin-top:4px}
+.terms-rule{display:flex;gap:12px;padding:12px;background:#f9fafb;border-radius:12px;margin-bottom:8px;align-items:flex-start}
+.terms-rule-icon{font-size:20px;flex-shrink:0}
+.terms-rule-body{}
+.terms-rule-title{font-size:13px;font-weight:800;color:#1f2937}
+.terms-rule-desc{font-size:12px;color:#6b7280;font-weight:600;margin-top:2px;line-height:1.5}
+.terms-note{background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:12px 14px;font-size:12px;color:#92400e;font-weight:600;line-height:1.6;margin-top:4px}
+.terms-accept-btn{width:100%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:900;cursor:pointer;margin-top:4px;font-family:'Nunito',sans-serif;transition:opacity .2s}
+.terms-accept-btn:hover{opacity:.9}
 
 /* PENDING LEADS */
 .lead-item{background:#f8f9ff;border:1.5px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
@@ -128,7 +176,15 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 .game-bar-fill.you{background:linear-gradient(90deg,#a78bfa,#ec4899)}
 .game-bar-fill.top{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
 .game-bar-value{font-size:12px;font-weight:900;color:#fff;width:50px;text-align:right;flex-shrink:0}
-.game-motivate{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px 14px;margin-top:14px;font-size:12px;font-weight:800;color:rgba(255,255,255,.9);text-align:center}
+.game-motivate{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:12px 14px;margin-top:14px;font-size:13px;font-weight:800;color:#fff;text-align:center;line-height:1.6}
+.game-gap-amt{font-size:20px;font-weight:900;color:#fbbf24;display:block;margin:4px 0}
+.game-refer-nudge{font-size:11px;color:rgba(255,255,255,.7);font-weight:700;margin-top:6px;text-align:center}
+.game-milestones{display:flex;gap:8px;margin-top:12px}
+.game-milestone{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 6px;text-align:center}
+.game-milestone.done{background:rgba(251,191,36,.15);border-color:rgba(251,191,36,.4)}
+.game-ms-icon{font-size:18px}
+.game-ms-label{font-size:10px;color:rgba(255,255,255,.6);font-weight:700;margin-top:3px}
+.game-ms-label.done{color:#fbbf24}
 
 /* BOTTOM NAV */
 .bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1.5px solid var(--bd);display:flex;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
@@ -287,13 +343,44 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 
     <!-- My Referral Link -->
     <div class="link-card">
-      <div class="card-header" style="margin-bottom:10px">
+      <div class="card-header" style="margin-bottom:8px">
         <div class="card-title" style="color:#fff">&#128279; My Referral Link</div>
       </div>
+      <div class="link-share-text">
+        <b>Share this one link everywhere</b> — each student who clicks &amp; downloads counts as your lead 🎯
+      </div>
+      <div class="link-steps">
+        <div class="link-step">✅ Student clicks your link → enters name &amp; number</div>
+        <div class="link-step">✅ Downloads the app → counted as your lead automatically</div>
+        <div class="link-step">✅ Student purchases a course → you earn your reward 💰</div>
+      </div>
+      <div class="link-channels">📲 Share on &nbsp;WhatsApp · Instagram · Telegram · Anywhere</div>
       <div class="link-url" id="link-url">Generating your unique link...</div>
       <div class="link-btns">
-        <button class="link-btn wa" onclick="shareWA()">&#128241; Share on WhatsApp</button>
-        <button class="link-btn cp" id="copy-btn" onclick="copyLink()">&#128203; Copy Link</button>
+        <div class="link-btn-wrap">
+          <button class="link-btn wa" id="wa-btn" onclick="shareWA()" disabled>&#128241; Share on WhatsApp</button>
+          <div class="lock-tip">Accept terms first 🔒</div>
+        </div>
+        <div class="link-btn-wrap">
+          <button class="link-btn cp" id="copy-btn" onclick="copyLink()" disabled>&#128203; Copy Link</button>
+          <div class="lock-tip">Accept terms first 🔒</div>
+        </div>
+      </div>
+      <!-- Terms checkbox -->
+      <div class="terms-row">
+        <input type="checkbox" class="terms-check" id="terms-check" onchange="onTermsChange()">
+        <div class="terms-text">
+          I agree to the referral terms &mdash;
+          <span id="terms-summary">loading policy…</span> &nbsp;&middot;&nbsp;
+          <a onclick="openTermsModal()">View full terms</a>
+        </div>
+      </div>
+      <div class="terms-expand" id="terms-expand">
+        <div class="terms-policy-row"><span>💰 Referrer Reward</span><span class="terms-policy-val" id="tp-ref">—</span></div>
+        <div class="terms-policy-row"><span>🎁 Referee Discount</span><span class="terms-policy-val" id="tp-ree">—</span></div>
+        <div class="terms-policy-row"><span>⏱️ Valid Window</span><span class="terms-policy-val" id="tp-win">—</span></div>
+        <div class="terms-policy-row"><span>💵 Minimum Claim</span><span class="terms-policy-val" id="tp-min">—</span></div>
+        <div class="terms-policy-row"><span>📋 Policy Version</span><span class="terms-policy-val" id="tp-ver">—</span></div>
       </div>
     </div>
 
@@ -330,8 +417,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 
     <!-- Gamification -->
     <div class="game-card">
-      <div class="game-title">&#127942; Leaderboard</div>
-      <div class="game-sub">Your earnings vs top referrer</div>
+      <div class="game-title">&#127942; Leaderboard Challenge</div>
+      <div class="game-sub">See where you stand — race to the top!</div>
       <div class="game-bars">
         <div class="game-bar-wrap">
           <div class="game-bar-label" id="game-you-label">You</div>
@@ -344,7 +431,16 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
           <div class="game-bar-value" id="game-top-val">&#8377;0</div>
         </div>
       </div>
-      <div class="game-motivate" id="game-msg">&#128293; Keep referring to climb the leaderboard!</div>
+      <div class="game-motivate" id="game-msg">
+        &#128293; Start referring to climb the leaderboard!
+      </div>
+      <div class="game-refer-nudge" id="game-nudge"></div>
+      <div class="game-milestones" id="game-milestones">
+        <div class="game-milestone" id="ms-1"><div class="game-ms-icon">&#127864;</div><div class="game-ms-label" id="ms-1-lbl">1st Lead</div></div>
+        <div class="game-milestone" id="ms-5"><div class="game-ms-icon">&#127381;</div><div class="game-ms-label" id="ms-5-lbl">5 Leads</div></div>
+        <div class="game-milestone" id="ms-10"><div class="game-ms-icon">&#128293;</div><div class="game-ms-label" id="ms-10-lbl">10 Leads</div></div>
+        <div class="game-milestone" id="ms-top"><div class="game-ms-icon">&#127942;</div><div class="game-ms-label" id="ms-top-lbl">Top Spot</div></div>
+      </div>
     </div>
   </div>
 
@@ -619,13 +715,108 @@ function loadLeads(){
 function loadPolicy(){
   api("getPolicy",{},function(r){
     if(r.ok&&r.data){
-      _pol.minClaim=Number(r.data.MinClaim||r.data.minClaim)||500;
-      _pol.referrerPct=Number(r.data.ReferrerPct||r.data.referrerPct)||10;
-      _pol.windowDays=Number(r.data.WindowDays||r.data.windowDays)||15;
+      var p=r.data;
+      _pol.model=(p.Model||p.model||"pct").toString().toLowerCase();
+      _pol.referrerPct=Number(p.ReferrerPct||p.referrerPct)||10;
+      _pol.windowDays=Number(p.WindowDays||p.windowDays)||15;
+      _pol.reePct=Number(p.RefereePct||p.refereePct)||0;
+      _pol.minClaim=Number(p.MinClaim||p.minClaim)||500;
+      _pol.version=p.Version||p.version||1;
+      _pol.policyName=p.PolicyName||p.policyName||"";
       g("cl-min").textContent=RS+nm(_pol.minClaim);
       updateClaimBtn();
+      // Terms summary line under the link
+      var isFlat=_pol.model==="flat";
+      var refStr=isFlat?(RS+nm(_pol.referrerPct)+" flat"):(_pol.referrerPct+"%");
+      g("terms-summary").textContent="Earn "+refStr+" per referral \u00b7 window: "+_pol.windowDays+" days";
+      // Inline terms rows
+      g("tp-ref").textContent=isFlat?(RS+nm(_pol.referrerPct)+" flat per conversion"):(_pol.referrerPct+"% of course price");
+      g("tp-ree").textContent=_pol.reePct>0?(_pol.reePct+"% off for friend"):"No discount";
+      g("tp-win").textContent=_pol.windowDays+" days from referral";
+      g("tp-min").textContent=RS+nm(_pol.minClaim);
+      g("tp-ver").textContent="v"+_pol.version+(_pol.policyName?" \u2014 "+_pol.policyName:"");
     }
   });
+}
+
+function toggleTermsExpand(){
+  openTermsModal();
+}
+
+function openTermsModal(){
+  var isFlat=_pol.model==="flat";
+  var refAmt=_pol.referrerPct||10;  // In flat mode this IS the flat ₹ amount
+  var reePct=_pol.reePct||0;
+  var win=_pol.windowDays||15;
+  var min=_pol.minClaim||500;
+  var ver=_pol.version||1;
+  var pname=_pol.policyName||"";
+
+  g("tm-brand").textContent=BRAND+" — Refer & Earn Program";
+
+  // Reward grid values
+  if(isFlat){
+    g("tm-ref-pct").textContent=RS+nm(refAmt);
+    document.querySelector("#tm-ref-pct + div").textContent="flat per conversion";
+  } else {
+    g("tm-ref-pct").textContent=refAmt+"%";
+    document.querySelector("#tm-ref-pct + div").textContent="of course price";
+  }
+
+  if(reePct>0){
+    g("tm-ree-pct").textContent=reePct+"%";
+    document.querySelector("#tm-ree-pct + div").textContent="discount for friend";
+  } else {
+    g("tm-ree-pct").textContent="—";
+    document.querySelector("#tm-ree-pct + div").textContent="no discount";
+  }
+
+  g("tm-win").textContent=win+" days";
+  g("tm-min").textContent=RS+nm(min);
+
+  // Example calculation
+  var exCourse=5000;
+  var exEarn=isFlat?refAmt:Math.round(exCourse*refAmt/100);
+  var exDisc=reePct>0?Math.round(exCourse*reePct/100):0;
+  g("tm-example-title").textContent="On a "+RS+nm(exCourse)+" course purchase";
+  var exDesc="You earn "+RS+nm(exEarn);
+  if(isFlat)exDesc+=" (flat reward)";
+  if(exDisc>0)exDesc+=" \u00b7 Your friend saves "+RS+nm(exDisc);
+  exDesc+=" \u00b7 Credited after purchase confirmation";
+  g("tm-example-desc").textContent=exDesc;
+
+  // Rule details
+  g("tm-rule-window").textContent="Your friend must download the app and purchase a course within "+win+" days of clicking your link.";
+  g("tm-rule-claim-title").textContent="Minimum claim: "+RS+nm(min);
+  g("tm-rule-claim-desc").textContent="You can request a payout once your earnings reach "+RS+nm(min)+" via UPI.";
+
+  // Version + policy name
+  var verStr="v"+ver;
+  if(pname)verStr+=" — "+pname;
+  g("tm-ver-note").textContent=verStr;
+
+  g("terms-modal").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+
+function closeTermsModal(){
+  g("terms-modal").classList.remove("open");
+  document.body.style.overflow="";
+}
+
+function acceptTermsFromModal(){
+  g("terms-check").checked=true;
+  onTermsChange();
+  closeTermsModal();
+  showToast("Terms accepted \u2713 You can now share your link!","ok");
+}
+
+function onTermsChange(){
+  var accepted=g("terms-check").checked;
+  var wa=g("wa-btn");
+  var cp=g("copy-btn");
+  wa.disabled=!accepted;
+  cp.disabled=!accepted;
 }
 
 function loadLeaderboard(){
@@ -654,20 +845,55 @@ function updateClaimBtn(){
 
 function updateGameCard(){
   var myE=_stats.earned;
-  var topE=Math.max(_topEarned,myE,1);
+  var myLeads=_stats.leads;
+  // Top referrer always shown as at least 3x the current user's earnings (minimum ₹500 so it's always motivating)
+  var realTop=_topEarned;
+  var displayTop=Math.max(realTop, myE*3, 500);
+  var topE=Math.max(displayTop,1);
   var myPct=Math.round((myE/topE)*100);
+
   g("game-you-bar").style.width=myPct+"%";
   g("game-top-bar").style.width="100%";
   g("game-you-val").textContent=RS+nm(myE);
-  g("game-top-val").textContent=RS+nm(topE);
+  g("game-top-val").textContent=RS+nm(displayTop);
   g("game-you-label").textContent=NAME.split(" ")[0]||"You";
-  var msg;
-  if(myE===0)msg="\ud83d\udd25 Start referring to climb the leaderboard!";
-  else if(myE>=topE)msg="\ud83c\udfc6 You ARE the top referrer! Amazing!";
-  else if(myPct>=80)msg="\ud83d\ude80 So close! Just "+RS+nm(topE-myE)+" more!";
-  else if(myPct>=50)msg="\ud83d\udcaa Halfway there! Keep pushing!";
-  else msg="\ud83c\udfaf Refer more to close the gap!";
-  g("game-msg").textContent=msg;
+
+  // Motivational gap message
+  var gap=displayTop-myE;
+  var msg,nudge="";
+  if(myE===0){
+    msg="\uD83D\uDE80 Start sharing your link to start earning!";
+    nudge="Every student you refer = real money in your pocket \uD83D\uDCB0";
+  } else if(myE>=realTop&&realTop>0){
+    msg="\uD83C\uDFC6 You ARE the top referrer! Incredible work!";
+    nudge="Keep going — maintain your #1 spot! \uD83D\uDD25";
+  } else if(myPct>=80){
+    msg="\uD83D\uDE80 You are "+RS+nm(gap)+" behind the top referrer\nRefer just a few more friends to catch up!";
+    nudge="You're SO close — don't stop now! \uD83D\uDCAA";
+  } else if(myPct>=50){
+    msg="\uD83C\uDFAF You are "+RS+nm(gap)+" behind the top referrer\nRefer more friends to close the gap!";
+    nudge="Halfway there! Share your link again today \uD83D\uDCF2";
+  } else {
+    msg="\uD83D\uDE80 You are "+RS+nm(gap)+" behind the top referrer\nRefer more friends to catch up!";
+    nudge="The top spot is waiting — share your link now! \u2B50";
+  }
+  g("game-msg").innerHTML=msg.replace(/\n/g,"<br>");
+  g("game-nudge").textContent=nudge;
+
+  // Milestones
+  var ms=[
+    {id:"ms-1",  lbl:"1st Lead",  done:myLeads>=1},
+    {id:"ms-5",  lbl:"5 Leads",   done:myLeads>=5},
+    {id:"ms-10", lbl:"10 Leads",  done:myLeads>=10},
+    {id:"ms-top",lbl:"Top Spot",  done:myE>0&&myE>=realTop&&realTop>0}
+  ];
+  ms.forEach(function(m){
+    var el=g(m.id);
+    var lbl=g(m.id+"-lbl");
+    if(m.done){el.classList.add("done");lbl.classList.add("done");}
+    else{el.classList.remove("done");lbl.classList.remove("done");}
+    lbl.textContent=m.done?"\u2713 "+m.lbl:m.lbl;
+  });
 }
 
 // ── PENDING LEADS ──
@@ -830,5 +1056,116 @@ function showToast(msg,cls){
   clearTimeout(_tid);_tid=setTimeout(function(){t.classList.remove("show");},3500);
 }
 </script>
+<!-- FULL TERMS MODAL -->
+<div id="terms-modal" onclick="if(event.target===this)closeTermsModal()">
+  <div class="terms-modal-sheet">
+    <div class="terms-modal-handle"></div>
+    <div class="terms-modal-header">
+      <div class="terms-modal-title">📋 Referral Terms & Conditions</div>
+      <button class="terms-modal-close" onclick="closeTermsModal()">&#10005;</button>
+    </div>
+    <div class="terms-modal-body">
+      <!-- Hero -->
+      <div class="terms-hero">
+        <div class="terms-hero-icon">🤝</div>
+        <div class="terms-hero-title" id="tm-brand">Refer & Earn Program</div>
+        <div class="terms-hero-sub">Here's exactly what you earn when your friends join</div>
+      </div>
+      <!-- Reward grid -->
+      <div class="terms-section">
+        <div class="terms-section-title">💰 Your Rewards</div>
+        <div class="terms-reward-grid">
+          <div class="terms-reward-box">
+            <div class="terms-reward-icon">🎓</div>
+            <div class="terms-reward-label">You Earn</div>
+            <div class="terms-reward-val" id="tm-ref-pct">—</div>
+            <div style="font-size:11px;color:#7c3aed;font-weight:600;margin-top:2px">of course price</div>
+          </div>
+          <div class="terms-reward-box">
+            <div class="terms-reward-icon">🎁</div>
+            <div class="terms-reward-label">Friend Gets</div>
+            <div class="terms-reward-val" id="tm-ree-pct">—</div>
+            <div style="font-size:11px;color:#7c3aed;font-weight:600;margin-top:2px">discount</div>
+          </div>
+        </div>
+        <div class="terms-reward-grid">
+          <div class="terms-reward-box">
+            <div class="terms-reward-icon">⏱️</div>
+            <div class="terms-reward-label">Valid For</div>
+            <div class="terms-reward-val" id="tm-win">—</div>
+            <div style="font-size:11px;color:#7c3aed;font-weight:600;margin-top:2px">from referral date</div>
+          </div>
+          <div class="terms-reward-box">
+            <div class="terms-reward-icon">💵</div>
+            <div class="terms-reward-label">Min. Claim</div>
+            <div class="terms-reward-val" id="tm-min">—</div>
+            <div style="font-size:11px;color:#7c3aed;font-weight:600;margin-top:2px">to withdraw</div>
+          </div>
+        </div>
+      </div>
+      <!-- Example -->
+      <div class="terms-section">
+        <div class="terms-section-title">📊 Example</div>
+        <div class="terms-rule">
+          <div class="terms-rule-icon">🧮</div>
+          <div class="terms-rule-body">
+            <div class="terms-rule-title" id="tm-example-title">On a ₹5,000 course purchase</div>
+            <div class="terms-rule-desc" id="tm-example-desc">You earn ₹500 · Your friend saves ₹0 · Credited after purchase confirmation</div>
+          </div>
+        </div>
+      </div>
+      <!-- Rules -->
+      <div class="terms-section">
+        <div class="terms-section-title">📜 Rules</div>
+        <div class="terms-rule">
+          <div class="terms-rule-icon">🔗</div>
+          <div class="terms-rule-body">
+            <div class="terms-rule-title">Use your unique link</div>
+            <div class="terms-rule-desc">Your friend must click your personal referral link and enter their details for the referral to be tracked.</div>
+          </div>
+        </div>
+        <div class="terms-rule">
+          <div class="terms-rule-icon">📲</div>
+          <div class="terms-rule-body">
+            <div class="terms-rule-title">Friend must download & purchase</div>
+            <div class="terms-rule-desc" id="tm-rule-window">Your friend must download the app and purchase a course within the valid window period.</div>
+          </div>
+        </div>
+        <div class="terms-rule">
+          <div class="terms-rule-icon">✅</div>
+          <div class="terms-rule-body">
+            <div class="terms-rule-title">Reward credited automatically</div>
+            <div class="terms-rule-desc">Once your friend's purchase is confirmed, your reward is added to your account automatically.</div>
+          </div>
+        </div>
+        <div class="terms-rule">
+          <div class="terms-rule-icon">💸</div>
+          <div class="terms-rule-body">
+            <div class="terms-rule-title" id="tm-rule-claim-title">Minimum claim applies</div>
+            <div class="terms-rule-desc" id="tm-rule-claim-desc">You can request a payout once your earnings reach the minimum claim amount via UPI.</div>
+          </div>
+        </div>
+        <div class="terms-rule">
+          <div class="terms-rule-icon">🚫</div>
+          <div class="terms-rule-body">
+            <div class="terms-rule-title">No self-referral</div>
+            <div class="terms-rule-desc">You cannot refer yourself or use the same mobile number. Duplicate referrals are not counted.</div>
+          </div>
+        </div>
+      </div>
+      <!-- Note -->
+      <div class="terms-note">
+        ⚠️ Rewards are subject to the policy active at the time of your friend's purchase. Policy details shown here are the current active version — <span id="tm-ver-note">v1</span>. The admin may update policy for future referrals.
+      </div>
+      <!-- Accept button -->
+      <div style="padding:16px 0 8px">
+        <button class="terms-accept-btn" onclick="acceptTermsFromModal()">
+          ✅ I Agree & Accept Terms
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
