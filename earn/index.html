@@ -2,610 +2,748 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Refer & Earn</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Refer &amp; Earn</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0f0f17;--surface:#1a1a27;--surface2:#22223a;--border:#2e2e4a;
-  --text:#e8e8f0;--muted:#8888aa;--green:#22c55e;--green-bg:rgba(34,197,94,.12);
-  --blue:#3b82f6;--blue-bg:rgba(59,130,246,.12);--purple:#a855f7;--purple-bg:rgba(168,85,247,.12);
-  --amber:#f59e0b;--amber-bg:rgba(245,158,11,.12);--red:#ef4444;
-  --radius:14px;--radius-sm:8px;
+  --p1:#7c3aed;--p2:#6d28d9;--p3:#4f46e5;--pk:#ec4899;
+  --gn:#16a34a;--gni:#dcfce7;--am:#d97706;--ami:#fef3c7;
+  --bl:#2563eb;--bli:#dbeafe;--rd:#dc2626;--rdi:#fee2e2;
+  --tx:#1a1a2e;--t2:#4a4a6a;--mu:#8888aa;
+  --bg:#f0f0ff;--sf:#ffffff;--bd:#e8e8f8;
+  --r:16px;--rs:12px;--sh:0 4px 20px rgba(100,0,200,.10)
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden}
 
-/* ── Landing page (for referral links ?ref=UID) ── */
-#landing{display:none;min-height:100vh;align-items:center;justify-content:center}
-.landing-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;width:360px;text-align:center}
-.landing-logo{font-size:40px;margin-bottom:8px}
-.landing-brand{font-size:18px;font-weight:700;margin-bottom:4px}
-.landing-sub{color:var(--muted);font-size:13px;margin-bottom:24px}
-.inp{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-size:14px;outline:none;margin-bottom:10px;transition:border .2s}
-.inp:focus{border-color:var(--blue)}
-.btn-full{width:100%;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s}
-.btn-full:hover{opacity:.85}
-.landing-err{color:var(--red);font-size:12px;margin-top:6px;min-height:16px}
+/* ── LOGIN OVERLAY ── */
+#login-overlay{position:fixed;inset:0;background:linear-gradient(145deg,#4f46e5 0%,#7c3aed 50%,#ec4899 100%);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:#fff;border-radius:24px;padding:36px 32px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.login-logo{font-size:44px;text-align:center;margin-bottom:8px}
+.login-title{font-size:22px;font-weight:900;text-align:center;color:var(--tx);margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--mu);text-align:center;font-weight:700;margin-bottom:24px}
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:11px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.login-field input{width:100%;background:#f5f5ff;border:1.5px solid #e0e0ff;border-radius:var(--rs);padding:13px 16px;font-size:15px;font-family:'Nunito',sans-serif;font-weight:700;color:var(--tx);outline:none;transition:all .2s}
+.login-field input:focus{border-color:var(--p1);background:#fff;box-shadow:0 0 0 4px rgba(124,58,237,.1)}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--p1),var(--p3),var(--pk));color:#fff;border:none;border-radius:var(--rs);padding:14px;font-size:15px;font-family:'Nunito',sans-serif;font-weight:900;cursor:pointer;margin-top:8px;transition:all .2s;box-shadow:0 4px 16px rgba(124,58,237,.4);letter-spacing:.02em}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.5)}
+.login-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.login-error{font-size:12px;color:var(--rd);font-weight:800;text-align:center;margin-top:10px;min-height:18px}
+.login-hint{font-size:12px;color:var(--mu);font-weight:700;text-align:center;margin-top:12px;line-height:1.5}
+#login-step2{display:none}
 
-/* ── Login ── */
-#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;width:360px;text-align:center}
-.login-logo{font-size:40px;margin-bottom:8px}
-.login-title{font-size:20px;font-weight:700;margin-bottom:4px}
-.login-sub{color:var(--muted);font-size:13px;margin-bottom:6px}
-.login-org{color:var(--blue);font-size:12px;margin-bottom:24px}
-.tab-row{display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
-.tab-btn{flex:1;padding:10px;background:transparent;border:none;color:var(--muted);font-size:13px;cursor:pointer;transition:all .15s}
-.tab-btn.active{background:var(--blue);color:#fff;font-weight:600}
+/* ── MAIN APP ── */
+#app{display:none;max-width:480px;margin:0 auto;padding:0 0 100px}
 
-/* ── Dashboard ── */
-#app{display:none}
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.header-logo{font-weight:800;font-size:16px}
-.header-logo span{color:var(--blue)}
-.header-user{display:flex;align-items:center;gap:8px}
-.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
-.logout-btn{background:transparent;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:4px}
-.logout-btn:hover{color:var(--red)}
-.container{max-width:600px;margin:0 auto;padding:20px 16px}
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--p1) 0%,var(--p3) 60%,var(--pk) 100%);padding:24px 20px 48px;position:relative;overflow:hidden}
+.hdr::before{content:"";position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:rgba(255,255,255,.08);border-radius:50%}
+.hdr::after{content:"";position:absolute;bottom:-20px;left:-20px;width:120px;height:120px;background:rgba(255,255,255,.06);border-radius:50%}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;position:relative;z-index:1}
+.hdr-brand{font-size:16px;font-weight:900;color:rgba(255,255,255,.9);letter-spacing:-.3px}
+.hdr-av{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;cursor:pointer;border:2px solid rgba(255,255,255,.4)}
+.greet{position:relative;z-index:1}
+.greet-time{font-size:13px;color:rgba(255,255,255,.75);font-weight:700;margin-bottom:4px}
+.greet-name{font-size:26px;font-weight:900;color:#fff;letter-spacing:-.3px;margin-bottom:4px}
+.greet-tag{font-size:13px;color:rgba(255,255,255,.8);font-weight:700}
 
-/* ── Stats ── */
-.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
-.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center}
-.stat-num{font-size:22px;font-weight:700}
-.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+/* CARDS FLOAT */
+.cards-wrap{padding:0 16px;margin-top:-28px;position:relative;z-index:2}
 
-/* ── Link card ── */
-.link-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px}
-.link-card-title{font-weight:700;font-size:14px;margin-bottom:10px}
-.link-box{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
-.link-text{flex:1;font-size:12px;color:var(--muted);word-break:break-all}
-.copy-btn{background:var(--blue-bg);color:var(--blue);border:none;border-radius:6px;padding:6px 10px;font-size:12px;cursor:pointer;font-weight:600;white-space:nowrap}
-.copy-btn:active{opacity:.7}
-.wa-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;border:none;border-radius:var(--radius-sm);padding:10px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
+/* REFER & EARN CARD */
+.re-card{background:#fff;border-radius:20px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;background:linear-gradient(135deg,#fff 0%,#f8f0ff 100%);border:1.5px solid #ede0ff}
+.re-card-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.re-card-icon{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--p1),var(--pk));display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(124,58,237,.3)}
+.re-card-title{font-size:18px;font-weight:900;color:var(--tx)}
+.re-card-sub{font-size:12px;color:var(--mu);font-weight:700;margin-top:2px}
 
-/* ── Add lead ── */
-.section-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:16px}
-.section-title{font-weight:700;font-size:14px;margin-bottom:12px}
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
+.stat-card.blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #bfdbfe}.stat-card.blue::before{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.stat-card.green{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #bbf7d0}.stat-card.green::before{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.stat-card.amber{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fde68a}.stat-card.amber::before{background:linear-gradient(90deg,#d97706,#fbbf24)}
+.stat-card.purple{background:linear-gradient(135deg,#faf5ff,#ede9fe);border:1.5px solid #ddd6fe}.stat-card.purple::before{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.stat-icon{font-size:20px;margin-bottom:8px}
+.stat-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:4px}
+.stat-value{font-size:22px;font-weight:900;letter-spacing:-.5px}
+.stat-card.blue .stat-label,.stat-card.blue .stat-value{color:#1d4ed8}
+.stat-card.green .stat-label,.stat-card.green .stat-value{color:#15803d}
+.stat-card.amber .stat-label,.stat-card.amber .stat-value{color:#b45309}
+.stat-card.purple .stat-label,.stat-card.purple .stat-value{color:#6d28d9}
 
-/* ── Leads list ── */
-.lead-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-.lead-item:last-child{border-bottom:none}
-.lead-name{font-weight:600;font-size:13px}
-.lead-mob{color:var(--muted);font-size:12px}
-.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-green{background:var(--green-bg);color:var(--green)}
-.badge-blue{background:var(--blue-bg);color:var(--blue)}
-.badge-amber{background:var(--amber-bg);color:var(--amber)}
-.badge-muted{background:var(--surface2);color:var(--muted)}
-.badge-red{background:rgba(239,68,68,.12);color:var(--red)}
+/* GENERIC CARD */
+.card{background:#fff;border-radius:20px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;border:1.5px solid var(--bd)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:15px;font-weight:900;color:var(--tx);display:flex;align-items:center;gap:8px}
+.card-badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;background:var(--bli);color:var(--bl)}
 
-/* ── Payouts ── */
-.claim-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-.claim-row:last-child{border-bottom:none}
+/* LINK CARD */
+.link-card{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);border-radius:20px;padding:20px;box-shadow:0 8px 24px rgba(79,46,229,.35);margin-bottom:14px;border:none}
+.link-card .card-title{color:#fff}
+.link-url{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.85);word-break:break-all;margin-bottom:12px;line-height:1.5}
+.link-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.link-btn{border:none;border-radius:12px;padding:12px;font-size:13px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.link-btn.wa{background:#25D366;color:#fff;box-shadow:0 4px 12px rgba(37,211,102,.4)}
+.link-btn.wa:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,211,102,.5)}
+.link-btn.cp{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3)}
+.link-btn.cp:hover{background:rgba(255,255,255,.25)}
+.link-btn.cp.copied{background:var(--gn);border-color:var(--gn)}
 
-/* ── Toast ── */
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;max-width:90vw;text-align:center}
-#toast.show{opacity:1}
+/* PENDING LEADS */
+.lead-item{background:#f8f9ff;border:1.5px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.lead-item:last-child{margin-bottom:0}
+.lead-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--pk));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0}
+.lead-info{flex:1;min-width:0}
+.lead-name{font-size:13px;font-weight:800;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lead-date{font-size:11px;color:var(--mu);font-weight:700;margin-top:2px}
+.lead-status{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;margin-top:4px}
+.lead-status.referred{background:var(--bli);color:var(--bl)}
+.lead-status.downloaded{background:var(--ami);color:var(--am)}
+.reshare-btn{background:linear-gradient(135deg,var(--p1),var(--pk));color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(124,58,237,.3);transition:all .2s;flex-shrink:0}
+.reshare-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,.4)}
 
-/* bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:100}
-.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--muted);font-size:10px;cursor:pointer;padding:4px;transition:color .15s}
-.bnav-btn.active{color:var(--blue)}
-.bnav-btn svg{width:20px;height:20px}
-.content-pad{padding-bottom:80px}
+/* CLAIM CARD */
+.claim-card{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:20px;padding:20px;box-shadow:0 4px 16px rgba(22,163,74,.12);margin-bottom:14px}
+.claim-amounts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.claim-amt-box{background:#fff;border-radius:12px;padding:14px;text-align:center;border:1.5px solid #bbf7d0}
+.claim-amt-label{font-size:10px;font-weight:800;color:#15803d;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.claim-amt-value{font-size:22px;font-weight:900;color:#15803d}
+.claim-btn{width:100%;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-family:'Nunito',sans-serif;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(22,163,74,.35);transition:all .2s}
+.claim-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(22,163,74,.45)}
+.claim-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
+/* GAMIFICATION */
+.game-card{background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:20px;box-shadow:0 8px 24px rgba(79,46,229,.3);margin-bottom:14px;border:none}
+.game-title{font-size:15px;font-weight:900;color:#fff;margin-bottom:4px}
+.game-sub{font-size:12px;color:rgba(255,255,255,.65);font-weight:700;margin-bottom:16px}
+.game-bars{display:flex;flex-direction:column;gap:12px}
+.game-bar-wrap{display:flex;align-items:center;gap:10px}
+.game-bar-label{font-size:12px;font-weight:800;color:rgba(255,255,255,.8);width:70px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game-bar-track{flex:1;height:10px;background:rgba(255,255,255,.12);border-radius:20px;overflow:hidden}
+.game-bar-fill{height:100%;border-radius:20px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.game-bar-fill.you{background:linear-gradient(90deg,#a78bfa,#ec4899)}
+.game-bar-fill.top{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+.game-bar-value{font-size:12px;font-weight:900;color:#fff;width:50px;text-align:right;flex-shrink:0}
+.game-motivate{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:10px 14px;margin-top:14px;font-size:12px;font-weight:800;color:rgba(255,255,255,.9);text-align:center}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1.5px solid var(--bd);display:flex;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 0 16px;border:none;background:transparent;color:var(--mu);font-size:10px;font-family:'Nunito',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .2s}
+.bnav-btn svg{width:22px;height:22px}
+.bnav-btn.on{color:var(--p1)}
+.bnav-btn.on svg{stroke:var(--p1)}
+
+/* LEADS TAB */
+#tab-leads{display:none;padding:0 16px 20px}
+.leads-filter{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.lf-btn{flex-shrink:0;padding:7px 14px;border-radius:20px;border:1.5px solid var(--bd);background:#fff;color:var(--mu);font-size:12px;font-weight:800;cursor:pointer;transition:all .15s;font-family:'Nunito',sans-serif;white-space:nowrap}
+.lf-btn.on{border-color:var(--p1);background:#f5f0ff;color:var(--p1)}
+.lead-row{background:#fff;border:1.5px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:10px;transition:all .2s}
+.lead-row:hover{border-color:var(--p1);box-shadow:0 4px 12px rgba(124,58,237,.08)}
+.lead-row-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.lead-row-name{font-size:14px;font-weight:900;color:var(--tx)}
+.lead-row-mobile{font-size:12px;color:var(--mu);font-weight:700;margin-top:2px}
+.lead-row-meta{display:flex;gap:8px;flex-wrap:wrap}
+.lead-meta-tag{font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:4px}
+.lead-meta-tag::before{content:"";width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.tag-referred{background:var(--bli);color:var(--bl)}.tag-referred::before{background:var(--bl)}
+.tag-downloaded{background:var(--ami);color:var(--am)}.tag-downloaded::before{background:var(--am)}
+.tag-converted{background:var(--gni);color:var(--gn)}.tag-converted::before{background:var(--gn)}
+.tag-expired{background:var(--rdi);color:var(--rd)}.tag-expired::before{background:var(--rd)}
+.lead-row-dates{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.lead-date-box{background:#f8f9ff;border-radius:8px;padding:8px 10px}
+.lead-date-label{font-size:9px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.lead-date-val{font-size:12px;font-weight:800;color:var(--tx)}
+.lead-reward{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:8px;padding:8px 10px;margin-top:8px;display:flex;align-items:center;justify-content:space-between}
+.lead-reward-label{font-size:11px;font-weight:800;color:#15803d}
+.lead-reward-val{font-size:14px;font-weight:900;color:#15803d}
+.empty-state{text-align:center;padding:48px 20px;color:var(--mu)}
+.empty-state .emoji{font-size:48px;margin-bottom:12px}
+.empty-state p{font-size:14px;font-weight:700}
+
+/* UPI MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.mo.open{display:flex}
+.mo-box{background:#fff;border-radius:24px 24px 0 0;padding:28px 24px;width:100%;max-width:480px;box-shadow:0 -8px 40px rgba(0,0,0,.2)}
+.mo-title{font-size:18px;font-weight:900;color:var(--tx);margin-bottom:6px}
+.mo-sub{font-size:13px;color:var(--mu);font-weight:700;margin-bottom:20px}
+.mo-input{width:100%;background:#f5f5ff;border:1.5px solid var(--bd);border-radius:12px;padding:13px 16px;font-size:15px;font-family:'Nunito',sans-serif;font-weight:700;color:var(--tx);outline:none;margin-bottom:10px;transition:all .2s}
+.mo-input:focus{border-color:var(--p1);background:#fff;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.mo-btn{width:100%;background:linear-gradient(135deg,var(--p1),var(--pk));color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-family:'Nunito',sans-serif;font-weight:900;cursor:pointer;box-shadow:0 4px 16px rgba(124,58,237,.35);transition:all .2s}
+.mo-btn:hover{transform:translateY(-1px)}
+.mo-cancel{width:100%;background:transparent;border:1.5px solid var(--bd);border-radius:12px;padding:13px;font-size:14px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;color:var(--mu);margin-top:8px;transition:all .2s}
+.mo-cancel:hover{border-color:var(--rd);color:var(--rd)}
+
+/* TOAST */
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;border-radius:12px;padding:12px 24px;font-size:13px;font-weight:800;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+#toast.ok{background:linear-gradient(135deg,#16a34a,#22c55e)}
+#toast.err{background:linear-gradient(135deg,#dc2626,#f87171)}
+
+.spin{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.empty{text-align:center;color:var(--muted);padding:30px 0;font-size:13px}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--gn);display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 </style>
 </head>
 <body>
 
-<!-- Landing page (shown when ?ref=UID in URL) -->
-<div id="landing" style="display:flex">
-  <div class="landing-card">
-    <div class="landing-logo">🎓</div>
-    <div class="landing-brand" id="land-brand">Loading…</div>
-    <div class="landing-sub" id="land-sub">You've been invited! Enter your details to get started</div>
-    <input class="inp" id="land-name"   placeholder="Your full name" autocomplete="name">
-    <input class="inp" id="land-mobile" placeholder="Your mobile number" type="tel" maxlength="10">
-    <button class="btn-full" id="land-btn" onclick="submitLead()">Continue to App →</button>
-    <div class="landing-err" id="land-err"></div>
+<!-- LOGIN -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">&#127891;</div>
+    <div class="login-title" id="login-title">Refer &amp; Earn</div>
+    <div class="login-sub" id="login-sub">Enter your mobile number to continue</div>
+
+    <!-- Step 1: Mobile -->
+    <div id="login-step1">
+      <div class="login-field">
+        <label>Mobile Number</label>
+        <input type="tel" id="login-mobile" placeholder="Enter 10-digit mobile" maxlength="10" inputmode="numeric" onkeydown="if(event.key==='Enter')loginNext()">
+      </div>
+      <button class="login-btn" id="login-btn1" onclick="loginNext()">Continue &#8594;</button>
+    </div>
+
+    <!-- Step 2: PIN (new user: name + set PIN; returning: enter PIN) -->
+    <div id="login-step2">
+      <div class="login-field" id="name-field" style="display:none">
+        <label>Your Name</label>
+        <input type="text" id="login-name" placeholder="Enter your full name" onkeydown="if(event.key==='Enter')loginSubmit()">
+      </div>
+      <div class="login-field">
+        <label id="pin-label">Login PIN</label>
+        <input type="password" id="login-pin" placeholder="4-digit PIN" maxlength="4" inputmode="numeric" onkeydown="if(event.key==='Enter')loginSubmit()">
+      </div>
+      <button class="login-btn" id="login-btn2" onclick="loginSubmit()">Sign In &#8594;</button>
+      <div style="text-align:center;margin-top:12px"><button onclick="backToStep1()" style="background:none;border:none;color:var(--mu);font-size:12px;font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer">&#8592; Change number</button></div>
+    </div>
+
+    <div class="login-error" id="login-error"></div>
+    <div class="login-hint" id="login-hint">Your data is safe and private</div>
   </div>
 </div>
 
-<!-- Login -->
-<div id="login-screen" style="display:none">
-  <div class="login-card">
-    <div class="login-logo">🎓</div>
-    <div class="login-title" id="login-brand">Refer & Earn</div>
-    <div class="login-sub">Sign in to your referrer dashboard</div>
-    <div class="login-org" id="login-org"></div>
-    <div class="tab-row">
-      <button class="tab-btn active" id="tab-mobile" onclick="switchTab('mobile')">Mobile</button>
-      <button class="tab-btn" id="tab-pin" onclick="switchTab('pin')">PIN</button>
-    </div>
-    <div id="form-mobile">
-      <input class="inp" id="m-mobile" placeholder="Registered mobile number" type="tel" maxlength="10" onkeydown="if(event.key==='Enter')loginMobile()">
-      <button class="btn-full" onclick="loginMobile()">Send PIN / Verify</button>
-    </div>
-    <div id="form-pin" style="display:none">
-      <input class="inp" id="p-mobile" placeholder="Mobile number" type="tel" maxlength="10">
-      <input class="inp" id="p-pin"    placeholder="4-digit PIN" type="password" maxlength="4" onkeydown="if(event.key==='Enter')loginPin()">
-      <button class="btn-full" onclick="loginPin()">Sign In</button>
-    </div>
-    <div class="landing-err" id="login-err"></div>
-  </div>
-</div>
-
-<!-- Dashboard -->
+<!-- APP -->
 <div id="app">
-  <div class="header">
-    <div class="header-logo">refer<span>&earn</span></div>
-    <div class="header-user">
-      <div class="avatar" id="hdr-avatar" style="background:var(--blue-bg);color:var(--blue)">?</div>
-      <div>
-        <div style="font-size:13px;font-weight:600" id="hdr-name">—</div>
-        <div style="font-size:11px;color:var(--muted)" id="hdr-uid">—</div>
-      </div>
-      <button class="logout-btn" onclick="logout()">Sign out</button>
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="hdr-brand" id="hdr-brand">refer&amp;earn</div>
+      <div class="hdr-av" id="hdr-av" onclick="showToast('Logged in as '+NAME,'ok')">R</div>
+    </div>
+    <div class="greet">
+      <div class="greet-time" id="greet-time">Good morning</div>
+      <div class="greet-name" id="greet-name">&#128075; Hey there!</div>
+      <div class="greet-tag">&#127775; Welcome to your Refer &amp; Earn dashboard</div>
     </div>
   </div>
 
-  <div class="container content-pad">
-    <!-- Tab: Dashboard -->
-    <div id="tab-dash">
-      <div class="stat-row" style="margin-top:16px">
-        <div class="stat-box"><div class="stat-num" id="s-referred">—</div><div class="stat-lbl">Referred</div></div>
-        <div class="stat-box"><div class="stat-num" id="s-converted">—</div><div class="stat-lbl">Converted</div></div>
-        <div class="stat-box"><div class="stat-num" id="s-earned">—</div><div class="stat-lbl">Earned ₹</div></div>
-      </div>
-
-      <div class="link-card">
-        <div class="link-card-title">Your Referral Link</div>
-        <div class="link-box">
-          <div class="link-text" id="ref-link">—</div>
-          <button class="copy-btn" onclick="copyLink()">Copy</button>
+  <!-- DASHBOARD TAB -->
+  <div id="tab-dash" class="cards-wrap">
+    <!-- Refer & Earn intro card -->
+    <div class="re-card">
+      <div class="re-card-top">
+        <div class="re-card-icon">&#128176;</div>
+        <div>
+          <div class="re-card-title">Refer &amp; Earn &#127775;</div>
+          <div class="re-card-sub">Share your link, earn real money!</div>
         </div>
-        <button class="wa-btn" onclick="shareWA()">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.558 4.115 1.532 5.836L.057 23.929l6.266-1.44A11.944 11.944 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.967 0-3.796-.527-5.374-1.443l-.385-.228-3.993.917.946-3.885-.25-.398A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-          Share on WhatsApp
-        </button>
       </div>
 
-      <div class="section-card">
-        <div class="section-title">Add a Referral</div>
-        <input class="inp" id="lead-name" placeholder="Friend's full name">
-        <input class="inp" id="lead-mobile" placeholder="Friend's mobile" type="tel" maxlength="10">
-        <button class="btn-full" onclick="addLead()" id="add-lead-btn">Add Referral</button>
+      <!-- 4 Stat cards -->
+      <div class="stat-grid">
+        <div class="stat-card blue"><div class="stat-icon">&#128101;</div><div class="stat-label">Total Leads</div><div class="stat-value" id="st-leads">-</div></div>
+        <div class="stat-card amber"><div class="stat-icon">&#128229;</div><div class="stat-label">Downloaded</div><div class="stat-value" id="st-dl">-</div></div>
+        <div class="stat-card purple"><div class="stat-icon">&#127919;</div><div class="stat-label">Converted</div><div class="stat-value" id="st-conv">-</div></div>
+        <div class="stat-card green"><div class="stat-icon">&#128176;</div><div class="stat-label">Earned</div><div class="stat-value" id="st-earn">-</div></div>
       </div>
     </div>
 
-    <!-- Tab: Leads -->
-    <div id="tab-leads" style="display:none">
-      <div style="margin-top:16px;margin-bottom:12px;font-weight:700;font-size:15px">My Referrals</div>
-      <div id="leads-list"></div>
+    <!-- My Referral Link -->
+    <div class="link-card">
+      <div class="card-header" style="margin-bottom:10px">
+        <div class="card-title" style="color:#fff">&#128279; My Referral Link</div>
+      </div>
+      <div class="link-url" id="link-url">Generating your unique link...</div>
+      <div class="link-btns">
+        <button class="link-btn wa" onclick="shareWA()">&#128241; Share on WhatsApp</button>
+        <button class="link-btn cp" id="copy-btn" onclick="copyLink()">&#128203; Copy Link</button>
+      </div>
     </div>
 
-    <!-- Tab: Payouts -->
-    <div id="tab-payouts" style="display:none">
-      <div style="margin-top:16px;margin-bottom:12px;font-weight:700;font-size:15px">Payouts</div>
-      <div class="section-card" id="claim-section">
-        <div class="section-title">Claim Earnings</div>
-        <div style="margin-bottom:10px;font-size:13px">Available: <strong id="claimable-amt">₹0</strong> · Min: <strong id="min-claim">₹500</strong></div>
-        <input class="inp" id="claim-amt" type="number" placeholder="Amount to claim">
-        <input class="inp" id="claim-upi" placeholder="UPI ID (e.g. name@upi)">
-        <button class="btn-full" onclick="claimPayout()">Request Payout</button>
+    <!-- Pending Leads -->
+    <div class="card" id="pending-card">
+      <div class="card-header">
+        <div class="card-title">&#9203; Pending Leads</div>
+        <div class="card-badge" id="pending-badge">0</div>
       </div>
-      <div style="font-weight:600;font-size:13px;margin-bottom:8px;margin-top:4px">History</div>
-      <div id="payout-list"></div>
+      <div id="pending-list"><div class="empty-state"><div class="emoji">&#127775;</div><p>No pending leads yet.<br>Share your link to get started!</p></div></div>
     </div>
 
-    <!-- Tab: PIN -->
-    <div id="tab-pin-mgmt" style="display:none">
-      <div style="margin-top:16px" class="section-card">
-        <div class="section-title">Set / Change PIN</div>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Your 4-digit PIN lets you sign in quickly next time.</p>
-        <input class="inp" id="new-pin" type="password" maxlength="4" placeholder="New 4-digit PIN">
-        <input class="inp" id="new-pin2" type="password" maxlength="4" placeholder="Confirm PIN">
-        <button class="btn-full" onclick="savePin()">Save PIN</button>
+    <!-- Claim Now -->
+    <div class="claim-card">
+      <div class="card-header" style="margin-bottom:12px">
+        <div class="card-title" style="color:#15803d">&#128184; Claim Now</div>
+        <div class="pulse-dot"></div>
       </div>
+      <div class="claim-amounts">
+        <div class="claim-amt-box">
+          <div class="claim-amt-label">Available</div>
+          <div class="claim-amt-value" id="cl-avail">&#8377;0</div>
+        </div>
+        <div class="claim-amt-box">
+          <div class="claim-amt-label">Minimum</div>
+          <div class="claim-amt-value" id="cl-min">&#8377;500</div>
+        </div>
+      </div>
+      <button class="claim-btn" id="claim-btn" onclick="openClaimModal()" disabled>
+        &#128176; Claim Earnings
+      </button>
+      <div style="font-size:11px;color:#15803d;font-weight:700;text-align:center;margin-top:8px" id="claim-note">Earn more to unlock claim</div>
+    </div>
+
+    <!-- Gamification -->
+    <div class="game-card">
+      <div class="game-title">&#127942; Leaderboard</div>
+      <div class="game-sub">Your earnings vs top referrer</div>
+      <div class="game-bars">
+        <div class="game-bar-wrap">
+          <div class="game-bar-label" id="game-you-label">You</div>
+          <div class="game-bar-track"><div class="game-bar-fill you" id="game-you-bar" style="width:0%"></div></div>
+          <div class="game-bar-value" id="game-you-val">&#8377;0</div>
+        </div>
+        <div class="game-bar-wrap">
+          <div class="game-bar-label">&#127942; Top</div>
+          <div class="game-bar-track"><div class="game-bar-fill top" id="game-top-bar" style="width:100%"></div></div>
+          <div class="game-bar-value" id="game-top-val">&#8377;0</div>
+        </div>
+      </div>
+      <div class="game-motivate" id="game-msg">&#128293; Keep referring to climb the leaderboard!</div>
     </div>
   </div>
 
-  <!-- Bottom nav -->
-  <nav class="bottom-nav">
-    <button class="bnav-btn active" id="bn-dash" onclick="switchDash('dash')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </button>
-    <button class="bnav-btn" id="bn-leads" onclick="switchDash('leads')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Leads
-    </button>
-    <button class="bnav-btn" id="bn-payouts" onclick="switchDash('payouts')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      Payouts
-    </button>
-    <button class="bnav-btn" id="bn-pin-mgmt" onclick="switchDash('pin-mgmt')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      PIN
-    </button>
-  </nav>
+  <!-- LEADS TAB -->
+  <div id="tab-leads">
+    <div style="padding:16px 0 12px;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:18px;font-weight:900;color:var(--tx)">&#128203; My Leads</div>
+      <div style="font-size:12px;color:var(--mu);font-weight:700" id="leads-count"></div>
+    </div>
+    <div class="leads-filter">
+      <button class="lf-btn on" onclick="setLeadFilter('all',this)">All</button>
+      <button class="lf-btn" onclick="setLeadFilter('referred',this)">Referred</button>
+      <button class="lf-btn" onclick="setLeadFilter('downloaded',this)">Downloaded</button>
+      <button class="lf-btn" onclick="setLeadFilter('converted',this)">Converted</button>
+    </div>
+    <div id="leads-list"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav" id="bnav" style="display:none">
+  <button class="bnav-btn on" id="nav-dash" onclick="switchTab('dash')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </button>
+  <button class="bnav-btn" id="nav-leads" onclick="switchTab('leads')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+    My Leads
+  </button>
+</div>
+
+<!-- CLAIM MODAL -->
+<div class="mo" id="claim-modal" onclick="if(event.target.id==='claim-modal')closeClaimModal()">
+  <div class="mo-box">
+    <div class="mo-title">&#128184; Claim Your Earnings</div>
+    <div class="mo-sub">Enter your UPI ID to receive payment</div>
+    <input class="mo-input" type="text" id="upi-input" placeholder="yourname@upi or phone@upi">
+    <div style="font-size:12px;color:var(--mu);font-weight:700;margin-bottom:16px;text-align:center" id="claim-amount-display"></div>
+    <button class="mo-btn" id="claim-submit-btn" onclick="submitClaim()">&#9989; Submit Claim</button>
+    <button class="mo-cancel" onclick="closeClaimModal()">Cancel</button>
+  </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-var MASTER_URL = 'https://script.google.com/macros/s/AKfycbz8AUqmXYOnCqv5cmoLssTnJP_hwChHg8fYuj1l5BSJDgAxag7jFRQcfMJzD6sE6CZc/exec';
-var _org = '', _sheetId = '', _brand = '', _appLink = '', _policy = null;
-var _uid = '', _mobile = '', _referrer = null, _myLeads = [], _myPayouts = [];
+var MU="https://script.google.com/macros/s/AKfycbz8AUqmXYOnCqv5cmoLssTnJP_hwChHg8fYuj1l5BSJDgAxag7jFRQcfMJzD6sE6CZc/exec";
+var RS="\u20B9";
+var ORG="",SID="",BRAND="",APP_ID="";
+var UID="",MOBILE="",NAME="",PIN="";
+var _leads=[],_leadFilter="all";
+var _pol={referrerPct:10,windowDays:15,minClaim:500};
+var _stats={leads:0,downloaded:0,converted:0,earned:0};
+var _topEarned=0;
+var _myLink="";
 
-// ── Boot ─────────────────────────────────────────────────────
-window.onload = function() {
-  var params = new URLSearchParams(location.search);
-  _org = (params.get('org') || '').trim().toUpperCase();
-  var ref = params.get('ref') || '';
-
-  if (!_org) {
-    document.getElementById('landing').innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted)">Error: No ?org= in URL</div>';
-    return;
-  }
-
-  loadConfig(function() {
-    if (ref) {
-      // Landing page for referral link
-      showLanding(ref);
-    } else {
-      // Login
-      showLoginScreen();
-    }
-  });
+window.onload=function(){
+  ORG=(new URLSearchParams(location.search).get("org")||"").trim().toUpperCase();
+  if(!ORG){g("login-error").textContent="Error: No ?org= in URL";return;}
+  jp(MU+"?action=getClient&org="+ORG,function(r){
+    if(!r.ok){g("login-error").textContent="Error: "+(r.error||"Not found");return;}
+    var c=r.data;
+    SID=(c.SheetID||"").trim();
+    BRAND=(c.Brand||ORG).trim();
+    APP_ID=(c.AppID||"").trim();
+    g("hdr-brand").textContent=BRAND.toLowerCase();
+    g("login-title").textContent=BRAND+" - Refer & Earn";
+    // Try auto-login from sessionStorage
+    try{
+      var sm=sessionStorage.getItem("re_m_"+ORG);
+      var su=sessionStorage.getItem("re_u_"+ORG);
+      var sn=sessionStorage.getItem("re_n_"+ORG);
+      if(sm&&su&&sn){MOBILE=sm;UID=su;NAME=sn;loginSuccess();}
+    }catch(e){}
+  },function(){g("login-error").textContent="Network error. Retry.";});
 };
 
-function loadConfig(cb) {
-  jsonp(MASTER_URL + '?action=getClient&org=' + _org, function(res) {
-    if (res.ok) {
-      var c = res.data;
-      _sheetId = (c.SheetID || '').toString().trim();
-      _brand   = (c.Brand   || _org).toString();
-      _appLink = c.AppLink || c.AppURL || '';
-    }
-    cb();
-  }, function() { cb(); });
-}
-
-// ── Landing page ─────────────────────────────────────────────
-var _refUID = '';
-function showLanding(refUID) {
-  _refUID = refUID;
-  document.getElementById('landing').style.display = 'flex';
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('land-brand').textContent = _brand || 'Refer & Earn';
-  document.getElementById('land-sub').textContent   = 'You\'ve been invited to ' + _brand + '! Enter your details';
-}
-
-function submitLead() {
-  var name   = document.getElementById('land-name').value.trim();
-  var mobile = document.getElementById('land-mobile').value.trim();
-  var err    = document.getElementById('land-err');
-  err.textContent = '';
-  if (!name || name.length < 2)            { err.textContent = 'Enter your full name'; return; }
-  if (!mobile || mobile.replace(/\D/g,'').length < 10) { err.textContent = 'Enter a valid 10-digit mobile'; return; }
-
-  var btn = document.getElementById('land-btn');
-  btn.textContent = '…'; btn.disabled = true;
-
-  api('addLead', {
-    referrerUID: _refUID,
-    leadName:    name,
-    leadMobile:  mobile.replace(/\D/g,'').slice(-10)
-  }, function(res) {
-    btn.textContent = 'Continue to App →'; btn.disabled = false;
-    if (res.ok || (res.error && res.error.indexOf('already') >= 0)) {
-      // Redirect to Play Store
-      var dest = _appLink || 'https://play.google.com';
-      if (_refUID) dest += (dest.indexOf('?') >= 0 ? '&' : '?') + 'referrer=ref_' + _refUID;
-      location.href = dest;
+// ── LOGIN FLOW ──
+function loginNext(){
+  var mob=g("login-mobile").value.trim();
+  if(!/^\d{10}$/.test(mob)){setLE("Enter a valid 10-digit mobile number");return;}
+  MOBILE=mob;
+  var btn=g("login-btn1");btn.disabled=true;btn.textContent="Checking...";setLE("");
+  // Check if user exists
+  api("getMobileUser",{mobile:mob},function(r){
+    btn.disabled=false;btn.textContent="Continue \u2192";
+    if(r.ok&&r.data&&r.data.exists){
+      // Returning user - ask PIN only
+      g("login-step1").style.display="none";
+      g("login-step2").style.display="block";
+      g("name-field").style.display="none";
+      g("pin-label").textContent="Enter your 4-digit Login PIN";
+      g("login-sub").textContent="Welcome back! Enter your PIN to continue.";
+      g("login-pin").focus();
     } else {
-      err.textContent = res.error || 'Something went wrong';
+      // New user - ask name + set PIN
+      g("login-step1").style.display="none";
+      g("login-step2").style.display="block";
+      g("name-field").style.display="block";
+      g("pin-label").textContent="Set a 4-digit Login PIN";
+      g("login-sub").textContent="New here! Register to start earning.";
+      g("login-name").focus();
     }
-  });
+  },function(){btn.disabled=false;btn.textContent="Continue \u2192";setLE("Network error. Retry.");});
 }
 
-// ── Login ─────────────────────────────────────────────────────
-var _loginTab = 'mobile';
-function showLoginScreen() {
-  document.getElementById('landing').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-brand').textContent = _brand + ' — Refer & Earn';
-  document.getElementById('login-org').textContent   = _org;
-  // Check saved session
-  try {
-    var saved = JSON.parse(sessionStorage.getItem('rea_ref_' + _org) || 'null');
-    if (saved && saved.uid && saved.mobile) {
-      _uid = saved.uid; _mobile = saved.mobile;
-      loadDashboard();
-      return;
-    }
-  } catch(e) {}
+function loginSubmit(){
+  var pin=g("login-pin").value.trim();
+  var nameEl=g("login-name");
+  var isNew=nameEl.style.display!=="none";
+  if(isNew){
+    var nm=nameEl.value.trim();
+    if(!nm){setLE("Enter your name");return;}
+    if(!/^\d{4}$/.test(pin)){setLE("PIN must be exactly 4 digits");return;}
+    var btn=g("login-btn2");btn.disabled=true;btn.textContent="Registering...";setLE("");
+    api("registerReferrer",{name:nm,mobile:MOBILE,pin:pin},function(r){
+      btn.disabled=false;btn.textContent="Sign In \u2192";
+      if(r.ok){UID=r.data.uid;NAME=nm;PIN=pin;saveSession();loginSuccess();}
+      else setLE(r.error||"Registration failed");
+    },function(){btn.disabled=false;btn.textContent="Sign In \u2192";setLE("Network error. Retry.");});
+  } else {
+    if(!/^\d{4}$/.test(pin)){setLE("Enter your 4-digit PIN");return;}
+    var btn=g("login-btn2");btn.disabled=true;btn.textContent="Signing in...";setLE("");
+    api("verifyPin",{mobile:MOBILE,pin:pin},function(r){
+      btn.disabled=false;btn.textContent="Sign In \u2192";
+      if(r.ok&&r.data&&r.data.valid){
+        UID=r.data.uid;NAME=r.data.name||MOBILE;PIN=pin;saveSession();loginSuccess();
+      } else {
+        setLE("Login Pin is incorrect");
+        g("login-pin").value="";g("login-pin").focus();
+      }
+    },function(){btn.disabled=false;btn.textContent="Sign In \u2192";setLE("Network error. Retry.");});
+  }
 }
 
-function switchTab(t) {
-  _loginTab = t;
-  document.getElementById('form-mobile').style.display  = t === 'mobile' ? 'block' : 'none';
-  document.getElementById('form-pin').style.display     = t === 'pin'    ? 'block' : 'none';
-  document.getElementById('tab-mobile').classList.toggle('active', t === 'mobile');
-  document.getElementById('tab-pin').classList.toggle('active', t === 'pin');
+function backToStep1(){
+  g("login-step2").style.display="none";
+  g("login-step1").style.display="block";
+  g("login-sub").textContent="Enter your mobile number to continue";
+  setLE("");MOBILE="";
 }
 
-function loginMobile() {
-  var mobile = document.getElementById('m-mobile').value.replace(/\D/g,'').slice(-10);
-  var err = document.getElementById('login-err');
-  if (mobile.length < 10) { err.textContent = 'Enter 10-digit mobile'; return; }
-  err.textContent = 'Verifying…';
-  api('getReferrer', { mobile: mobile }, function(res) {
-    if (res.ok) {
-      _uid    = res.data.UID;
-      _mobile = mobile;
-      try { sessionStorage.setItem('rea_ref_' + _org, JSON.stringify({ uid: _uid, mobile: _mobile })); } catch(e) {}
-      err.textContent = '';
-      loadDashboard();
-    } else {
-      err.textContent = 'Not registered. Please contact your tutor.';
-    }
-  });
+function saveSession(){
+  try{
+    sessionStorage.setItem("re_m_"+ORG,MOBILE);
+    sessionStorage.setItem("re_u_"+ORG,UID);
+    sessionStorage.setItem("re_n_"+ORG,NAME);
+  }catch(e){}
 }
 
-function loginPin() {
-  var mobile = document.getElementById('p-mobile').value.replace(/\D/g,'').slice(-10);
-  var pin    = document.getElementById('p-pin').value.trim();
-  var err    = document.getElementById('login-err');
-  if (mobile.length < 10 || pin.length !== 4) { err.textContent = 'Enter mobile and 4-digit PIN'; return; }
-  err.textContent = 'Verifying…';
-  api('getReferrer', { mobile: mobile }, function(res) {
-    if (!res.ok) { err.textContent = 'Mobile not registered'; return; }
-    var storedPin = (res.data.PIN || '').toString().trim();
-    if (!storedPin) { err.textContent = 'No PIN set. Use Mobile tab to sign in first.'; return; }
-    if (pin === storedPin) {
-      _uid    = res.data.UID;
-      _mobile = mobile;
-      try { sessionStorage.setItem('rea_ref_' + _org, JSON.stringify({ uid: _uid, mobile: _mobile })); } catch(e) {}
-      err.textContent = '';
-      loadDashboard();
-    } else {
-      err.textContent = 'Incorrect PIN';
-    }
-  });
+function loginSuccess(){
+  g("login-overlay").style.display="none";
+  g("app").style.display="block";
+  g("bnav").style.display="flex";
+  // Greet
+  var h=new Date().getHours();
+  var gr=h<12?"Good morning \u2600\ufe0f":h<17?"Good afternoon \u26c5":"Good evening \ud83c\udf19";
+  g("greet-time").textContent=gr;
+  g("greet-name").textContent="\ud83d\udc4b Hey, "+NAME.split(" ")[0]+"!";
+  g("hdr-av").textContent=(NAME||"R").split(" ").map(function(w){return w[0];}).join("").slice(0,2).toUpperCase();
+  // Build link
+  var base="https://classplussupport-bot.github.io/refer-earn/lead/?org="+ORG+"&ref="+UID;
+  _myLink=base;
+  g("link-url").textContent=base;
+  // Load data
+  loadDash();loadLeads();loadPolicy();loadLeaderboard();
 }
 
-function logout() {
-  try { sessionStorage.removeItem('rea_ref_' + _org); } catch(e) {}
-  location.reload();
+// ── DATA ──
+function api(a,p,cb,eb){
+  var u=MU+"?action="+a+"&sheetId="+encodeURIComponent(SID);
+  Object.keys(p||{}).forEach(function(k){u+="&"+k+"="+encodeURIComponent(p[k]);});
+  jp(u,cb,eb);
 }
-
-// ── Dashboard ─────────────────────────────────────────────────
-function loadDashboard() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-
-  // Load referrer data
-  api('getReferrer', { uid: _uid }, function(res) {
-    if (!res.ok) return;
-    _referrer = res.data;
-    var name = res.data.Name || '';
-    document.getElementById('hdr-name').textContent = name;
-    document.getElementById('hdr-uid').textContent  = 'UID: ' + _uid;
-    document.getElementById('hdr-avatar').textContent = initials(name);
-
-    document.getElementById('s-referred').textContent  = res.data.TotalReferred  || 0;
-    document.getElementById('s-converted').textContent = res.data.TotalConverted || 0;
-    document.getElementById('s-earned').textContent    = '₹' + num(res.data.TotalEarned || 0);
-
-    // Build referral link
-    var earn = location.origin + location.pathname;
-    var link = earn + '?org=' + _org + '&ref=' + _uid;
-    document.getElementById('ref-link').textContent = link;
-    window._refFullLink = link;
-  });
-
-  // Load policy for min claim
-  api('getPolicy', {}, function(res) {
-    if (res.ok) {
-      _policy = res.data;
-      document.getElementById('min-claim').textContent = '₹' + (res.data.MinClaim || 500);
-    }
-  });
-
-  loadMyLeads();
-  loadMyPayouts();
-}
-
-function loadMyLeads() {
-  api('getLeads', { uid: _uid }, function(res) {
-    if (!res.ok) return;
-    _myLeads = res.data || [];
-    renderLeads();
-  });
-}
-
-function renderLeads() {
-  var el = document.getElementById('leads-list');
-  if (!_myLeads.length) { el.innerHTML = '<div class="empty">No referrals yet. Share your link!</div>'; return; }
-  el.innerHTML = _myLeads.map(function(l) {
-    var st = (l.Status||'').toLowerCase();
-    var bc = st==='converted'?'badge-green':st==='downloaded'?'badge-blue':st==='expired'?'badge-red':'badge-muted';
-    return '<div class="lead-item"><div><div class="lead-name">' + esc(l.LeadName) + '</div>' +
-      '<div class="lead-mob">' + esc(l.LeadMobile) + (l.PurchaseDate ? ' · Purchased ' + l.PurchaseDate : '') + '</div></div>' +
-      '<span class="badge ' + bc + '">' + st + '</span></div>';
-  }).join('');
-}
-
-function addLead() {
-  var name   = document.getElementById('lead-name').value.trim();
-  var mobile = document.getElementById('lead-mobile').value.replace(/\D/g,'').slice(-10);
-  if (!name || mobile.length < 10) { showToast('Enter name and 10-digit mobile', 'red'); return; }
-  var btn = document.getElementById('add-lead-btn');
-  btn.textContent = '…'; btn.disabled = true;
-  api('addLead', { referrerUID: _uid, leadName: name, leadMobile: mobile }, function(res) {
-    btn.textContent = 'Add Referral'; btn.disabled = false;
-    if (res.ok) {
-      document.getElementById('lead-name').value = '';
-      document.getElementById('lead-mobile').value = '';
-      showToast('Referral added ✓');
-      loadMyLeads();
-    } else {
-      showToast(res.error || 'Error adding referral', 'red');
-    }
-  });
-}
-
-function loadMyPayouts() {
-  api('getPayouts', {}, function(res) {
-    if (!res.ok) return;
-    _myPayouts = (res.data || []).filter(function(p) { return p.ReferrerUID === _uid; });
-
-    // Calculate claimable
-    var converted = _myLeads.filter(function(l) { return (l.Status||'').toLowerCase() === 'converted'; });
-    var totalEarned = converted.reduce(function(s,l) { return s + (Number(l.ReferrerReward)||0); }, 0);
-    var totalPaid   = _myPayouts.filter(function(p) { return (p.Status||'').toLowerCase() === 'paid'; })
-                                .reduce(function(s,p) { return s + (Number(p.Amount)||0); }, 0);
-    var totalPending = _myPayouts.filter(function(p) { return (p.Status||'').toLowerCase() === 'pending'; })
-                                 .reduce(function(s,p) { return s + (Number(p.Amount)||0); }, 0);
-    var claimable = Math.max(0, totalEarned - totalPaid - totalPending);
-    document.getElementById('claimable-amt').textContent = '₹' + num(claimable);
-
-    renderPayouts();
-  });
-}
-
-function renderPayouts() {
-  var el = document.getElementById('payout-list');
-  if (!_myPayouts.length) { el.innerHTML = '<div class="empty">No payout history yet</div>'; return; }
-  el.innerHTML = _myPayouts.map(function(p) {
-    var st = (p.Status||'').toLowerCase();
-    var bc = st==='paid'?'badge-green':st==='pending'?'badge-amber':'badge-muted';
-    return '<div class="claim-row"><div><div style="font-weight:600">₹' + num(p.Amount) + '</div>' +
-      '<div style="font-size:11px;color:var(--muted)">' + (p.UPI||'') + ' · ' + (p.ClaimDate||'') + '</div></div>' +
-      '<span class="badge ' + bc + '">' + st + '</span></div>';
-  }).join('');
-}
-
-function claimPayout() {
-  var amt = Number(document.getElementById('claim-amt').value);
-  var upi = document.getElementById('claim-upi').value.trim();
-  var min = _policy ? Number(_policy.MinClaim || 500) : 500;
-  if (!amt || amt < min) { showToast('Minimum claim is ₹' + min, 'red'); return; }
-  if (!upi || upi.length < 4) { showToast('Enter a valid UPI ID', 'red'); return; }
-
-  api('claimPayout', {
-    referrerUID: _uid,
-    amount: amt,
-    upi: upi,
-    name: _referrer ? _referrer.Name : ''
-  }, function(res) {
-    if (res.ok) {
-      document.getElementById('claim-amt').value = '';
-      document.getElementById('claim-upi').value = '';
-      showToast('Payout request submitted ✓');
-      loadMyPayouts();
-    } else {
-      showToast(res.error || 'Error', 'red');
-    }
-  });
-}
-
-function savePin() {
-  var p1 = document.getElementById('new-pin').value.trim();
-  var p2 = document.getElementById('new-pin2').value.trim();
-  if (p1.length !== 4 || !/^\d{4}$/.test(p1)) { showToast('Enter a 4-digit numeric PIN', 'red'); return; }
-  if (p1 !== p2) { showToast('PINs don\'t match', 'red'); return; }
-  api('savePin', { mobile: _mobile, pin: p1 }, function(res) {
-    if (res.ok) {
-      showToast('PIN saved ✓');
-      document.getElementById('new-pin').value = '';
-      document.getElementById('new-pin2').value = '';
-    } else {
-      showToast(res.error || 'Error saving PIN', 'red');
-    }
-  });
-}
-
-// ── Share ─────────────────────────────────────────────────────
-function copyLink() {
-  var link = window._refFullLink || document.getElementById('ref-link').textContent;
-  try { navigator.clipboard.writeText(link).then(function(){ showToast('Link copied ✓'); }); }
-  catch(e) { showToast('Copy: ' + link); }
-}
-
-function shareWA() {
-  var link = window._refFullLink || document.getElementById('ref-link').textContent;
-  var min  = _policy ? (_policy.WindowDays || 15) : 15;
-  var msg  = 'Hey! I want you to join ' + _brand + ' 🎓\n\nDownload the app and purchase within ' + min + ' days using my link and we both get a reward!\n\n' + link;
-  var url  = 'https://wa.me/?text=' + encodeURIComponent(msg);
-  window.open(url, '_blank');
-}
-
-// ── Navigation ────────────────────────────────────────────────
-var _curDash = 'dash';
-function switchDash(id) {
-  _curDash = id;
-  ['dash','leads','payouts','pin-mgmt'].forEach(function(t) {
-    document.getElementById('tab-' + t).style.display = t === id ? 'block' : 'none';
-    document.getElementById('bn-' + t).classList.toggle('active', t === id);
-  });
-  if (id === 'leads') loadMyLeads();
-  if (id === 'payouts') loadMyPayouts();
-}
-
-// ── API ───────────────────────────────────────────────────────
-function api(action, params, cb) {
-  var url = MASTER_URL + '?action=' + action + '&sheetId=' + encodeURIComponent(_sheetId);
-  Object.keys(params || {}).forEach(function(k) {
-    url += '&' + k + '=' + encodeURIComponent(params[k]);
-  });
-  jsonp(url, cb, function(err) { cb({ ok: false, error: 'Network error' }); });
-}
-
-function jsonp(url, cb, errCb) {
-  var cbName = 'rea_cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-  var tid;
-  window[cbName] = function(data) {
-    clearTimeout(tid); delete window[cbName];
-    if (tag && tag.parentNode) tag.parentNode.removeChild(tag);
-    cb(data);
-  };
-  var tag = document.createElement('script');
-  tag.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + cbName;
-  tag.onerror = function() {
-    clearTimeout(tid); delete window[cbName];
-    if (tag.parentNode) tag.parentNode.removeChild(tag);
-    if (errCb) errCb(new Error('Network error'));
-    else cb({ ok: false, error: 'Network error' });
-  };
-  tid = setTimeout(function() {
-    delete window[cbName];
-    if (tag.parentNode) tag.parentNode.removeChild(tag);
-    if (errCb) errCb(new Error('Timeout'));
-    else cb({ ok: false, error: 'Timeout' });
-  }, 15000);
+function jp(u,cb,eb){
+  var n="cb_"+Date.now()+"_"+Math.random().toString(36).slice(2);var tid;
+  window[n]=function(d){clearTimeout(tid);delete window[n];if(tag&&tag.parentNode)tag.parentNode.removeChild(tag);cb(d);};
+  var tag=document.createElement("script");
+  tag.src=u+(u.indexOf("?")>=0?"&":"?")+"callback="+n;
+  tag.onerror=function(){clearTimeout(tid);delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();};
+  tid=setTimeout(function(){delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();},12000);
   document.head.appendChild(tag);
 }
 
-// ── Utils ─────────────────────────────────────────────────────
-function esc(s) { return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function num(n) { return (Number(n)||0).toLocaleString('en-IN'); }
-function initials(n) { return (n||'?').split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2); }
+function loadDash(){
+  api("getReferrerStats",{uid:UID},function(r){
+    if(!r.ok)return;
+    var d=r.data||{};
+    _stats={leads:Number(d.totalLeads)||0,downloaded:Number(d.totalDownloaded)||0,
+            converted:Number(d.totalConverted)||0,earned:Number(d.totalEarned)||0};
+    g("st-leads").textContent=_stats.leads;
+    g("st-dl").textContent=_stats.downloaded;
+    g("st-conv").textContent=_stats.converted;
+    g("st-earn").textContent=RS+nm(_stats.earned);
+    // Claim card
+    g("cl-avail").textContent=RS+nm(_stats.earned);
+    updateClaimBtn();
+    // Gamification
+    updateGameCard();
+  });
+}
 
-var _toastTid;
-function showToast(msg, type) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.borderColor = type === 'red' ? 'var(--red)' : 'var(--border)';
-  t.classList.add('show');
-  clearTimeout(_toastTid);
-  _toastTid = setTimeout(function() { t.classList.remove('show'); }, 3000);
+function loadLeads(){
+  api("getReferrerLeads",{uid:UID},function(r){
+    if(!r.ok)return;
+    _leads=r.data||[];
+    renderPending();
+    renderLeadsTab();
+  });
+}
+
+function loadPolicy(){
+  api("getPolicy",{},function(r){
+    if(r.ok&&r.data){
+      _pol.minClaim=Number(r.data.MinClaim||r.data.minClaim)||500;
+      _pol.referrerPct=Number(r.data.ReferrerPct||r.data.referrerPct)||10;
+      _pol.windowDays=Number(r.data.WindowDays||r.data.windowDays)||15;
+      g("cl-min").textContent=RS+nm(_pol.minClaim);
+      updateClaimBtn();
+    }
+  });
+}
+
+function loadLeaderboard(){
+  api("getLeaderboard",{},function(r){
+    if(!r.ok)return;
+    var top=r.data||[];
+    _topEarned=top.length?Number(top[0].TotalEarned||0):0;
+    updateGameCard();
+  });
+}
+
+function updateClaimBtn(){
+  var avail=_stats.earned;
+  var min=_pol.minClaim;
+  var btn=g("claim-btn");
+  var note=g("claim-note");
+  if(avail>=min){
+    btn.disabled=false;
+    note.textContent="Tap to claim "+RS+nm(avail);
+  } else {
+    btn.disabled=true;
+    var need=min-avail;
+    note.textContent="Need "+RS+nm(need)+" more to claim";
+  }
+}
+
+function updateGameCard(){
+  var myE=_stats.earned;
+  var topE=Math.max(_topEarned,myE,1);
+  var myPct=Math.round((myE/topE)*100);
+  g("game-you-bar").style.width=myPct+"%";
+  g("game-top-bar").style.width="100%";
+  g("game-you-val").textContent=RS+nm(myE);
+  g("game-top-val").textContent=RS+nm(topE);
+  g("game-you-label").textContent=NAME.split(" ")[0]||"You";
+  var msg;
+  if(myE===0)msg="\ud83d\udd25 Start referring to climb the leaderboard!";
+  else if(myE>=topE)msg="\ud83c\udfc6 You ARE the top referrer! Amazing!";
+  else if(myPct>=80)msg="\ud83d\ude80 So close! Just "+RS+nm(topE-myE)+" more!";
+  else if(myPct>=50)msg="\ud83d\udcaa Halfway there! Keep pushing!";
+  else msg="\ud83c\udfaf Refer more to close the gap!";
+  g("game-msg").textContent=msg;
+}
+
+// ── PENDING LEADS ──
+function renderPending(){
+  var pending=_leads.filter(function(l){
+    var s=(l.Status||"").toLowerCase();
+    return s==="referred"||s==="downloaded";
+  });
+  g("pending-badge").textContent=pending.length;
+  if(!pending.length){
+    g("pending-list").innerHTML="<div class='empty-state'><div class='emoji'>\ud83c\udf1f</div><p>No pending leads.<br>All caught up!</p></div>";
+    return;
+  }
+  g("pending-list").innerHTML=pending.slice(0,10).map(function(l){
+    var s=(l.Status||"").toLowerCase();
+    var init=(l.LeadName||"?")[0].toUpperCase();
+    var statusCls=s==="referred"?"referred":"downloaded";
+    var statusTxt=s==="referred"?"\ud83d\udcf2 Referred":"\ud83d\udcf1 Downloaded";
+    return "<div class='lead-item'>"
+      +"<div class='lead-av'>"+xe(init)+"</div>"
+      +"<div class='lead-info'>"
+        +"<div class='lead-name'>"+xe(l.LeadName||"Unknown")+"</div>"
+        +"<div class='lead-date'>"+fdate(l.ReferredDate)+"</div>"
+        +"<div class='lead-status "+statusCls+"'>"+statusTxt+"</div>"
+      +"</div>"
+      +"<button class='reshare-btn' onclick='reshare(\""+xe(l.LeadName||"")+"\")'>&#128257; Remind</button>"
+      +"</div>";
+  }).join("");
+}
+
+// ── LEADS TAB ──
+function setLeadFilter(f,btn){
+  _leadFilter=f;
+  document.querySelectorAll(".lf-btn").forEach(function(b){b.classList.remove("on");});
+  if(btn)btn.classList.add("on");
+  renderLeadsTab();
+}
+
+function renderLeadsTab(){
+  var list=_leads.filter(function(l){
+    if(_leadFilter==="all")return true;
+    return(l.Status||"").toLowerCase()===_leadFilter;
+  });
+  g("leads-count").textContent=list.length+" lead"+(list.length!==1?"s":"");
+  if(!list.length){
+    g("leads-list").innerHTML="<div class='empty-state'><div class='emoji'>\ud83d\udcec</div><p>No leads found.<br>Share your link to get started!</p></div>";
+    return;
+  }
+  g("leads-list").innerHTML=list.map(function(l){
+    var s=(l.Status||"").toLowerCase();
+    var tagCls="tag-"+(s||"referred");
+    var tagLabel=s==="converted"?"\u2705 Converted":s==="downloaded"?"\ud83d\udcf1 Downloaded":s==="expired"?"\u274c Expired":"\ud83d\udcf2 Referred";
+    var rewardHtml=s==="converted"&&l.ReferrerReward
+      ?"<div class='lead-reward'><div class='lead-reward-label'>\ud83d\udcb0 Your Reward</div><div class='lead-reward-val'>"+RS+nm(l.ReferrerReward)+"</div></div>":"";
+    return "<div class='lead-row'>"
+      +"<div class='lead-row-top'>"
+        +"<div><div class='lead-row-name'>"+xe(l.LeadName||"Unknown")+"</div>"
+        +"<div class='lead-row-mobile'>"+xe(l.LeadMobile||"-")+"</div></div>"
+        +"<span class='lead-meta-tag "+tagCls+"'>"+tagLabel+"</span>"
+      +"</div>"
+      +"<div class='lead-row-dates'>"
+        +"<div class='lead-date-box'><div class='lead-date-label'>Referred On</div><div class='lead-date-val'>"+fdate(l.ReferredDate)+"</div></div>"
+        +"<div class='lead-date-box'><div class='lead-date-label'>Downloaded</div><div class='lead-date-val'>"+fdate(l.DownloadDate)+"</div></div>"
+      +"</div>"
+      +rewardHtml
+      +"</div>";
+  }).join("");
+}
+
+// ── ACTIONS ──
+function shareWA(){
+  var msg="\ud83c\udf89 Hey! I'm using "+BRAND+" app for learning. You should try it too!\n\nUse my link to download & we both get benefits \ud83d\udcab\n\n"+_myLink;
+  window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
+}
+
+function copyLink(){
+  var btn=g("copy-btn");
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(_myLink).then(function(){
+      btn.textContent="\u2705 Copied!";btn.classList.add("copied");
+      setTimeout(function(){btn.innerHTML="\ud83d\udccb Copy Link";btn.classList.remove("copied");},2000);
+    });
+  } else {
+    var ta=document.createElement("textarea");ta.value=_myLink;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);
+    btn.textContent="\u2705 Copied!";btn.classList.add("copied");
+    setTimeout(function(){btn.innerHTML="\ud83d\udccb Copy Link";btn.classList.remove("copied");},2000);
+  }
+  showToast("Link copied!","ok");
+}
+
+function reshare(name){
+  var msg="\ud83d\udc4b Hey "+name+"! Don't forget to download the "+BRAND+" app using my link and unlock your learning journey!\n\n"+_myLink;
+  window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
+}
+
+function openClaimModal(){
+  if(_stats.earned<_pol.minClaim)return;
+  g("claim-amount-display").textContent="You will claim: "+RS+nm(_stats.earned);
+  g("upi-input").value="";
+  g("claim-modal").classList.add("open");
+}
+
+function closeClaimModal(){g("claim-modal").classList.remove("open");}
+
+function submitClaim(){
+  var upi=g("upi-input").value.trim();
+  if(!upi){showToast("Enter your UPI ID","err");return;}
+  var btn=g("claim-submit-btn");btn.disabled=true;btn.innerHTML="<span class='spin'></span> Submitting...";
+  api("claimEarnings",{uid:UID,upi:upi,amount:_stats.earned},function(r){
+    btn.disabled=false;btn.textContent="\u2705 Submit Claim";
+    if(r.ok){
+      closeClaimModal();
+      showToast("\ud83c\udf89 Claim submitted! You'll be paid via UPI soon.","ok");
+      loadDash();
+    } else showToast(r.error||"Claim failed","err");
+  },function(){btn.disabled=false;btn.textContent="\u2705 Submit Claim";showToast("Network error","err");});
+}
+
+// ── NAV ──
+function switchTab(tab){
+  document.querySelectorAll(".bnav-btn").forEach(function(b){b.classList.remove("on");});
+  g("nav-"+tab).classList.add("on");
+  g("tab-dash").style.display=tab==="dash"?"block":"none";
+  g("tab-leads").style.display=tab==="leads"?"block":"none";
+  if(tab==="leads")renderLeadsTab();
+}
+
+// ── HELPERS ──
+function g(id){return document.getElementById(id);}
+function nm(n){return(Number(n)||0).toLocaleString("en-IN");}
+function fdate(v){
+  if(!v)return "-";var s=v.toString().trim();
+  if(!s||s==="0")return "-";
+  if(s.indexOf("T")>0)s=s.split("T")[0];
+  else if(s.indexOf(" ")>0)s=s.split(" ")[0];
+  if(!s)return "-";
+  var d=new Date(s);
+  if(isNaN(d.getTime()))return s;
+  return d.toLocaleDateString("en-IN",{day:"numeric",month:"short"});
+}
+function xe(s){
+  if(!s)return "";
+  var o="",c;
+  for(var i=0;i<s.length;i++){
+    c=s.charCodeAt(i);
+    if(c===38)o=o+"&"+"amp;";
+    else if(c===60)o=o+"&"+"lt;";
+    else if(c===62)o=o+"&"+"gt;";
+    else o+=s[i];
+  }
+  return o;
+}
+function setLE(msg){g("login-error").textContent=msg;}
+var _tid;
+function showToast(msg,cls){
+  var t=g("toast");t.textContent=msg;t.className=cls||"";t.classList.add("show");
+  clearTimeout(_tid);_tid=setTimeout(function(){t.classList.remove("show");},3500);
 }
 </script>
 </body>
