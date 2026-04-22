@@ -165,67 +165,46 @@ code{font-size:11px;background:var(--surface2);padding:2px 6px;border-radius:4px
   <div class="pane" id="pane-guide">
     <div class="card">
       <div class="card-title">Setup Guide — Adding a New Client</div>
-      <div class="card-sub" style="margin-bottom:20px">Follow these steps in order for each new tutor/client</div>
+      <div class="card-sub" style="margin-bottom:20px">3 simple steps — everything else is automated ⚡</div>
 
       <div class="step">
         <div class="step-num">1</div>
         <div class="step-body">
-          <div class="step-title">Create a new Google Sheet for the client</div>
-          <div class="step-desc">Go to sheets.google.com → New sheet. Copy the Sheet ID from the URL (the long string between /d/ and /edit).</div>
+          <div class="step-title">Create a blank Google Sheet</div>
+          <div class="step-desc">Go to <b>sheets.google.com</b> → New blank sheet. Copy the Sheet ID from the URL — it's the long string between <code>/d/</code> and <code>/edit</code>.<br><br>
+          ⚠️ Make sure the sheet is created under the <b>same Google account</b> that owns the Master Script. If different, share the sheet with that account giving <b>Editor</b> access.</div>
         </div>
       </div>
 
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-body">
-          <div class="step-title">Create required tabs with exact headers</div>
-          <div class="step-desc">Manually create 4 tabs in the sheet with these exact column headers:</div>
-          <div class="headers-box">
-            <b style="color:var(--muted)">Referrers tab:</b><br>
-            Name | Mobile | UID | PIN | TotalReferred | TotalDownloaded | TotalConverted | TotalEarned | TotalClaimed | JoinedDate
-            <br><br>
-            <b style="color:var(--muted)">Leads tab:</b><br>
-            LeadID | ReferrerUID | ReferrerName | LeadName | LeadMobile | Status | ReferredDate | DownloadDate | PurchaseDate | CourseName | CoursePrice | ReferrerReward | RefereePct
-            <br><br>
-            <b style="color:var(--muted)">Payouts tab:</b><br>
-            PayoutID | ReferrerUID | Name | UPI | Amount | Status | ClaimDate | PaidDate
-            <br><br>
-            <b style="color:var(--muted)">Policy tab:</b><br>
-            Version | Model | ReferrerPct | RefereePct | WindowDays | MinClaim | PolicyName | Status | CreatedDate
-          </div>
+          <div class="step-title">Register the client on the Register tab</div>
+          <div class="step-desc">Go to the <b>Register Client</b> tab → fill in:<br><br>
+          • <b>Brand Name</b> — client's coaching name<br>
+          • <b>Org Code</b> — short unique code (letters/numbers, e.g. BSCI001)<br>
+          • <b>Google Sheet ID</b> — from Step 1<br>
+          • <b>Play Store App ID</b> — from their Play Store URL (e.g. co.classplus.abc)<br>
+          • <b>Admin Password</b> — set a password for the admin dashboard<br><br>
+          Click <b>Register Client</b> — all 4 sheet tabs are created automatically with correct headers and a default reward policy. ✅</div>
         </div>
       </div>
 
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-body">
-          <div class="step-title">Add a default Policy row</div>
-          <div class="step-desc">In the Policy tab, add row 2 with these values:</div>
-          <div class="headers-box">1 | pct | 10 | 0 | 15 | 500 | Default Policy | active | (today's date)</div>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Register the client here</div>
-          <div class="step-desc">Go to the Register Client tab → fill Brand Name, Org Code, Sheet ID, App ID, Password → click Register Client.</div>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num">5</div>
-        <div class="step-body">
           <div class="step-title">Share the URLs with the client</div>
-          <div class="step-desc">After registering, copy the Admin URL and Earn URL. Share the Earn URL with referrers and the Admin URL only with the tutor/admin.</div>
+          <div class="step-desc">After registering, two URLs are generated:<br><br>
+          • <b>Admin URL</b> — share only with the tutor/admin. They log in to see leads, manage payouts and set reward policy.<br>
+          • <b>Earn URL</b> — share with referrers/students. They register, get their unique referral link and track earnings.</div>
         </div>
       </div>
 
-      <div class="step">
-        <div class="step-num">6</div>
+      <div class="step" style="border:1.5px solid rgba(34,197,94,.3);background:rgba(34,197,94,.06)">
+        <div class="step-num" style="background:#16a34a">✓</div>
         <div class="step-body">
-          <div class="step-title">Client sets Reward Policy from Admin dashboard</div>
-          <div class="step-desc">Admin logs in → Reward Settings tab → sets referrer %, window days, minimum claim → Save & Publish.</div>
+          <div class="step-title" style="color:#15803d">That's it — nothing else needed!</div>
+          <div class="step-desc">The sheet tabs, headers, and default policy are all created automatically on registration. The admin can update the reward policy anytime from their dashboard.</div>
         </div>
       </div>
     </div>
