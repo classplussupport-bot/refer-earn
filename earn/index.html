@@ -800,14 +800,16 @@ function switchTab(tab){
 function g(id){return document.getElementById(id);}
 function nm(n){return(Number(n)||0).toLocaleString("en-IN");}
 function fdate(v){
-  if(!v)return "-";var s=v.toString().trim();
+  if(!v)return "-";
+  var s=v.toString().trim();
   if(!s||s==="0")return "-";
-  if(s.indexOf("T")>0)s=s.split("T")[0];
-  else if(s.indexOf(" ")>0)s=s.split(" ")[0];
+  // Strip time portion — handles ISO (2024-01-22T10:30:00), space-separated (2024-01-22 10:30:00),
+  // and Google Sheets date-time strings (22 Apr 2024, 10:30:00 or 22/04/2024 10:30)
+  s=s.replace(/[T ][\d]{1,2}:[\d]{2}.*$/,"").trim();
   if(!s)return "-";
   var d=new Date(s);
-  if(isNaN(d.getTime()))return s;
-  return d.toLocaleDateString("en-IN",{day:"numeric",month:"short"});
+  if(isNaN(d.getTime()))return s; // return as-is if unparseable
+  return d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
 }
 function xe(s){
   if(!s)return "";
