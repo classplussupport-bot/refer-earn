@@ -3,777 +3,672 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin - Refer and Earn</title>
+<title>Admin Dashboard</title>
 <style>
-:root{--bg:#f8f9fc;--sf:#fff;--s2:#f1f3f9;--bd:#e3e6f0;--tx:#1e2235;--tx2:#4a5172;--mu:#8b93b0;--blue:#3b5bdb;--bli:#eef2ff;--blm:#4c6ef5;--grn:#2f9e44;--gri:#ebfbee;--amb:#e67700;--ami:#fff8e7;--red:#c92a2a;--rei:#fff1f2;--pur:#6741d9;--pri:#f3f0ff;--tea:#0d9488;--r:10px;--rs:6px;--s0:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--sh:0 4px 12px rgba(0,0,0,.08)}
+:root{--bg:#f8f9fc;--sf:#fff;--s2:#f1f3f9;--bd:#e3e6f0;--tx:#1e2235;--t2:#4a5172;--mu:#8b93b0;--bl:#3b5bdb;--bi:#eef2ff;--bm:#4c6ef5;--gn:#2f9e44;--gi:#ebfbee;--am:#e67700;--ai:#fff8e7;--rd:#c92a2a;--ri:#fff1f2;--pu:#6741d9;--tl:#0d9488;--r:12px;--rs:8px;--s0:0 2px 8px rgba(0,0,0,.06);--sh:0 8px 24px rgba(0,0,0,.10)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;min-height:100vh}
 #ls{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(145deg,#eef2ff 0%,#f8f9fc 60%)}
-.lcard{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:44px 40px;width:400px;text-align:center;box-shadow:var(--sh)}
-.llogo{font-size:40px;margin-bottom:10px}
-.lbrand{font-size:24px;font-weight:800;color:var(--tx);margin-bottom:4px}
-.lsub{color:var(--mu);font-size:13px;margin-bottom:28px}
-.lloading{color:var(--mu);font-size:13px}
-.pw-wrap{position:relative;margin-top:4px}
-.field{width:100%;background:var(--bg);border:1.5px solid var(--bd);border-radius:var(--rs);padding:12px 44px 12px 16px;color:var(--tx);font-size:14px;outline:none;transition:border .2s}
-.field:focus{border-color:var(--blue);background:var(--sf)}
-.pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:var(--mu);line-height:1}
-.pw-eye:hover{color:var(--blue)}
-.lbtn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:var(--rs);padding:13px;font-size:14px;font-weight:700;cursor:pointer;margin-top:12px;transition:background .2s}
-.lbtn:hover{background:var(--blm)}
-.lerr{color:var(--red);font-size:12px;margin-top:8px;min-height:18px}
+.lc{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:48px 44px;width:420px;text-align:center;box-shadow:var(--sh)}
+.ll{font-size:48px;margin-bottom:12px}
+.lb{font-size:26px;font-weight:800;letter-spacing:-.5px;color:var(--tx);margin-bottom:4px}
+.ls2{color:var(--mu);font-size:13px;margin-bottom:32px;font-weight:500}
+.lw{color:var(--mu);font-size:13px;padding:12px;background:var(--s2);border-radius:var(--rs);text-align:center}
+.pw-w{position:relative;margin-top:4px}
+.fld{width:100%;background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--rs);padding:14px 48px 14px 18px;color:var(--tx);font-size:14px;outline:none;transition:all .2s;font-weight:500}
+.fld:focus{border-color:var(--bl);background:var(--sf);box-shadow:0 0 0 3px rgba(59,91,219,.1)}
+.eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:var(--bi);border:none;cursor:pointer;font-size:11px;color:var(--bl);padding:4px 8px;border-radius:6px;font-weight:700}
+.lbtn{width:100%;background:var(--bl);color:#fff;border:none;border-radius:var(--rs);padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s}
+.lbtn:hover{background:var(--bm);transform:translateY(-1px);box-shadow:0 4px 12px rgba(59,91,219,.3)}
+.lerr{color:var(--rd);font-size:12px;margin-top:8px;min-height:18px;font-weight:600}
 #app{display:none}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;z-index:100;box-shadow:var(--s0)}
-.sbh{padding:24px 20px 20px;border-bottom:1px solid var(--bd)}
-.slogo{font-size:20px;font-weight:900}
-.slogo .r{color:var(--blue)}.slogo .e{color:var(--tx)}
-.sbrand{font-size:12px;color:var(--mu);font-weight:500;margin-top:2px}
-.snav{padding:12px 10px;flex:1}
-.nlbl{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--mu);text-transform:uppercase;padding:6px 10px 4px}
-.nbtn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:var(--rs);border:none;background:transparent;color:var(--tx2);font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:all .15s;margin-bottom:2px}
-.nbtn:hover{background:var(--s2);color:var(--tx)}
-.nbtn.active{background:var(--bli);color:var(--blue);font-weight:600}
-.nbtn svg{width:16px;height:16px;flex-shrink:0}
-.sftr{padding:14px 20px;border-top:1px solid var(--bd)}
-.otag{font-size:11px;color:var(--mu);font-weight:500}
-.main{margin-left:230px;padding:28px 32px;min-height:100vh}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.tl h1{font-size:22px;font-weight:800}
-.tl p{font-size:13px;color:var(--mu);margin-top:2px}
-.tr2{display:flex;align-items:center;gap:10px}
-.bsync{background:var(--sf);border:1.5px solid var(--bd);color:var(--tx2);border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .2s}
-.bsync:hover{border-color:var(--blue);color:var(--blue);background:var(--bli)}
-.bout{background:transparent;border:1.5px solid var(--bd);color:var(--mu);border-radius:var(--rs);padding:9px 14px;font-size:13px;cursor:pointer;transition:all .2s}
-.bout:hover{border-color:var(--red);color:var(--red)}
-.dfbar{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 14px;box-shadow:var(--s0)}
-.dflbl{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-right:4px}
-.dpill{padding:6px 14px;border-radius:20px;border:1.5px solid var(--bd);background:transparent;color:var(--mu);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
-.dpill.active{border-color:var(--blue);background:var(--bli);color:var(--blue)}
-.crow{display:none;align-items:center;gap:6px}
-.crow.show{display:flex}
-.dinp{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--rs);padding:6px 10px;color:var(--tx);font-size:12px;outline:none;cursor:pointer;transition:border .2s}
-.dinp:focus{border-color:var(--blue)}
-.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.sc{border-radius:var(--r);padding:20px;box-shadow:var(--s0);position:relative;overflow:hidden}
-.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.sc-b{background:#eff6ff;border:1px solid #bfdbfe}.sc-b::before{background:var(--blue)}.sc-b .sv{color:#1d4ed8}.sc-b .sl{color:#2563eb}
-.sc-g{background:#f0fdf4;border:1px solid #bbf7d0}.sc-g::before{background:var(--grn)}.sc-g .sv{color:#15803d}.sc-g .sl{color:#16a34a}
-.sc-a{background:#fffbeb;border:1px solid #fde68a}.sc-a::before{background:var(--amb)}.sc-a .sv{color:#b45309}.sc-a .sl{color:#d97706}
-.sc-p{background:#faf5ff;border:1px solid #ddd6fe}.sc-p::before{background:var(--pur)}.sc-p .sv{color:#6d28d9}.sc-p .sl{color:#7c3aed}
-.sc-r{background:#fff1f2;border:1px solid #fecdd3}.sc-r::before{background:var(--red)}.sc-r .sv{color:#be123c}.sc-r .sl{color:#e11d48}
-.sc-t{background:#f0fdfa;border:1px solid #99f6e4}.sc-t::before{background:var(--tea)}.sc-t .sv{color:#0f766e}.sc-t .sl{color:#0d9488}
-.si{font-size:22px;margin-bottom:10px}
-.sl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.sv{font-size:26px;font-weight:800;letter-spacing:-.5px}
-.ss{font-size:11px;margin-top:4px;opacity:.65}
-.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--s0);margin-bottom:20px}
-.ch{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--bd)}
-.ct{font-size:15px;font-weight:700}
-.cb{padding:20px}
-.section{display:none}.section.active{display:block}
+.sid{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;z-index:100;box-shadow:2px 0 12px rgba(0,0,0,.04)}
+.sh{padding:24px 20px 20px;border-bottom:1px solid var(--bd)}
+.slo{font-size:22px;font-weight:900;letter-spacing:-.5px}
+.slo .r{color:var(--bl)}.slo .e{color:var(--tx)}
+.sbr{font-size:12px;color:var(--mu);font-weight:600;margin-top:2px}
+.snv{padding:12px 10px;flex:1;overflow-y:auto}
+.nl{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--mu);text-transform:uppercase;padding:8px 10px 4px}
+.nb{display:flex;align-items:center;gap:10px;width:100%;padding:10px 13px;border-radius:10px;border:none;background:transparent;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;text-align:left;transition:all .15s;margin-bottom:2px}
+.nb:hover{background:var(--s2);color:var(--tx)}
+.nb.on{background:var(--bi);color:var(--bl)}
+.nb svg{width:16px;height:16px;flex-shrink:0}
+.sf2{padding:14px 20px;border-top:1px solid var(--bd)}
+.ot{font-size:11px;color:var(--mu);font-weight:600}
+.mn{margin-left:240px;padding:28px 32px;min-height:100vh}
+.tb{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.tbl h1{font-size:24px;font-weight:800;letter-spacing:-.3px}
+.tbl p{font-size:13px;color:var(--mu);margin-top:2px;font-weight:500}
+.tbr{display:flex;align-items:center;gap:10px}
+.bsy{background:var(--sf);border:1.5px solid var(--bd);color:var(--t2);border-radius:var(--rs);padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .2s}
+.bsy:hover{border-color:var(--bl);color:var(--bl);background:var(--bi)}
+.bot{background:transparent;border:1.5px solid var(--bd);color:var(--mu);border-radius:var(--rs);padding:10px 16px;font-size:13px;cursor:pointer;transition:all .2s;font-weight:600}
+.bot:hover{border-color:var(--rd);color:var(--rd)}
+.dfb{display:flex;align-items:center;gap:6px;margin-bottom:20px;flex-wrap:wrap;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px;box-shadow:var(--s0)}
+.dfl{font-size:11px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-right:6px}
+.dp{padding:7px 14px;border-radius:20px;border:1.5px solid transparent;background:var(--s2);color:var(--mu);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
+.dp:hover{background:var(--bi);color:var(--bl)}
+.dp.on{border-color:var(--bl);background:var(--bi);color:var(--bl);box-shadow:0 2px 8px rgba(59,91,219,.15)}
+.cr{display:none;align-items:center;gap:6px}
+.cr.show{display:flex}
+.di{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--rs);padding:7px 12px;color:var(--tx);font-size:12px;outline:none;cursor:pointer;transition:border .2s;font-weight:500}
+.di:focus{border-color:var(--bl)}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.sc{border-radius:var(--r);padding:22px 20px;box-shadow:var(--s0);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:default}
+.sc:hover{transform:translateY(-2px);box-shadow:var(--sh)}
+.sc::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r) var(--r) 0 0}
+.sc-b{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe}.sc-b::before{background:linear-gradient(90deg,#3b5bdb,#60a5fa)}.sc-b .sv{color:#1d4ed8}.sc-b .sl{color:#3b82f6}
+.sc-g{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0}.sc-g::before{background:linear-gradient(90deg,#16a34a,#4ade80)}.sc-g .sv{color:#15803d}.sc-g .sl{color:#16a34a}
+.sc-a{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a}.sc-a::before{background:linear-gradient(90deg,#d97706,#fbbf24)}.sc-a .sv{color:#b45309}.sc-a .sl{color:#d97706}
+.sc-p{background:linear-gradient(135deg,#faf5ff,#ede9fe);border:1px solid #ddd6fe}.sc-p::before{background:linear-gradient(90deg,#7c3aed,#a78bfa)}.sc-p .sv{color:#6d28d9}.sc-p .sl{color:#7c3aed}
+.sc-r{background:linear-gradient(135deg,#fff1f2,#ffe4e6);border:1px solid #fecdd3}.sc-r::before{background:linear-gradient(90deg,#dc2626,#f87171)}.sc-r .sv{color:#be123c}.sc-r .sl{color:#e11d48}
+.sc-t{background:linear-gradient(135deg,#f0fdfa,#ccfbf1);border:1px solid #99f6e4}.sc-t::before{background:linear-gradient(90deg,#0f766e,#2dd4bf)}.sc-t .sv{color:#0f766e}.sc-t .sl{color:#0d9488}
+.si{font-size:26px;margin-bottom:10px}
+.sl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.sv{font-size:28px;font-weight:900;letter-spacing:-.5px;line-height:1}
+.ss{font-size:11px;margin-top:6px;opacity:.7;font-weight:600}
+.cd{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--s0);margin-bottom:20px;overflow:hidden}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 16px;border-bottom:1px solid var(--bd)}
+.ct{font-size:16px;font-weight:800;letter-spacing:-.2px}
+.cb{padding:20px 22px}
+.sec{display:none}.sec.on{display:block}
 .tbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .sb2{position:relative}
-.sb2 svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--mu);pointer-events:none}
-.sinp{background:var(--sf);border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 12px 8px 34px;color:var(--tx);font-size:13px;outline:none;width:230px;transition:border .2s}
-.sinp:focus{border-color:var(--blue)}
-.fgrp{display:flex;align-items:center;gap:4px;background:var(--s2);border-radius:var(--rs);padding:3px;border:1px solid var(--bd)}
-.fp{padding:5px 12px;border-radius:5px;border:none;background:transparent;color:var(--mu);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
-.fp.active{background:var(--sf);color:var(--blue);box-shadow:var(--s0)}
-.bsm{padding:7px 14px;border-radius:var(--rs);border:1.5px solid var(--bd);background:var(--sf);color:var(--tx2);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
-.bsm:hover{border-color:var(--blue);color:var(--blue)}
-.bsm.danger{border-color:var(--red);color:var(--red)}
-.bsm.primary{background:var(--blue);border-color:var(--blue);color:#fff}
-.bsm.primary:hover{background:var(--blm)}
+.sb2 svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--mu);pointer-events:none}
+.si2{background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--rs);padding:9px 14px 9px 36px;color:var(--tx);font-size:13px;outline:none;width:240px;transition:all .2s;font-weight:500}
+.si2:focus{border-color:var(--bl);background:var(--sf);box-shadow:0 0 0 3px rgba(59,91,219,.1)}
+.fg{display:flex;align-items:center;gap:3px;background:var(--s2);border-radius:var(--rs);padding:3px;border:1px solid var(--bd)}
+.fp{padding:6px 14px;border-radius:6px;border:none;background:transparent;color:var(--mu);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
+.fp.on{background:var(--sf);color:var(--bl);box-shadow:var(--s0)}
+.bs{padding:8px 16px;border-radius:var(--rs);border:1.5px solid var(--bd);background:var(--sf);color:var(--t2);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.bs:hover{border-color:var(--bl);color:var(--bl)}
+.bs.dn{border-color:var(--rd);color:var(--rd)}
+.bs.pm{background:var(--bl);border-color:var(--bl);color:#fff}
+.bs.pm:hover{background:var(--bm);transform:translateY(-1px)}
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
-th{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;font-weight:700;padding:11px 16px;text-align:left;background:var(--s2);border-bottom:1px solid var(--bd);white-space:nowrap}
-td{font-size:13px;padding:12px 16px;border-bottom:1px solid var(--bd);color:var(--tx);vertical-align:middle}
+th{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;font-weight:800;padding:12px 16px;text-align:left;background:var(--s2);border-bottom:1px solid var(--bd);white-space:nowrap}
+td{font-size:13px;padding:13px 16px;border-bottom:1px solid var(--bd);color:var(--tx);vertical-align:middle;font-weight:500}
 tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:var(--bg)}
-td code{background:var(--s2);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--blue)}
-.erow td{text-align:center;color:var(--mu);padding:40px;font-size:14px}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.badge::before{content:'';width:5px;height:5px;border-radius:50%}
-.bg{background:var(--gri);color:var(--grn)}.bg::before{background:var(--grn)}
-.bb{background:var(--bli);color:var(--blue)}.bb::before{background:var(--blue)}
-.ba{background:var(--ami);color:var(--amb)}.ba::before{background:var(--amb)}
-.br2{background:var(--rei);color:var(--red)}.br2::before{background:var(--red)}
-.bm{background:var(--s2);color:var(--mu)}.bm::before{background:var(--mu)}
-.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.lbar{background:var(--gri);border:1.5px solid #86efac;border-radius:var(--rs);padding:12px 16px;font-size:13px;color:var(--grn);display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;font-weight:500}
-.lpulse{width:8px;height:8px;border-radius:50%;background:var(--grn);display:inline-block;margin-right:8px;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.mrow{display:flex;gap:8px;margin-bottom:20px}
-.mbtn{flex:1;padding:10px;border-radius:var(--rs);border:1.5px solid var(--bd);background:var(--s2);color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.mbtn.active{border-color:var(--blue);background:var(--bli);color:var(--blue)}
-.srow{margin-bottom:18px}
-.slbl{display:flex;justify-content:space-between;font-size:12px;color:var(--tx2);font-weight:600;margin-bottom:7px}
-.sval{color:var(--blue);font-weight:700}
-input[type=range]{width:100%;accent-color:var(--blue)}
-.pvbox{background:var(--gri);border:1.5px solid #86efac;border-radius:var(--rs);padding:14px 16px;font-size:13px;color:var(--grn);margin-top:16px;line-height:1.6}
-.pni{width:100%;background:var(--bg);border:1.5px solid var(--bd);border-radius:var(--rs);padding:10px 14px;color:var(--tx);font-size:13px;outline:none;margin-top:14px;transition:border .2s}
-.pni:focus{border-color:var(--blue)}
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center}
+tbody tr:hover td{background:#fafbff}
+td code{background:var(--bi);padding:2px 8px;border-radius:6px;font-size:12px;font-family:monospace;color:var(--bl);font-weight:700}
+.er td{text-align:center;color:var(--mu);padding:48px;font-size:14px;font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.03em}
+.badge::before{content:"";width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.bg2{background:var(--gi);color:#15803d}.bg2::before{background:#16a34a}
+.bb2{background:var(--bi);color:var(--bl)}.bb2::before{background:var(--bl)}
+.ba2{background:var(--ai);color:#b45309}.ba2::before{background:#d97706}
+.br2{background:var(--ri);color:#be123c}.br2::before{background:#dc2626}
+.bm2{background:var(--s2);color:var(--mu)}.bm2::before{background:var(--mu)}
+.tr-card{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--bd)}
+.tr-card:last-child{border-bottom:none}
+.tr-medal{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:var(--s0)}
+.tr-medal.g1{background:linear-gradient(135deg,#fef9c3,#fde047);border:2px solid #facc15}
+.tr-medal.g2{background:linear-gradient(135deg,#f1f5f9,#cbd5e1);border:2px solid #94a3b8}
+.tr-medal.g3{background:linear-gradient(135deg,#fef3c7,#fdba74);border:2px solid #f97316}
+.tr-medal.gn{background:var(--s2);border:2px solid var(--bd);font-size:14px;font-weight:900;color:var(--bl)}
+.tr-info{flex:1;min-width:0}
+.tr-name{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr-stats{font-size:12px;color:var(--mu);margin-top:4px;font-weight:600;display:flex;gap:10px;flex-wrap:wrap}
+.tr-stat-item{display:inline-flex;align-items:center;gap:3px}
+.tr-earn{font-size:18px;font-weight:900;color:#15803d;white-space:nowrap}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.lb2{background:linear-gradient(135deg,var(--gi),#d1fae5);border:1.5px solid #6ee7b7;border-radius:var(--rs);padding:12px 16px;font-size:13px;color:#15803d;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;font-weight:700}
+.lp{width:8px;height:8px;border-radius:50%;background:#16a34a;display:inline-block;margin-right:8px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.mr{display:flex;gap:8px;margin-bottom:20px}
+.mb{flex:1;padding:11px;border-radius:var(--rs);border:1.5px solid var(--bd);background:var(--s2);color:var(--t2);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.mb.on{border-color:var(--bl);background:var(--bi);color:var(--bl)}
+.sr2{margin-bottom:18px}
+.sl2{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);font-weight:700;margin-bottom:7px}
+.sv2{color:var(--bl);font-weight:800;font-size:14px}
+input[type=range]{width:100%;accent-color:var(--bl)}
+.pv{background:linear-gradient(135deg,var(--gi),#d1fae5);border:1.5px solid #6ee7b7;border-radius:var(--rs);padding:14px 18px;font-size:13px;color:#15803d;margin-top:16px;line-height:1.7;font-weight:600}
+.pni{width:100%;background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--rs);padding:11px 16px;color:var(--tx);font-size:13px;outline:none;margin-top:14px;transition:all .2s;font-weight:500}
+.pni:focus{border-color:var(--bl);background:var(--sf)}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 .mo.open{display:flex}
-.mbox{background:var(--sf);border-radius:14px;width:440px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-.mhdr{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--sf)}
-.mttl{font-weight:700;font-size:15px}
-.mcls{background:none;border:none;font-size:20px;cursor:pointer;color:var(--mu);line-height:1;padding:2px 6px}
-.mbdy{padding:22px}
-.tnc-card{border:1px solid var(--bd);border-radius:12px;overflow:hidden}
-.tnc-hdr{background:linear-gradient(135deg,var(--blue) 0%,var(--pur) 100%);padding:22px;color:#fff;text-align:center}
-.tnc-hdr h3{font-size:18px;font-weight:800;margin-bottom:4px}
-.tnc-hdr p{font-size:13px;opacity:.85}
-.tnr{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-bottom:1px solid var(--bd)}
-.tnr:last-child{border-bottom:none}
-.tni{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;margin-top:1px}
-.tnt strong{display:block;font-size:13px;font-weight:700;color:var(--tx);margin-bottom:3px}
-.tnt span{font-size:12px;color:var(--mu);line-height:1.5}
-.vitem{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:14px 16px;margin-bottom:8px}
-.vtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.vname{font-weight:700;font-size:13px}
-.vdate{font-size:11px;color:var(--mu);margin-top:2px}
-.vtags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.vtag{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700}
-.vtag.r{background:var(--gri);color:var(--grn)}
-.vtag.e{background:var(--bli);color:var(--blue)}
-.vtag.w{background:var(--ami);color:var(--amb)}
-.vtag.m{background:var(--s2);color:var(--mu)}
-.vacts{display:flex;gap:6px}
-.trrow{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--bd)}
-.trrow:last-child{border-bottom:none}
-.rrank{width:32px;height:32px;border-radius:50%;background:var(--bli);color:var(--blue);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.rinfo{flex:1}
-.rname{font-weight:600;font-size:14px}
-.rstat{font-size:12px;color:var(--mu);margin-top:2px}
-.rearn{font-size:15px;font-weight:800;color:var(--grn)}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
+.mx{background:var(--sf);border-radius:16px;width:460px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.25)}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--sf);z-index:1}
+.mt2{font-weight:800;font-size:16px}
+.mc{background:none;border:none;font-size:22px;cursor:pointer;color:var(--mu);padding:2px 8px;border-radius:8px}
+.mc:hover{color:var(--tx);background:var(--s2)}
+.mbd{padding:24px}
+.tc{border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.th2{background:linear-gradient(135deg,var(--bl) 0%,var(--pu) 100%);padding:24px;color:#fff;text-align:center}
+.th2 h3{font-size:20px;font-weight:900;margin-bottom:4px}
+.th2 p{font-size:13px;opacity:.85;font-weight:600}
+.tr2{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border-bottom:1px solid var(--bd)}
+.tr2:last-child{border-bottom:none}
+.ti2{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;margin-top:1px}
+.tt strong{display:block;font-size:13px;font-weight:800;color:var(--tx);margin-bottom:3px}
+.tt span{font-size:12px;color:var(--mu);line-height:1.6;font-weight:500}
+.vi{background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);padding:16px 18px;margin-bottom:10px;transition:all .2s}
+.vi:hover{border-color:var(--bl)}
+.vi:last-child{margin-bottom:0}
+.vt{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.vn{font-weight:800;font-size:14px}
+.vd{font-size:11px;color:var(--mu);margin-top:2px;font-weight:600}
+.vg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.vta{padding:4px 10px;border-radius:12px;font-size:11px;font-weight:800}
+.vta.r{background:var(--gi);color:#15803d}
+.vta.e{background:var(--bi);color:var(--bl)}
+.vta.w{background:var(--ai);color:#b45309}
+.vta.m{background:var(--s2);color:var(--mu);border:1px solid var(--bd)}
+.va{display:flex;gap:6px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--bl);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1e2235;color:#fff;border-radius:8px;padding:11px 22px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:var(--sh)}
-#toast.show{opacity:1}
-#toast.ok{background:var(--grn)}
-#toast.err{background:var(--red)}
-@media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:16px}.sgrid{grid-template-columns:1fr 1fr}}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1e2235;color:#fff;border-radius:10px;padding:12px 24px;font-size:13px;font-weight:700;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+#toast.ok{background:linear-gradient(135deg,#16a34a,#22c55e)}
+#toast.err{background:linear-gradient(135deg,#dc2626,#f87171)}
+@media(max-width:768px){.sid{display:none}.mn{margin-left:0;padding:16px}.sg{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-
 <div id="ls">
-  <div class="lcard">
-    <div class="llogo">🎓</div>
-    <div class="lbrand" id="lbrand">Refer and Earn</div>
-    <div class="lsub">Admin Dashboard</div>
-    <div id="lloading" class="lloading">Loading...</div>
-    <div id="lform" style="display:none">
-      <div class="pw-wrap">
-        <input class="field" type="password" id="pwi" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')chkPw()">
-        <button class="pw-eye" id="pweye" onclick="togPw()">👁</button>
+  <div class="lc">
+    <div class="ll">&#127891;</div>
+    <div class="lb" id="lgb">Refer &amp; Earn</div>
+    <div class="ls2">Admin Dashboard</div>
+    <div id="lgl" class="lw">Loading configuration...</div>
+    <div id="lgf" style="display:none">
+      <div class="pw-w">
+        <input class="fld" type="password" id="pwi" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')chk()">
+        <button class="eye" id="eye" onclick="togPw()">Show</button>
       </div>
-      <button class="lbtn" onclick="chkPw()">Sign In</button>
+      <button class="lbtn" onclick="chk()">Sign In</button>
       <div class="lerr" id="lerr"></div>
     </div>
   </div>
 </div>
-
 <div id="app">
-  <nav class="sidebar">
-    <div class="sbh">
-      <div class="slogo"><span class="r">refer</span><span class="e">&amp;earn</span></div>
-      <div class="sbrand" id="sbbrand"></div>
+  <nav class="sid">
+    <div class="sh">
+      <div class="slo"><span class="r">refer</span><span class="e">&amp;earn</span></div>
+      <div class="sbr" id="sbr"></div>
     </div>
-    <div class="snav">
-      <div class="nlbl">Main</div>
-      <button class="nbtn active" onclick="showSec('overview')" id="n-overview">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview
-      </button>
-      <button class="nbtn" onclick="showSec('referrers')" id="n-referrers">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>All Referrers
-      </button>
-      <button class="nbtn" onclick="showSec('leads')" id="n-leads">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Leads
-      </button>
-      <button class="nbtn" onclick="showSec('payouts')" id="n-payouts">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Payouts
-      </button>
-      <div class="nlbl" style="margin-top:10px">Settings</div>
-      <button class="nbtn" onclick="showSec('policy')" id="n-policy">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Reward Policy
-      </button>
+    <div class="snv">
+      <div class="nl">Main</div>
+      <button class="nb on" onclick="go('ov')" id="n-ov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</button>
+      <button class="nb" onclick="go('rf')" id="n-rf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>All Referrers</button>
+      <button class="nb" onclick="go('ld')" id="n-ld"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Leads</button>
+      <button class="nb" onclick="go('py')" id="n-py"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Payouts</button>
+      <div class="nl" style="margin-top:10px">Settings</div>
+      <button class="nb" onclick="go('po')" id="n-po"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Reward Policy</button>
     </div>
-    <div class="sftr"><div class="otag" id="sborg"></div></div>
+    <div class="sf2"><div class="ot" id="sbt"></div></div>
   </nav>
-
-  <main class="main">
-    <div class="topbar">
-      <div class="tl"><h1 id="ptitle">Overview</h1><p id="psub">Today snapshot</p></div>
-      <div class="tr2">
-        <button class="bsync" onclick="doSync()" id="sbtn"><span id="sic">&#8635;</span> Sync Now</button>
-        <button class="bout" onclick="logout()">Sign out</button>
+  <main class="mn">
+    <div class="tb">
+      <div class="tbl"><h1 id="pgt">Overview</h1><p id="pgs">Last 30 days snapshot</p></div>
+      <div class="tbr">
+        <button class="bsy" onclick="doSync()" id="sb"><span id="sic">&#8635;</span> Sync Now</button>
+        <button class="bot" onclick="logout()">Sign out</button>
       </div>
     </div>
-
-    <div class="dfbar" id="dfbar">
-      <span class="dflbl">View:</span>
-      <button class="dpill active" onclick="setDF('today',this)">Today</button>
-      <button class="dpill" onclick="setDF('yesterday',this)">Yesterday</button>
-      <button class="dpill" onclick="setDF('week',this)">Last 7 days</button>
-      <button class="dpill" onclick="setDF('month',this)">Last 30 days</button>
-      <button class="dpill" onclick="setDF('all',this)">All time</button>
-      <button class="dpill" onclick="setDF('custom',this)">Custom</button>
-      <div class="crow" id="crow">
-        <input class="dinp" type="date" id="cdf" onchange="applyC()">
-        <span style="color:var(--mu);font-size:12px">to</span>
-        <input class="dinp" type="date" id="cdt" onchange="applyC()">
+    <div class="dfb" id="dfb">
+      <span class="dfl">View:</span>
+      <button class="dp" onclick="setDF('today',this)">Today</button>
+      <button class="dp" onclick="setDF('yesterday',this)">Yesterday</button>
+      <button class="dp" onclick="setDF('week',this)">Last 7 days</button>
+      <button class="dp on" onclick="setDF('month',this)">Last 30 days</button>
+      <button class="dp" onclick="setDF('all',this)">All time</button>
+      <button class="dp" onclick="setDF('custom',this)">Custom</button>
+      <div class="cr" id="cr">
+        <input class="di" type="date" id="cf" onchange="applyC()">
+        <span style="color:var(--mu);font-size:12px;font-weight:700">to</span>
+        <input class="di" type="date" id="ct" onchange="applyC()">
       </div>
     </div>
-
-    <div class="section active" id="s-overview">
-      <div class="sgrid">
-        <div class="sc sc-b"><div class="si">👥</div><div class="sl">Total Referrers</div><div class="sv" id="ov-refs">-</div></div>
-        <div class="sc sc-g"><div class="si">📋</div><div class="sl">Total Leads</div><div class="sv" id="ov-leads">-</div><div class="ss" id="ov-dlr"></div></div>
-        <div class="sc sc-a"><div class="si">🎯</div><div class="sl">Conversions</div><div class="sv" id="ov-conv">-</div><div class="ss" id="ov-convr"></div></div>
-        <div class="sc sc-p"><div class="si">💰</div><div class="sl">Tutor Revenue</div><div class="sv" id="ov-rev">-</div></div>
-        <div class="sc sc-t"><div class="si">📥</div><div class="sl">Downloads</div><div class="sv" id="ov-dl">-</div></div>
-        <div class="sc sc-g"><div class="si">💸</div><div class="sl">Total Earned</div><div class="sv" id="ov-earned">-</div></div>
-        <div class="sc sc-b"><div class="si">✅</div><div class="sl">Paid Out</div><div class="sv" id="ov-paid">-</div></div>
-        <div class="sc sc-r"><div class="si">⏳</div><div class="sl">Pending Payouts</div><div class="sv" id="ov-pend">-</div></div>
+    <div class="sec on" id="s-ov">
+      <div class="sg">
+        <div class="sc sc-b"><div class="si">&#128101;</div><div class="sl">Referrers</div><div class="sv" id="s1">-</div></div>
+        <div class="sc sc-g"><div class="si">&#128203;</div><div class="sl">Total Leads</div><div class="sv" id="s2">-</div><div class="ss" id="s2b"></div></div>
+        <div class="sc sc-a"><div class="si">&#127919;</div><div class="sl">Conversions</div><div class="sv" id="s3">-</div><div class="ss" id="s3b"></div></div>
+        <div class="sc sc-p"><div class="si">&#128176;</div><div class="sl">Tutor Revenue</div><div class="sv" id="s4">-</div></div>
+        <div class="sc sc-t"><div class="si">&#128229;</div><div class="sl">Downloads</div><div class="sv" id="s5">-</div></div>
+        <div class="sc sc-g"><div class="si">&#128184;</div><div class="sl">Total Earned</div><div class="sv" id="s6">-</div></div>
+        <div class="sc sc-b"><div class="si">&#9989;</div><div class="sl">Paid Out</div><div class="sv" id="s7">-</div></div>
+        <div class="sc sc-r"><div class="si">&#9203;</div><div class="sl">Pending Claims</div><div class="sv" id="s8">-</div></div>
       </div>
-      <div class="card">
-        <div class="ch"><div class="ct">Top Referrers</div></div>
-        <div class="cb"><div id="top3">-</div></div>
+      <div class="cd">
+        <div class="ch"><div class="ct">&#127942; Top 5 Referrers</div><span style="font-size:12px;color:var(--mu);font-weight:600">Based on conversions</span></div>
+        <div class="cb"><div id="top5">-</div></div>
       </div>
     </div>
-
-    <div class="section" id="s-referrers">
-      <div class="card">
-        <div class="ch"><div class="ct">All Referrers</div><div style="font-size:12px;color:var(--mu)" id="rcnt"></div></div>
+    <div class="sec" id="s-rf">
+      <div class="cd">
+        <div class="ch"><div class="ct">All Referrers</div><span id="rc" style="font-size:12px;color:var(--mu);font-weight:600"></span></div>
         <div class="cb" style="padding-bottom:0">
           <div class="tbar">
-            <div class="sb2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="sinp" id="rs" placeholder="Search name, mobile, UID..." oninput="renderRefs()"></div>
-            <select class="dinp" id="rsort" onchange="renderRefs()"><option value="name">Sort: Name</option><option value="conv">Sort: Converted</option><option value="earn">Sort: Earned</option></select>
-            <button class="bsm" onclick="g('rs').value='';renderRefs()">Clear</button>
+            <div class="sb2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="si2" id="rfs" placeholder="Search name, mobile, UID..." oninput="rnRf()"></div>
+            <select class="di" id="rso" onchange="rnRf()"><option value="name">Sort: Name</option><option value="conv">Most Converted</option><option value="earn">Most Earned</option><option value="leads">Most Leads</option></select>
+            <button class="bs" onclick="g('rfs').value='';rnRf()">Clear</button>
           </div>
         </div>
-        <div class="tw"><table>
-          <thead><tr><th>#</th><th>Name</th><th>Mobile</th><th>UID</th><th>Referred</th><th>Downloaded</th><th>Converted</th><th>Earned</th><th>Joined</th><th>PIN</th></tr></thead>
-          <tbody id="rbody"></tbody>
-        </table></div>
+        <div class="tw"><table><thead><tr><th>#</th><th>Name</th><th>Mobile</th><th>UID</th><th>Leads</th><th>Downloads</th><th>Converted</th><th>Earned</th><th>Joined</th><th>PIN</th></tr></thead><tbody id="rfb"></tbody></table></div>
       </div>
     </div>
-
-    <div class="section" id="s-leads">
-      <div class="card">
-        <div class="ch"><div class="ct">Leads</div><div style="font-size:12px;color:var(--mu)" id="lcnt"></div></div>
+    <div class="sec" id="s-ld">
+      <div class="cd">
+        <div class="ch"><div class="ct">Leads</div><span id="lc2" style="font-size:12px;color:var(--mu);font-weight:600"></span></div>
         <div class="cb" style="padding-bottom:0">
           <div class="tbar">
-            <div class="sb2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="sinp" id="ls2" placeholder="Search name, mobile..." oninput="renderLeads()"></div>
-            <div class="fgrp">
-              <button class="fp active" onclick="setLF('all',this)">All</button>
-              <button class="fp" onclick="setLF('referred',this)">Referred</button>
-              <button class="fp" onclick="setLF('downloaded',this)">Downloaded</button>
-              <button class="fp" onclick="setLF('converted',this)">Converted</button>
-              <button class="fp" onclick="setLF('expired',this)">Expired</button>
-            </div>
+            <div class="sb2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="si2" id="lds" placeholder="Search name, mobile, referrer..." oninput="rnLd()"></div>
+            <div class="fg"><button class="fp on" onclick="setLF('all',this)">All</button><button class="fp" onclick="setLF('referred',this)">Referred</button><button class="fp" onclick="setLF('downloaded',this)">Downloaded</button><button class="fp" onclick="setLF('converted',this)">Converted</button><button class="fp" onclick="setLF('expired',this)">Expired</button></div>
           </div>
         </div>
-        <div class="tw"><table>
-          <thead><tr><th>#</th><th>Name</th><th>Mobile</th><th>Referrer</th><th>Status</th><th>Referred On</th><th>Downloaded</th><th>Purchased</th><th>Course</th><th>Reward</th></tr></thead>
-          <tbody id="lbody"></tbody>
-        </table></div>
+        <div class="tw"><table><thead><tr><th>#</th><th>Lead Name</th><th>Mobile</th><th>Referrer</th><th>Status</th><th>Referred On</th><th>Downloaded</th><th>Purchased</th><th>Course</th><th>Reward</th></tr></thead><tbody id="ldb"></tbody></table></div>
       </div>
     </div>
-
-    <div class="section" id="s-payouts">
-      <div class="card">
-        <div class="ch"><div class="ct">Payouts</div><div style="font-size:12px;color:var(--mu)" id="pcnt"></div></div>
+    <div class="sec" id="s-py">
+      <div class="sg" style="grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px">
+        <div class="sc sc-a"><div class="si">&#128181;</div><div class="sl">Total Claimed</div><div class="sv" id="py-total">-</div><div class="ss">By students</div></div>
+        <div class="sc sc-b"><div class="si">&#9989;</div><div class="sl">Paid Out</div><div class="sv" id="py-paid">-</div><div class="ss">Marked as paid</div></div>
+        <div class="sc sc-r"><div class="si">&#9203;</div><div class="sl">Pending</div><div class="sv" id="py-pend">-</div><div class="ss">Awaiting payment</div></div>
+      </div>
+      <div class="cd">
+        <div class="ch"><div class="ct">Payout Requests</div><span id="pc" style="font-size:12px;color:var(--mu);font-weight:600"></span></div>
         <div class="cb" style="padding-bottom:0">
           <div class="tbar">
-            <div class="sb2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="sinp" id="ps" placeholder="Search name, UPI..." oninput="renderPay()"></div>
-            <div class="fgrp">
-              <button class="fp active" onclick="setPF('all',this)">All</button>
-              <button class="fp" onclick="setPF('pending',this)">Pending</button>
-              <button class="fp" onclick="setPF('paid',this)">Paid</button>
-            </div>
+            <div class="sb2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="si2" id="pys" placeholder="Search name, UPI, ID..." oninput="rnPy()"></div>
+            <div class="fg"><button class="fp on" onclick="setPF('all',this)">All</button><button class="fp" onclick="setPF('pending',this)">Pending</button><button class="fp" onclick="setPF('paid',this)">Paid</button></div>
           </div>
         </div>
-        <div class="tw"><table>
-          <thead><tr><th>#</th><th>Payout ID</th><th>Name</th><th>UPI</th><th>Amount</th><th>Status</th><th>Claimed On</th><th>Paid On</th><th>Action</th></tr></thead>
-          <tbody id="pbody"></tbody>
-        </table></div>
+        <div class="tw"><table><thead><tr><th>#</th><th>Payout ID</th><th>Referrer</th><th>UPI</th><th>Amount</th><th>Status</th><th>Claimed On</th><th>Paid On</th><th>Action</th></tr></thead><tbody id="pyb"></tbody></table></div>
       </div>
     </div>
-
-    <div class="section" id="s-policy">
-      <div class="pgrid">
+    <div class="sec" id="s-po">
+      <div class="pg">
         <div>
-          <div class="card">
-            <div class="ch">
-              <div class="ct">Reward Settings</div>
-              <button class="bsm" onclick="openTnC()">Preview Student View</button>
-            </div>
+          <div class="cd">
+            <div class="ch"><div class="ct">Reward Settings</div><button class="bs" onclick="opTnC()">Student Preview</button></div>
             <div class="cb">
-              <div class="lbar"><span><span class="lpulse"></span><span id="ltxt">Loading...</span></span><span id="lver" class="badge bb"></span></div>
-              <div class="mrow">
-                <button class="mbtn active" id="mpct" onclick="setMdl('pct')">% Percentage</button>
-                <button class="mbtn" id="mflat" onclick="setMdl('flat')">Flat Amount</button>
+              <div class="lb2"><span><span class="lp"></span><span id="lvt">Loading...</span></span><span id="lvv" class="badge bb2"></span></div>
+              <div class="mr"><button class="mb on" id="mp" onclick="setMdl('pct')">% Percentage</button><button class="mb" id="mf" onclick="setMdl('flat')">Flat Amount</button></div>
+              <div id="pc2">
+                <div class="sr2"><div class="sl2">Referrer gets (% of course price) <span class="sv2" id="vr">10%</span></div><input type="range" id="sr" min="1" max="50" value="10" oninput="updP()"></div>
+                <div class="sr2"><div class="sl2">Referee discount (% of referrer reward) <span class="sv2" id="ve">0%</span></div><input type="range" id="se" min="0" max="100" step="5" value="0" oninput="updP()"></div>
               </div>
-              <div id="pctc">
-                <div class="srow"><div class="slbl">Referrer gets % of course price <span class="sval" id="vref">10%</span></div><input type="range" id="sref" min="1" max="50" value="10" oninput="updPrev()"></div>
-                <div class="srow"><div class="slbl">Referee discount % of referrer reward <span class="sval" id="vree">0%</span></div><input type="range" id="sree" min="0" max="100" step="5" value="0" oninput="updPrev()"></div>
-              </div>
-              <div class="srow"><div class="slbl">Referral window <span class="sval" id="vwin">15 days</span></div><input type="range" id="swin" min="7" max="60" value="15" oninput="updPrev()"></div>
-              <div class="srow"><div class="slbl">Minimum payout claim <span class="sval" id="vmin">Rs 500</span></div><input type="range" id="smin" min="100" max="5000" step="100" value="500" oninput="updPrev()"></div>
-              <div class="pvbox" id="pprev"></div>
-              <input class="pni" id="pname" placeholder="Policy name (e.g. Summer 2025)">
-              <button class="bsm primary" style="width:100%;margin-top:12px;padding:12px" onclick="savePol()">Save and Publish New Policy</button>
+              <div class="sr2"><div class="sl2">Referral window <span class="sv2" id="vw">15 days</span></div><input type="range" id="sw" min="7" max="60" value="15" oninput="updP()"></div>
+              <div class="sr2"><div class="sl2">Minimum claim amount <span class="sv2" id="vm">Rs 500</span></div><input type="range" id="sm" min="100" max="5000" step="100" value="500" oninput="updP()"></div>
+              <div class="pv" id="ppv"></div>
+              <input class="pni" id="pnm" placeholder="Policy name (e.g. Summer 2025)">
+              <button class="bs pm" style="width:100%;margin-top:12px;padding:13px;font-size:14px" onclick="saveP()">Save &amp; Publish New Policy</button>
             </div>
           </div>
         </div>
-        <div class="card">
-          <div class="ch"><div class="ct">Version History</div></div>
-          <div class="cb"><div id="verlist">No versions yet</div></div>
-        </div>
+        <div class="cd"><div class="ch"><div class="ct">Version History</div></div><div class="cb"><div id="verl"><div style="color:var(--mu);font-size:13px;font-weight:600">No versions yet</div></div></div></div>
       </div>
     </div>
   </main>
 </div>
-
-<div class="mo" id="tncmo" onclick="if(event.target.id==='tncmo')closeTnC()">
-  <div class="mbox">
-    <div class="mhdr">
-      <div class="mttl">Student View - Reward Policy</div>
-      <button class="mcls" onclick="closeTnC()">X</button>
-    </div>
-    <div class="mbdy">
-      <p style="font-size:12px;color:var(--mu);margin-bottom:16px;line-height:1.5">This is exactly how the reward policy appears to students on their dashboard.</p>
-      <div class="tnc-card">
-        <div class="tnc-hdr"><h3 id="tncbrand">Refer and Earn</h3><p id="tncpnm">Current Policy</p></div>
-        <div id="tncrows"></div>
-      </div>
+<div class="mo" id="tnc" onclick="if(event.target.id==='tnc')clTnC()">
+  <div class="mx">
+    <div class="mh"><div class="mt2">Student View - Reward Terms</div><button class="mc" onclick="clTnC()">&#10005;</button></div>
+    <div class="mbd">
+      <p style="font-size:12px;color:var(--mu);margin-bottom:18px;line-height:1.6;font-weight:500">This is exactly how the reward policy appears to students on their dashboard.</p>
+      <div class="tc"><div class="th2"><h3 id="tnb">Refer &amp; Earn</h3><p id="tnp">Current Reward Policy</p></div><div id="tnr"></div></div>
     </div>
   </div>
 </div>
-
 <div id="toast"></div>
-
 <script>
-var MU = 'https://script.google.com/macros/s/AKfycbz8AUqmXYOnCqv5cmoLssTnJP_hwChHg8fYuj1l5BSJDgAxag7jFRQcfMJzD6sE6CZc/exec';
-var _org='',_sid='',_brd='',_pw='',_pve=false;
+var MU="https://script.google.com/macros/s/AKfycbz8AUqmXYOnCqv5cmoLssTnJP_hwChHg8fYuj1l5BSJDgAxag7jFRQcfMJzD6sE6CZc/exec";
+var RS="\u20B9";
+var _org="",_sid="",_brd="",_pw="",_pwv=false;
 var _refs=[],_leads=[],_pays=[];
-var _lf='all',_pf='all';
-var _pol=null,_pvs=[],_mdl='pct';
-var _df={type:'today',from:null,to:null};
+var _lf="all",_pf="all";
+var _pol=null,_pvs=[],_mdl="pct";
+var _df={type:"month",from:null,to:null};
 
-window.onload = function(){
-  _org=(new URLSearchParams(location.search).get('org')||'').trim().toUpperCase();
-  if(!_org){g('lloading').textContent='Error: No ?org= in URL';return;}
-  g('lloading').textContent='Loading config for '+_org+'...';
-  jsnp(MU+'?action=getClient&org='+_org, function(r){
-    if(!r.ok){g('lloading').textContent='Error: '+(r.error||'Not found');return;}
-    _sid=(r.data.SheetID||'').trim();
-    _brd=(r.data.Brand||_org).trim();
-    _pw=(r.data.AdminPassword||'').trim();
-    g('lbrand').textContent=_brd+' - Admin';
-    g('lloading').style.display='none';
-    g('lform').style.display='block';
-    g('sbbrand').textContent=_brd;
-    g('sborg').textContent='org: '+_org;
-    setDF('today',document.querySelector('.dpill.active'));
-    try{if(sessionStorage.getItem('ra_'+_org)==='ok')unlock();}catch(ex){}
-  }, function(){g('lloading').textContent='Network error. Retry.';});
+window.onload=function(){
+  _org=(new URLSearchParams(location.search).get("org")||"").trim().toUpperCase();
+  if(!_org){st("lgl","Error: No ?org= in URL");return;}
+  st("lgl","Loading config for "+_org+"...");
+  jp(MU+"?action=getClient&org="+_org,function(r){
+    if(!r.ok){st("lgl","Error: "+(r.error||"Not found"));return;}
+    var c=r.data;
+    _sid=(c.SheetID||"").trim();_brd=(c.Brand||_org).trim();_pw=(c.AdminPassword||"").trim();
+    st("lgb",_brd+" - Admin");
+    g("lgl").style.display="none";g("lgf").style.display="block";
+    st("sbr",_brd);st("sbt","org: "+_org);
+    setDF("month",document.querySelector(".dp.on"),false);
+    try{if(sessionStorage.getItem("ra_"+_org)==="ok")unlock();}catch(e){}
+  },function(){st("lgl","Network error. Retry.");});
 };
 
-function togPw(){
-  _pve=!_pve;
-  g('pwi').type=_pve?'text':'password';
-  g('pweye').textContent=_pve?'👀':'👁';
+function togPw(){_pwv=!_pwv;g("pwi").type=_pwv?"text":"password";st("eye",_pwv?"Hide":"Show");}
+function chk(){
+  var v=g("pwi").value.trim();if(!v){st("lerr","Enter password");return;}
+  if(_pw){vfy(v);return;}
+  api("getAdminPassword",{},function(r){_pw=(r.ok&&r.data&&r.data.pw)?r.data.pw:"";vfy(v);});
 }
-function chkPw(){
-  var v=g('pwi').value.trim();
-  if(!v){g('lerr').textContent='Enter password';return;}
-  if(_pw){vrfy(v);return;}
-  api('getAdminPassword',{},function(r){
-    _pw=(r.ok&&r.data&&r.data.pw)?r.data.pw:'';
-    vrfy(v);
-  });
+function vfy(v){
+  if(v===_pw){try{sessionStorage.setItem("ra_"+_org,"ok");}catch(e){}unlock();}
+  else{st("lerr","Incorrect password");g("pwi").value="";}
 }
-function vrfy(v){
-  if(v===_pw){
-    try{sessionStorage.setItem('ra_'+_org,'ok');}catch(ex){}
-    unlock();
-  } else {
-    g('lerr').textContent='Incorrect password';
-    g('pwi').value='';
-  }
-}
-function unlock(){
-  g('ls').style.display='none';
-  g('app').style.display='block';
-  loadAll();
-}
-function logout(){
-  try{sessionStorage.removeItem('ra_'+_org);}catch(ex){}
-  location.reload();
-}
+function unlock(){g("ls").style.display="none";g("app").style.display="block";loadAll();}
+function logout(){try{sessionStorage.removeItem("ra_"+_org);}catch(e){}location.reload();}
 
 function api(a,p,cb,eb){
-  var u=MU+'?action='+a+'&sheetId='+encodeURIComponent(_sid);
-  Object.keys(p||{}).forEach(function(k){u+='&'+k+'='+encodeURIComponent(p[k]);});
-  jsnp(u,cb,eb);
+  var u=MU+"?action="+a+"&sheetId="+encodeURIComponent(_sid);
+  Object.keys(p||{}).forEach(function(k){u+="&"+k+"="+encodeURIComponent(p[k]);});
+  jp(u,cb,eb);
 }
-function jsnp(u,cb,eb){
-  var n='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
-  var tid;
+function jp(u,cb,eb){
+  var n="cb_"+Date.now()+"_"+Math.random().toString(36).slice(2);var tid;
   window[n]=function(d){clearTimeout(tid);delete window[n];if(tag&&tag.parentNode)tag.parentNode.removeChild(tag);cb(d);};
-  var tag=document.createElement('script');
-  tag.src=u+(u.indexOf('?')>=0?'&':'?')+'callback='+n;
-  tag.onerror=function(){clearTimeout(tid);delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();else toast('API error','err');};
-  tid=setTimeout(function(){delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();else toast('Timeout','err');},15000);
+  var tag=document.createElement("script");
+  tag.src=u+(u.indexOf("?")>=0?"&":"?")+"callback="+n;
+  tag.onerror=function(){clearTimeout(tid);delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();else toast("API error","err");};
+  tid=setTimeout(function(){delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();else toast("Timeout","err");},15000);
   document.head.appendChild(tag);
 }
 
-function loadAll(){loadOv();loadRefs();loadLeads();loadPay();loadPol();}
+function loadAll(){ldOv();ldRf();ldLd();ldPy();ldPol();}
 
 function ds(d){var x=new Date(d);x.setHours(0,0,0,0);return x;}
 function de(d){var x=new Date(d);x.setHours(23,59,59,999);return x;}
-function setDF(type,btn){
+function setDF(type,btn,doLoad){
   _df.type=type;
-  document.querySelectorAll('.dpill').forEach(function(b){b.classList.remove('active');});
-  if(btn)btn.classList.add('active');
-  g('crow').classList.toggle('show',type==='custom');
-  if(type!=='custom'){
+  document.querySelectorAll(".dp").forEach(function(b){b.classList.remove("on");});
+  if(btn)btn.classList.add("on");
+  g("cr").classList.toggle("show",type==="custom");
+  if(type!=="custom"){
     var now=new Date(),d=new Date();
-    if(type==='today'){_df.from=ds(d);_df.to=de(d);}
-    else if(type==='yesterday'){d.setDate(d.getDate()-1);_df.from=ds(d);_df.to=de(d);}
-    else if(type==='week'){_df.from=ds(new Date(+now-6*864e5));_df.to=de(now);}
-    else if(type==='month'){_df.from=ds(new Date(+now-29*864e5));_df.to=de(now);}
+    if(type==="today"){_df.from=ds(d);_df.to=de(d);}
+    else if(type==="yesterday"){d.setDate(d.getDate()-1);_df.from=ds(d);_df.to=de(d);}
+    else if(type==="week"){_df.from=ds(new Date(+now-6*864e5));_df.to=de(now);}
+    else if(type==="month"){_df.from=ds(new Date(+now-29*864e5));_df.to=de(now);}
     else{_df.from=null;_df.to=null;}
-    loadAll();
+    if(doLoad!==false)loadAll();
   }
 }
 function applyC(){
-  var f=g('cdf').value,t=g('cdt').value;
-  _df.from=f?ds(new Date(f)):null;
-  _df.to=t?de(new Date(t)):null;
+  var f=g("cf").value,t=g("ct").value;
+  _df.from=f?ds(new Date(f)):null;_df.to=t?de(new Date(t)):null;
   loadAll();
 }
-function inRng(v){
+function inR(v){
   if(!_df.from&&!_df.to)return true;
-  var d=pDate(v);
-  if(!d)return true;
+  var d=pd(v);if(!d)return true;
   if(_df.from&&d<_df.from)return false;
   if(_df.to&&d>_df.to)return false;
   return true;
 }
-function pDate(v){
-  if(!v)return null;
-  var s=v.toString().trim();
-  if(!s||s==='0')return null;
-  if(s.indexOf('T')>=0)s=s.split('T')[0];
-  else if(s.indexOf(' ')>=0)s=s.split(' ')[0];
-  var d=new Date(s);
-  if(!isNaN(d.getTime()))return d;
-  var m=s.match(/(d{1,2})s+(w{3})s+(d{4})/);
-  if(m){d=new Date(m[1]+' '+m[2]+' '+m[3]);if(!isNaN(d.getTime()))return d;}
+function pd(v){
+  if(!v)return null;var s=v.toString().trim();
+  if(!s||s==="0")return null;
+  if(s.indexOf("T")>0)s=s.split("T")[0];
+  else if(s.indexOf(" ")>0)s=s.split(" ")[0];
+  var d=new Date(s);if(!isNaN(d.getTime()))return d;
+  var m=s.match(/(\d{1,2})\s+(\w{3})\s+(\d{4})/);
+  if(m){d=new Date(m[1]+" "+m[2]+" "+m[3]);if(!isNaN(d.getTime()))return d;}
   return null;
 }
-function cDate(v){
-  if(!v)return '-';
-  var s=v.toString().trim();
-  if(!s||s==='0')return '-';
-  if(s.indexOf('T')>=0)s=s.split('T')[0];
-  else s=s.replace(/s+d{1,2}:d{2}(:d{2})?(s*(AM|PM))?$/i,'').trim();
-  return s||'-';
+function cd(v){
+  if(!v)return "-";var s=v.toString().trim();
+  if(!s||s==="0")return "-";
+  if(s.indexOf("T")>0)return s.split("T")[0];
+  if(s.indexOf(" ")>0)return s.split(" ")[0];
+  return s;
 }
 
-var RU = 'Rs ';
-function loadOv(){
-  api('getStats',{},function(r){
-    if(!r.ok)return;
-    var s=r.data;
-    st('ov-refs',s.totalReferrers);
-    st('ov-leads',s.totalLeads);
-    st('ov-dl',s.downloaded);
-    st('ov-dlr',s.downloadRate+'% download rate');
-    st('ov-conv',s.converted);
-    st('ov-convr',s.conversionRate+'% conversion rate');
-    st('ov-earned',RU+nm(s.totalEarned));
-    st('ov-paid',RU+nm(s.totalPaidOut));
-    st('ov-pend',RU+nm(s.pendingPayouts));
-    st('ov-rev',RU+nm(s.tutorRevenue));
+function ldOv(){
+  api("getStats",{},function(r){
+    if(!r.ok)return;var s=r.data;
+    st("s1",s.totalReferrers);st("s2",s.totalLeads);
+    st("s5",s.downloaded);st("s2b",(s.downloadRate||0)+"% download rate");
+    st("s3",s.converted);st("s3b",(s.conversionRate||0)+"% conversion rate");
+    st("s4",RS+nm(s.tutorRevenue));st("s6",RS+nm(s.totalEarned));
+    st("s7",RS+nm(s.totalPaidOut));st("s8",RS+nm(s.pendingPayouts));
   });
 }
 
-function loadRefs(){
-  api('getAllReferrers',{},function(r){
-    if(!r.ok)return;
-    _refs=r.data||[];
-    renderTop3();renderRefs();
-  });
+function ldRf(){
+  api("getAllReferrers",{},function(r){if(!r.ok)return;_refs=r.data||[];rnTop5();rnRf();});
 }
-function renderTop3(){
-  var s=_refs.slice().sort(function(a,b){return(Number(b.TotalConverted)||0)-(Number(a.TotalConverted)||0);}).slice(0,3);
-  var e=g('top3');
-  if(!s.length){e.textContent='No referrers yet';return;}
-  var medals=['1st','2nd','3rd'];
-  e.innerHTML=s.map(function(r,i){
-    return '<div class="trrow"><div class="rrank">'+medals[i]+'</div>'+
-      '<div class="rinfo"><div class="rname">'+esc(r.Name)+'</div>'+
-      '<div class="rstat">'+esc(r.Mobile)+' - UID: '+esc(r.UID)+' - '+(r.TotalConverted||0)+' converted</div></div>'+
-      '<div class="rearn">'+RU+nm(r.TotalEarned)+'</div></div>';
-  }).join('');
+function rnTop5(){
+  var sorted=_refs.filter(function(r){return inR(r.JoinedDate)||Number(r.TotalConverted)>0;}).slice();
+  sorted.sort(function(a,b){return(Number(b.TotalConverted)||0)-(Number(a.TotalConverted)||0);});
+  sorted=sorted.slice(0,5);
+  var el=g("top5");
+  if(!sorted.length){el.innerHTML="<div style='color:var(--mu);font-size:14px;text-align:center;padding:20px;font-weight:600'>No referrers yet</div>";return;}
+  var medals=["&#127942;","&#129352;","&#129353;","4","5"];
+  var mclass=["g1","g2","g3","gn","gn"];
+  el.innerHTML=sorted.map(function(r,i){
+    var leads=Number(r.TotalReferred)||0;
+    var conv=Number(r.TotalConverted)||0;
+    var earn=Number(r.TotalEarned)||0;
+    var sales=Number(r.TotalSales)||0;
+    return "<div class='tr-card'>"
+      +"<div class='tr-medal "+mclass[i]+"'>"+medals[i]+"</div>"
+      +"<div class='tr-info'>"
+        +"<div class='tr-name'>"+xe(r.Name||"-")+"</div>"
+        +"<div class='tr-stats'>"
+          +"<span class='tr-stat-item' style='color:var(--bl)'>&#128203; "+leads+" leads</span>"
+          +"<span class='tr-stat-item' style='color:#b45309'>&#127919; "+conv+" converted</span>"
+          +"<span class='tr-stat-item' style='color:#7c3aed'>&#128176; "+RS+nm(sales)+" sales</span>"
+        +"</div>"
+      +"</div>"
+      +"<div class='tr-earn'>"+RS+nm(earn)+"</div>"
+      +"</div>";
+  }).join("");
 }
-function renderRefs(){
-  var q=(g('rs').value||'').toLowerCase();
-  var srt=g('rsort').value;
+function rnRf(){
+  var q=(g("rfs").value||"").toLowerCase().trim();
+  var srt=g("rso").value;
   var list=_refs.filter(function(r){
-    if(!inRng(r.JoinedDate))return false;
+    if(!inR(r.JoinedDate))return false;
     if(!q)return true;
-    return (r.Name||'').toLowerCase().indexOf(q)>=0||(r.Mobile||'').indexOf(q)>=0||(r.UID||'').toLowerCase().indexOf(q)>=0;
+    return(r.Name||"").toLowerCase().indexOf(q)>=0||(r.Mobile||"").indexOf(q)>=0||(r.UID||"").toLowerCase().indexOf(q)>=0;
   });
-  if(srt==='conv')list.sort(function(a,b){return(Number(b.TotalConverted)||0)-(Number(a.TotalConverted)||0);});
-  else if(srt==='earn')list.sort(function(a,b){return(Number(b.TotalEarned)||0)-(Number(a.TotalEarned)||0);});
-  else list.sort(function(a,b){return(a.Name||'').localeCompare(b.Name||'');});
-  st('rcnt',list.length+' of '+_refs.length);
-  g('rbody').innerHTML=list.length?list.map(function(r,i){
-    return '<tr><td style="color:var(--mu)">'+(i+1)+'</td>'+
-      '<td style="font-weight:600">'+esc(r.Name)+'</td>'+
-      '<td>'+esc(r.Mobile)+'</td>'+
-      '<td><code>'+esc(r.UID)+'</code></td>'+
-      '<td style="text-align:center">'+(r.TotalReferred||0)+'</td>'+
-      '<td style="text-align:center">'+(r.TotalDownloaded||0)+'</td>'+
-      '<td style="text-align:center"><strong>'+(r.TotalConverted||0)+'</strong></td>'+
-      '<td style="text-align:right;font-weight:700;color:var(--grn)">'+RU+nm(r.TotalEarned)+'</td>'+
-      '<td style="color:var(--mu)">'+cDate(r.JoinedDate)+'</td>'+
-      '<td><button class="bsm" onclick="showPin(this,'+JSON.stringify(r.Mobile)+')">Show</button></td></tr>';
-  }).join(''):'<tr class="erow"><td colspan="10">No referrers found</td></tr>';
+  if(srt==="conv")list.sort(function(a,b){return(Number(b.TotalConverted)||0)-(Number(a.TotalConverted)||0);});
+  else if(srt==="earn")list.sort(function(a,b){return(Number(b.TotalEarned)||0)-(Number(a.TotalEarned)||0);});
+  else if(srt==="leads")list.sort(function(a,b){return(Number(b.TotalReferred)||0)-(Number(a.TotalReferred)||0);});
+  else list.sort(function(a,b){return(a.Name||"").localeCompare(b.Name||"");});
+  st("rc",list.length+" of "+_refs.length+" referrers");
+  g("rfb").innerHTML=list.length?list.map(function(r,i){
+    return "<tr><td style='color:var(--mu);font-weight:700'>"+(i+1)+"</td>"
+      +"<td style='font-weight:800'>"+xe(r.Name||"-")+"</td>"
+      +"<td style='font-weight:600'>"+xe(r.Mobile||"-")+"</td>"
+      +"<td><code>"+xe(r.UID||"-")+"</code></td>"
+      +"<td style='text-align:center;font-weight:700'>"+(r.TotalReferred||0)+"</td>"
+      +"<td style='text-align:center;font-weight:700'>"+(r.TotalDownloaded||0)+"</td>"
+      +"<td style='text-align:center;font-weight:800;color:var(--bl)'>"+(r.TotalConverted||0)+"</td>"
+      +"<td style='text-align:right;font-weight:900;color:#15803d'>"+RS+nm(r.TotalEarned)+"</td>"
+      +"<td style='color:var(--mu);white-space:nowrap;font-weight:600'>"+cd(r.JoinedDate)+"</td>"
+      +"<td><button class='bs' onclick='shP(this,\""+xe(r.Mobile||"")+"\")' style='font-size:11px;padding:5px 10px'>Show</button></td>"
+      +"</tr>";
+  }).join(""):"<tr class='er'><td colspan='10'>No referrers found"+(q?" for: "+xe(q):"")+"</td></tr>";
 }
-function showPin(btn,mob){
-  if(btn.dataset.pin){
-    btn.textContent=btn.dataset.shown==='1'?'Show':btn.dataset.pin;
-    btn.dataset.shown=btn.dataset.shown==='1'?'0':'1';
-    return;
-  }
-  btn.textContent='...';
-  api('getPin',{mobile:mob},function(r){
-    var p=(r.ok&&r.data&&r.data.pin)?r.data.pin:'N/A';
-    btn.dataset.pin=p;btn.dataset.shown='1';btn.textContent=p;
-  });
+function shP(btn,mob){
+  if(btn.dataset.p){btn.textContent=btn.dataset.sh==="1"?"Show":btn.dataset.p;btn.dataset.sh=btn.dataset.sh==="1"?"0":"1";return;}
+  btn.textContent="...";
+  api("getPin",{mobile:mob},function(r){var p=(r.ok&&r.data&&r.data.pin)?r.data.pin:"N/A";btn.dataset.p=p;btn.dataset.sh="1";btn.textContent=p;});
 }
 
-function loadLeads(){
-  api('getAllLeads',{},function(r){if(!r.ok)return;_leads=r.data||[];renderLeads();});
+function ldLd(){
+  api("getAllLeads",{},function(r){if(!r.ok)return;_leads=r.data||[];rnLd();});
 }
-function setLF(f,btn){
-  _lf=f;
-  document.querySelectorAll('#s-leads .fp').forEach(function(b){b.classList.remove('active');});
-  if(btn)btn.classList.add('active');
-  renderLeads();
-}
-function renderLeads(){
-  var q=(g('ls2').value||'').toLowerCase();
+function setLF(f,btn){_lf=f;document.querySelectorAll("#s-ld .fp").forEach(function(b){b.classList.remove("on");});if(btn)btn.classList.add("on");rnLd();}
+function rnLd(){
+  var q=(g("lds").value||"").toLowerCase().trim();
   var list=_leads.filter(function(l){
-    if(!inRng(l.ReferredDate))return false;
-    var st=(l.Status||'').toLowerCase();
-    if(_lf!=='all'&&st!==_lf)return false;
+    if(!inR(l.ReferredDate))return false;
+    var s=(l.Status||"").toLowerCase();
+    if(_lf!=="all"&&s!==_lf)return false;
     if(!q)return true;
-    return (l.LeadName||'').toLowerCase().indexOf(q)>=0||
-           (l.LeadMobile||'').indexOf(q)>=0||
-           (l.ReferrerUID||'').toLowerCase().indexOf(q)>=0||
-           (l.CourseName||'').toLowerCase().indexOf(q)>=0;
+    return(l.LeadName||"").toLowerCase().indexOf(q)>=0||(l.LeadMobile||"").indexOf(q)>=0
+      ||(l.ReferrerUID||"").toLowerCase().indexOf(q)>=0||(l.ReferrerName||"").toLowerCase().indexOf(q)>=0
+      ||(l.CourseName||"").toLowerCase().indexOf(q)>=0;
   });
-  st('lcnt',list.length+' of '+_leads.length);
-  g('lbody').innerHTML=list.length?list.map(function(l,i){
-    var st2=(l.Status||'').toLowerCase();
-    var bc=st2==='converted'?'bg':st2==='downloaded'?'bb':st2==='expired'?'br2':'bm';
-    return '<tr><td style="color:var(--mu)">'+(i+1)+'</td>'+
-      '<td style="font-weight:600">'+esc(l.LeadName)+'</td>'+
-      '<td>'+esc(l.LeadMobile)+'</td>'+
-      '<td><code>'+esc(l.ReferrerUID)+'</code></td>'+
-      '<td><span class="badge '+bc+'">'+st2+'</span></td>'+
-      '<td>'+cDate(l.ReferredDate)+'</td>'+
-      '<td>'+cDate(l.DownloadDate)+'</td>'+
-      '<td>'+cDate(l.PurchaseDate)+'</td>'+
-      '<td style="color:var(--mu)">'+esc(l.CourseName||'-')+'</td>'+
-      '<td style="font-weight:700;color:var(--grn)">'+(l.ReferrerReward?RU+nm(l.ReferrerReward):'-')+'</td></tr>';
-  }).join(''):'<tr class="erow"><td colspan="10">No leads found</td></tr>';
+  st("lc2",list.length+" of "+_leads.length+" leads");
+  g("ldb").innerHTML=list.length?list.map(function(l,i){
+    var s=(l.Status||"").toLowerCase();
+    var bc=s==="converted"?"bg2":s==="downloaded"?"bb2":s==="expired"?"br2":"bm2";
+    return "<tr><td style='color:var(--mu);font-weight:700'>"+(i+1)+"</td>"
+      +"<td style='font-weight:800'>"+xe(l.LeadName||"-")+"</td>"
+      +"<td style='font-weight:600'>"+xe(l.LeadMobile||"-")+"</td>"
+      +"<td style='font-weight:600'>"+xe(l.ReferrerName||l.ReferrerUID||"-")+"</td>"
+      +"<td><span class='badge "+bc+"'>"+s+"</span></td>"
+      +"<td style='white-space:nowrap;font-weight:600'>"+cd(l.ReferredDate)+"</td>"
+      +"<td style='white-space:nowrap;font-weight:600'>"+cd(l.DownloadDate)+"</td>"
+      +"<td style='white-space:nowrap;font-weight:600'>"+cd(l.PurchaseDate)+"</td>"
+      +"<td style='color:var(--mu);font-weight:600'>"+xe(l.CourseName||"-")+"</td>"
+      +"<td style='font-weight:900;color:#15803d'>"+(l.ReferrerReward?RS+nm(l.ReferrerReward):"-")+"</td>"
+      +"</tr>";
+  }).join(""):"<tr class='er'><td colspan='10'>No leads found"+(q?" for: "+xe(q):"")+"</td></tr>";
 }
 
-function loadPay(){
-  api('getPayouts',{},function(r){if(!r.ok)return;_pays=r.data||[];renderPay();});
+function ldPy(){
+  api("getPayouts",{},function(r){
+    if(!r.ok)return;_pays=r.data||[];
+    var total=0,paid=0,pend=0;
+    _pays.forEach(function(p){
+      var amt=Number(p.Amount)||0;total+=amt;
+      if((p.Status||"").toLowerCase()==="paid")paid+=amt;else pend+=amt;
+    });
+    st("py-total",RS+nm(total));st("py-paid",RS+nm(paid));st("py-pend",RS+nm(pend));
+    st("s7",RS+nm(paid));st("s8",RS+nm(pend));
+    rnPy();
+  });
 }
-function setPF(f,btn){
-  _pf=f;
-  document.querySelectorAll('#s-payouts .fp').forEach(function(b){b.classList.remove('active');});
-  if(btn)btn.classList.add('active');
-  renderPay();
-}
-function renderPay(){
-  var q=(g('ps').value||'').toLowerCase();
+function setPF(f,btn){_pf=f;document.querySelectorAll("#s-py .fp").forEach(function(b){b.classList.remove("on");});if(btn)btn.classList.add("on");rnPy();}
+function rnPy(){
+  var q=(g("pys").value||"").toLowerCase().trim();
   var list=_pays.filter(function(p){
-    if(!inRng(p.ClaimDate))return false;
-    if(_pf!=='all'&&(p.Status||'').toLowerCase()!==_pf)return false;
+    if(!inR(p.ClaimDate))return false;
+    if(_pf!=="all"&&(p.Status||"").toLowerCase()!==_pf)return false;
     if(!q)return true;
-    return (p.Name||'').toLowerCase().indexOf(q)>=0||
-           (p.UPI||'').toLowerCase().indexOf(q)>=0||
-           (p.PayoutID||'').toLowerCase().indexOf(q)>=0;
+    return(p.Name||"").toLowerCase().indexOf(q)>=0||(p.UPI||"").toLowerCase().indexOf(q)>=0
+      ||(p.PayoutID||"").toLowerCase().indexOf(q)>=0;
   });
-  st('pcnt',list.length+' of '+_pays.length);
-  g('pbody').innerHTML=list.length?list.map(function(p,i){
-    var st2=(p.Status||'').toLowerCase();
-    var bc=st2==='paid'?'bg':st2==='pending'?'ba':'bm';
-    var act=st2==='pending'?'<button class="bsm primary" onclick="markPaid('+JSON.stringify(p.PayoutID)+')">Mark Paid</button>':'-';
-    return '<tr><td style="color:var(--mu)">'+(i+1)+'</td>'+
-      '<td><code>'+esc(p.PayoutID)+'</code></td>'+
-      '<td style="font-weight:600">'+esc(p.Name)+'</td>'+
-      '<td style="color:var(--blue)">'+esc(p.UPI)+'</td>'+
-      '<td style="font-weight:700;text-align:right">'+RU+nm(p.Amount)+'</td>'+
-      '<td><span class="badge '+bc+'">'+st2+'</span></td>'+
-      '<td>'+cDate(p.ClaimDate)+'</td>'+
-      '<td>'+cDate(p.PaidDate)+'</td>'+
-      '<td>'+act+'</td></tr>';
-  }).join(''):'<tr class="erow"><td colspan="9">No payouts found</td></tr>';
+  st("pc",list.length+" of "+_pays.length+" requests");
+  g("pyb").innerHTML=list.length?list.map(function(p,i){
+    var s=(p.Status||"").toLowerCase();
+    var bc=s==="paid"?"bg2":s==="pending"?"ba2":"bm2";
+    var act=s==="pending"?"<button class='bs pm' onclick='mkP(\""+xe(p.PayoutID||"")+"\")' style='font-size:11px;padding:6px 12px'>Mark Paid</button>":"-";
+    return "<tr><td style='color:var(--mu);font-weight:700'>"+(i+1)+"</td>"
+      +"<td><code style='font-size:11px'>"+xe(p.PayoutID||"-")+"</code></td>"
+      +"<td style='font-weight:800'>"+xe(p.Name||"-")+"</td>"
+      +"<td style='color:var(--bl);font-weight:600'>"+xe(p.UPI||"-")+"</td>"
+      +"<td style='font-weight:900;color:#15803d;text-align:right'>"+RS+nm(p.Amount)+"</td>"
+      +"<td><span class='badge "+bc+"'>"+s+"</span></td>"
+      +"<td style='white-space:nowrap;font-weight:600'>"+cd(p.ClaimDate)+"</td>"
+      +"<td style='white-space:nowrap;font-weight:600'>"+cd(p.PaidDate)+"</td>"
+      +"<td>"+act+"</td>"
+      +"</tr>";
+  }).join(""):"<tr class='er'><td colspan='9'>No payout requests"+(q?" for: "+xe(q):"")+"</td></tr>";
 }
-function markPaid(id){
-  if(!confirm('Mark payout '+id+' as paid?'))return;
-  api('updatePayoutStatus',{payoutID:id,status:'paid'},function(r){
-    if(r.ok){toast('Marked as paid','ok');loadPay();loadOv();}
-    else toast('Error: '+r.error,'err');
+function mkP(id){
+  if(!confirm("Mark payout "+id+" as paid?"))return;
+  api("updatePayoutStatus",{payoutID:id,status:"paid"},function(r){
+    if(r.ok){toast("Marked as paid","ok");ldPy();ldOv();}else toast("Error: "+r.error,"err");
   });
 }
 
-function loadPol(){
-  api('getAllPolicies',{},function(r){
-    if(!r.ok||!r.data||!r.data.length){loadPolFb();return;}
+function ldPol(){
+  api("getAllPolicies",{},function(r){
+    if(!r.ok||!r.data||!r.data.length){ldPolFb();return;}
     _pvs=r.data;
-    var active=_pvs.filter(function(p){return(p.Status||'').toLowerCase()==='active';});
+    var active=_pvs.filter(function(p){return(p.Status||"").toLowerCase()==="active";});
     var cur=active.length?active[active.length-1]:_pvs[_pvs.length-1];
-    _pol=cur;applyPol(cur);renderVers(_pvs);
+    _pol=cur;apPol(cur);rnVer(_pvs);
   });
 }
-function loadPolFb(){api('getPolicy',{},function(r){if(r.ok){_pol=r.data;applyPol(r.data);}else updPrev();});}
-function applyPol(p){
-  _mdl=(p.Model||'pct').toLowerCase();
-  g('sref').value=Number(p.ReferrerPct)||10;
-  g('sree').value=Number(p.RefereePct)||0;
-  g('swin').value=Number(p.WindowDays)||15;
-  g('smin').value=Number(p.MinClaim)||500;
-  setMdl(_mdl,true);updPrev();
-  g('ltxt').textContent='Referrers earn '+(Number(p.ReferrerPct)||10)+'% - Window: '+(Number(p.WindowDays)||15)+' days';
-  g('lver').textContent='v'+(Number(p.Version)||1)+' live';
+function ldPolFb(){api("getPolicy",{},function(r){if(r.ok){_pol=r.data;apPol(r.data);}else updP();});}
+function apPol(p){
+  _mdl=(p.Model||"pct").toLowerCase();
+  g("sr").value=Number(p.ReferrerPct)||10;g("se").value=Number(p.RefereePct)||0;
+  g("sw").value=Number(p.WindowDays)||15;g("sm").value=Number(p.MinClaim)||500;
+  setMdl(_mdl,true);updP();
+  g("lvt").textContent="Earn "+(Number(p.ReferrerPct)||10)+"% per conversion - Window: "+(Number(p.WindowDays)||15)+"d - Min: "+RS+(Number(p.MinClaim)||500);
+  g("lvv").textContent="v"+(Number(p.Version)||1)+" live";
 }
-function setMdl(m,s){
-  _mdl=m;var ip=m==='pct';
-  g('pctc').style.display=ip?'block':'none';
-  g('mpct').classList.toggle('active',ip);
-  g('mflat').classList.toggle('active',!ip);
-  if(!s)updPrev();
+function setMdl(m,s){_mdl=m;var ip=m==="pct";g("pc2").style.display=ip?"block":"none";g("mp").classList.toggle("on",ip);g("mf").classList.toggle("on",!ip);if(!s)updP();}
+function updP(){
+  var ref=parseInt(g("sr").value)||10;var ree=parseInt(g("se").value)||0;
+  var win=parseInt(g("sw").value)||15;var min=parseInt(g("sm").value)||500;
+  g("vr").textContent=ref+"%";g("ve").textContent=ree+"%";
+  g("vw").textContent=win+" days";g("vm").textContent=RS+nm(min);
+  var rE=Math.round(5000*ref/100);var reE=Math.round(rE*ree/100);
+  g("ppv").innerHTML="Example: "+RS+"5,000 course - Referrer earns <strong>"+RS+nm(rE)+"</strong>"+(ree>0?", Referee gets <strong>"+RS+nm(reE)+"</strong>":"")+". Window: <strong>"+win+" days</strong>. Min claim: <strong>"+RS+nm(min)+"</strong>";
 }
-function updPrev(){
-  var ref=parseInt(g('sref').value)||10;
-  var ree=parseInt(g('sree').value)||0;
-  var win=parseInt(g('swin').value)||15;
-  var min=parseInt(g('smin').value)||500;
-  g('vref').textContent=ref+'%';
-  g('vree').textContent=ree+'%';
-  g('vwin').textContent=win+' days';
-  g('vmin').textContent=RU+nm(min);
-  var rE=Math.round(5000*ref/100);
-  var reE=Math.round(rE*ree/100);
-  g('pprev').innerHTML='Example - Rs 5000 course: Referrer earns <strong>Rs '+nm(rE)+'</strong>'+(ree>0?', Referee gets <strong>Rs '+nm(reE)+'</strong>':'')+' - Window: <strong>'+win+' days</strong> - Min: <strong>Rs '+nm(min)+'</strong>';
-}
-function renderVers(pvs){
+function rnVer(pvs){
   var rev=pvs.slice().reverse();
-  g('verlist').innerHTML=rev.length?rev.map(function(p,i){
-    var isL=(p.Status||'').toLowerCase()==='active';
-    var pn=p.PolicyName?'"'+esc(p.PolicyName)+'"':'Version '+p.Version;
-    return '<div class="vitem">'+
-      '<div class="vtop"><div>'+
-      '<div class="vname">'+pn+(isL?' <span class="badge bg" style="font-size:10px">Live</span>':'')+'</div>'+
-      '<div class="vdate">'+cDate(p.CreatedDate)+'</div></div>'+
-      (!isL?'<div class="vacts"><button class="bsm" onclick="reuseV('+i+')">Reuse</button> <button class="bsm danger" onclick="delV('+p.Version+')">Delete</button></div>':'<span class="badge bg">Active</span>')+'</div>'+
-      '<div class="vtags">'+
-      '<span class="vtag r">Ref '+(p.ReferrerPct||10)+'%</span>'+
-      '<span class="vtag e">Ree '+(p.RefereePct||0)+'%</span>'+
-      '<span class="vtag w">'+(p.WindowDays||15)+' days</span>'+
-      '<span class="vtag m">Min Rs '+(p.MinClaim||500)+'</span>'+
-      '</div></div>';
-  }).join(''):'<div style="color:var(--mu);font-size:13px">No versions yet</div>';
+  g("verl").innerHTML=rev.length?rev.map(function(p,i){
+    var isL=(p.Status||"").toLowerCase()==="active";
+    var pn=p.PolicyName?'"'+xe(p.PolicyName)+'"':"Version "+p.Version;
+    return "<div class='vi'><div class='vt'><div><div class='vn'>"+pn+(isL?" <span class='badge bg2' style='font-size:10px;padding:3px 8px'>Live</span>":"")+"</div><div class='vd'>"+cd(p.CreatedDate)+"</div></div>"
+      +(!isL?"<div class='va'><button class='bs' onclick='reuV("+i+")' style='font-size:11px;padding:5px 10px'>Reuse</button><button class='bs dn' onclick='delV("+p.Version+")' style='font-size:11px;padding:5px 10px'>Delete</button></div>":"<span class='badge bg2'>Active</span>")
+      +"</div><div class='vg'><span class='vta r'>Ref "+(p.ReferrerPct||10)+"%</span><span class='vta e'>Ree "+(p.RefereePct||0)+"%</span><span class='vta w'>"+(p.WindowDays||15)+" days</span><span class='vta m'>Min "+RS+(p.MinClaim||500)+"</span></div></div>";
+  }).join(""):"<div style='color:var(--mu);font-size:13px;font-weight:600'>No versions yet</div>";
 }
-function reuseV(i){var rev=_pvs.slice().reverse();applyPol(rev[i]);toast('Settings loaded - save to publish');}
-function delV(ver){
-  if(!confirm('Delete policy v'+ver+'?'))return;
-  api('deletePolicy',{version:ver},function(r){if(r.ok){toast('Deleted');loadPol();}else toast('Error: '+r.error,'err');});
-}
-function savePol(){
-  var ref=parseInt(g('sref').value)||10;
-  var ree=parseInt(g('sree').value)||0;
-  var win=parseInt(g('swin').value)||15;
-  var min=parseInt(g('smin').value)||500;
-  var pn=g('pname').value.trim();
-  api('savePolicy',{referrerPct:ref,refereePct:ree,windowDays:win,minClaim:min,model:_mdl,policyName:pn},function(r){
-    if(r.ok){toast('Policy v'+r.data.version+' published','ok');g('pname').value='';loadPol();loadOv();}
-    else toast('Error: '+r.error,'err');
+function reuV(i){var rev=_pvs.slice().reverse();apPol(rev[i]);toast("Settings loaded - save to publish");}
+function delV(ver){if(!confirm("Delete policy v"+ver+"?"))return;api("deletePolicy",{version:ver},function(r){if(r.ok){toast("Deleted");ldPol();}else toast("Error: "+r.error,"err");});}
+function saveP(){
+  var ref=parseInt(g("sr").value)||10;var ree=parseInt(g("se").value)||0;
+  var win=parseInt(g("sw").value)||15;var min=parseInt(g("sm").value)||500;
+  api("savePolicy",{referrerPct:ref,refereePct:ree,windowDays:win,minClaim:min,model:_mdl,policyName:g("pnm").value.trim()},function(r){
+    if(r.ok){toast("Policy v"+r.data.version+" published","ok");g("pnm").value="";ldPol();}
+    else toast("Error: "+r.error,"err");
   });
 }
-
-function openTnC(){
-  var ref=parseInt(g('sref').value)||10;
-  var ree=parseInt(g('sree').value)||0;
-  var win=parseInt(g('swin').value)||15;
-  var min=parseInt(g('smin').value)||500;
-  var pn=g('pname').value.trim()||(_pol&&_pol.PolicyName?_pol.PolicyName:'Current Reward Policy');
-  var rE=Math.round(5000*ref/100);
-  var reE=Math.round(rE*ree/100);
-  g('tncbrand').textContent=_brd+' - Refer and Earn';
-  g('tncpnm').textContent=pn;
-  g('tncrows').innerHTML=
-    '<div class="tnr"><div class="tni" style="background:#fff3e0">💰</div><div class="tnt"><strong>You earn</strong><span>'+ref+'% of course price when referral purchases. Rs '+nm(rE)+' on a Rs 5,000 course.</span></div></div>'+
-    (ree>0?'<div class="tnr"><div class="tni" style="background:#e8f5e9">🎁</div><div class="tnt"><strong>Friend gets discount</strong><span>Rs '+nm(reE)+' off on their first purchase.</span></div></div>':'')+
-    '<div class="tnr"><div class="tni" style="background:#e3f2fd">⏱</div><div class="tnt"><strong>Time window</strong><span>Friend must purchase within '+win+' days of downloading the app.</span></div></div>'+
-    '<div class="tnr"><div class="tni" style="background:#fce4ec">💳</div><div class="tnt"><strong>Minimum payout</strong><span>Claim once earnings reach Rs '+nm(min)+'. Paid via UPI.</span></div></div>'+
-    '<div class="tnr"><div class="tni" style="background:#f3e5f5">📊</div><div class="tnt"><strong>Track real time</strong><span>Check your dashboard anytime. Leads update every hour.</span></div></div>';
-  g('tncmo').classList.add('open');
+function opTnC(){
+  var ref=parseInt(g("sr").value)||10;var ree=parseInt(g("se").value)||0;
+  var win=parseInt(g("sw").value)||15;var min=parseInt(g("sm").value)||500;
+  var pn=g("pnm").value.trim()||(_pol&&_pol.PolicyName?_pol.PolicyName:"Current Reward Policy");
+  var rE=Math.round(5000*ref/100);var reE=Math.round(rE*ree/100);
+  g("tnb").textContent=_brd+" - Refer and Earn";g("tnp").textContent=pn;
+  g("tnr").innerHTML=
+    "<div class='tr2'><div class='ti2' style='background:#fff3e0'>&#128176;</div><div class='tt'><strong>You earn</strong><span>"+ref+"% of course price. E.g. "+RS+nm(rE)+" on a "+RS+"5,000 course.</span></div></div>"+
+    (ree>0?"<div class='tr2'><div class='ti2' style='background:#e8f5e9'>&#127873;</div><div class='tt'><strong>Friend gets discount</strong><span>"+RS+nm(reE)+" off on first purchase.</span></div></div>":"")+
+    "<div class='tr2'><div class='ti2' style='background:#e3f2fd'>&#9201;</div><div class='tt'><strong>Time window</strong><span>Friend must purchase within "+win+" days of downloading.</span></div></div>"+
+    "<div class='tr2'><div class='ti2' style='background:#fce4ec'>&#128179;</div><div class='tt'><strong>Minimum claim</strong><span>Claim when earnings reach "+RS+nm(min)+". Paid via UPI.</span></div></div>"+
+    "<div class='tr2'><div class='ti2' style='background:#f3e5f5'>&#128202;</div><div class='tt'><strong>Real-time tracking</strong><span>Dashboard updates every hour automatically.</span></div></div>";
+  g("tnc").classList.add("open");
 }
-function closeTnC(){g('tncmo').classList.remove('open');}
-
+function clTnC(){g("tnc").classList.remove("open");}
 function doSync(){
-  var btn=g('sbtn');var ic=g('sic');
-  btn.disabled=true;ic.textContent='...';
-  api('syncAll',{},function(r){
-    btn.disabled=false;ic.textContent='↻';
-    if(r.ok){
-      var d=r.data;
-      toast('Sync done - '+(d.downloads?d.downloads.updated:0)+' downloads, '+(d.transactions?d.transactions.converted:0)+' converted','ok');
-      loadAll();
-    } else toast('Sync error: '+r.error,'err');
+  var b=g("sb");b.disabled=true;g("sic").innerHTML="<span class='spin'></span>";
+  api("syncAll",{},function(r){
+    b.disabled=false;g("sic").textContent="&#8635;";
+    if(r.ok){var d=r.data;toast("Sync done - "+(d.downloads?d.downloads.updated:0)+" dl, "+(d.transactions?d.transactions.converted:0)+" converted","ok");loadAll();}
+    else toast("Sync error: "+r.error,"err");
   });
 }
-
-function showSec(id){
-  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
-  document.querySelectorAll('.nbtn').forEach(function(n){n.classList.remove('active');});
-  g('s-'+id).classList.add('active');
-  g('n-'+id).classList.add('active');
-  var T={overview:'Overview',referrers:'All Referrers',leads:'Leads',payouts:'Payouts',policy:'Reward Policy'};
-  var S={overview:'Today snapshot',referrers:'All registered referrers',leads:'Lead pipeline',payouts:'Payout requests',policy:'Reward policy settings'};
-  g('ptitle').textContent=(T[id]||id)+' - '+_brd;
-  g('psub').textContent=S[id]||'';
-  g('dfbar').style.display=id==='policy'?'none':'flex';
+function go(id){
+  document.querySelectorAll(".sec").forEach(function(s){s.classList.remove("on");});
+  document.querySelectorAll(".nb").forEach(function(n){n.classList.remove("on");});
+  g("s-"+id).classList.add("on");g("n-"+id).classList.add("on");
+  var T={ov:"Overview",rf:"All Referrers",ld:"Leads",py:"Payouts",po:"Reward Policy"};
+  var S={ov:"Last 30 days snapshot",rf:"All registered referrers",ld:"Lead pipeline",py:"Payout requests",po:"Reward policy settings"};
+  g("pgt").textContent=(T[id]||id)+" - "+_brd;
+  g("pgs").textContent=S[id]||"";
+  g("dfb").style.display=id==="po"?"none":"flex";
 }
-
 function g(id){return document.getElementById(id);}
 function st(id,v){var e=g(id);if(e)e.textContent=v;}
-function nm(n){return(Number(n)||0).toLocaleString('en-IN');}
-function esc(s){
-  var d=document.createElement('div');
-  d.textContent=s||'';
-  return d.innerHTML;
+function nm(n){return(Number(n)||0).toLocaleString("en-IN");}
+function xe(s){
+  if(!s)return "";
+  var o="",c;
+  for(var i=0;i<s.length;i++){
+    c=s.charCodeAt(i);
+    if(c===38)o=o+"&"+"amp;";
+    else if(c===60)o=o+"&"+"lt;";
+    else if(c===62)o=o+"&"+"gt;";
+    else o+=s[i];
+  }
+  return o;
 }
 var _tid;
 function toast(msg,cls){
-  var t=g('toast');t.textContent=msg;t.className=cls||'';t.classList.add('show');
-  clearTimeout(_tid);_tid=setTimeout(function(){t.classList.remove('show');},3500);
+  var t=g("toast");t.textContent=msg;t.className=cls||"";t.classList.add("show");
+  clearTimeout(_tid);_tid=setTimeout(function(){t.classList.remove("show");},3500);
 }
 </script>
 </body>
