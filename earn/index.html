@@ -192,6 +192,25 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 </head>
 <body>
 
+<!-- LANDING (shown when ?ref=UID in URL — captures lead then redirects to Play Store) -->
+<div id="landing-overlay" style="display:none;position:fixed;inset:0;background:linear-gradient(145deg,#4f46e5 0%,#7c3aed 50%,#ec4899 100%);z-index:1000;align-items:center;justify-content:center;padding:20px">
+  <div class="login-box">
+    <div class="login-logo">&#127891;</div>
+    <div class="login-title" id="land-title">You've been invited!</div>
+    <div class="login-sub" id="land-sub">Enter your details to get the app and start learning</div>
+    <div class="login-field">
+      <label>Your Name</label>
+      <input type="text" id="land-name" placeholder="Enter your full name" autocomplete="name">
+    </div>
+    <div class="login-field">
+      <label>Mobile Number</label>
+      <input type="tel" id="land-mobile" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" onkeydown="if(event.key==='Enter')submitLanding()">
+    </div>
+    <button class="login-btn" id="land-btn" onclick="submitLanding()">Get the App &#8594;</button>
+    <div class="login-error" id="land-error"></div>
+  </div>
+</div>
+
 <!-- LOGIN -->
 <div id="login-overlay">
   <div class="login-box">
@@ -216,7 +235,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
       </div>
       <div class="login-field">
         <label id="pin-label">Login PIN</label>
-        <input type="password" id="login-pin" placeholder="4-digit PIN" maxlength="4" inputmode="numeric" onkeydown="if(event.key==='Enter')loginSubmit()">
+        <div style="position:relative">
+          <input type="password" id="login-pin" placeholder="4-digit PIN" maxlength="4" inputmode="numeric" onkeydown="if(event.key==='Enter')loginSubmit()" style="width:100%;padding-right:44px">
+          <button type="button" onclick="togglePin()" id="pin-eye" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--mu);font-size:18px;line-height:1;padding:4px">&#128065;</button>
+        </div>
       </div>
       <button class="login-btn" id="login-btn2" onclick="loginSubmit()">Sign In &#8594;</button>
       <div style="text-align:center;margin-top:12px"><button onclick="backToStep1()" style="background:none;border:none;color:var(--mu);font-size:12px;font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer">&#8592; Change number</button></div>
@@ -381,6 +403,7 @@ var _myLink="";
 
 window.onload=function(){
   ORG=(new URLSearchParams(location.search).get("org")||"").trim().toUpperCase();
+  var REF=(new URLSearchParams(location.search).get("ref")||"").trim();
   if(!ORG){g("login-error").textContent="Error: No ?org= in URL";return;}
   jp(MU+"?action=getClient&org="+ORG,function(r){
     if(!r.ok){g("login-error").textContent="Error: "+(r.error||"Not found");return;}
@@ -390,13 +413,18 @@ window.onload=function(){
     APP_ID=(c.AppID||"").trim();
     g("hdr-brand").textContent=BRAND.toLowerCase();
     g("login-title").textContent=BRAND+" - Refer & Earn";
-    // Try auto-login from sessionStorage
-    try{
-      var sm=sessionStorage.getItem("re_m_"+ORG);
-      var su=sessionStorage.getItem("re_u_"+ORG);
-      var sn=sessionStorage.getItem("re_n_"+ORG);
-      if(sm&&su&&sn){MOBILE=sm;UID=su;NAME=sn;loginSuccess();}
-    }catch(e){}
+    if(REF){
+      // Referral landing — show name+mobile form, then redirect to Play Store
+      showLanding(REF);
+    } else {
+      // Normal login flow
+      try{
+        var sm=sessionStorage.getItem("re_m_"+ORG);
+        var su=sessionStorage.getItem("re_u_"+ORG);
+        var sn=sessionStorage.getItem("re_n_"+ORG);
+        if(sm&&su&&sn){MOBILE=sm;UID=su;NAME=sn;loginSuccess();}
+      }catch(e){}
+    }
   },function(){g("login-error").textContent="Network error. Retry.";});
 };
 
@@ -446,12 +474,16 @@ function loginSubmit(){
   } else {
     if(!/^\d{4}$/.test(pin)){setLE("Enter your 4-digit PIN");return;}
     var btn=g("login-btn2");btn.disabled=true;btn.textContent="Signing in...";setLE("");
-    api("verifyPin",{mobile:MOBILE,pin:pin},function(r){
+    // Fetch referrer record and compare PIN locally — avoids verifyPin API issues
+    api("getReferrer",{mobile:MOBILE},function(r){
       btn.disabled=false;btn.textContent="Sign In \u2192";
-      if(r.ok&&r.data&&r.data.valid){
-        UID=r.data.uid;NAME=r.data.name||MOBILE;PIN=pin;saveSession();loginSuccess();
+      if(!r.ok||!r.data){setLE("Mobile not found. Contact admin.");return;}
+      var stored=(r.data.PIN||"").toString().trim();
+      if(!stored){setLE("PIN not set. Please re-register.");return;}
+      if(pin===stored){
+        UID=r.data.UID;NAME=r.data.Name||MOBILE;PIN=pin;saveSession();loginSuccess();
       } else {
-        setLE("Login Pin is incorrect");
+        setLE("Incorrect PIN. Try again.");
         g("login-pin").value="";g("login-pin").focus();
       }
     },function(){btn.disabled=false;btn.textContent="Sign In \u2192";setLE("Network error. Retry.");});
@@ -463,6 +495,51 @@ function backToStep1(){
   g("login-step1").style.display="block";
   g("login-sub").textContent="Enter your mobile number to continue";
   setLE("");MOBILE="";
+}
+
+function togglePin(){
+  var inp=g("login-pin");
+  var eye=g("pin-eye");
+  if(inp.type==="password"){inp.type="text";eye.textContent="\uD83D\uDE48";}
+  else{inp.type="password";eye.textContent="\uD83D\uDC41";}
+}
+
+// ── LANDING (referral link clicked) ──
+var _refUID="";
+function showLanding(refUID){
+  _refUID=refUID;
+  g("land-title").textContent="You've been invited to "+BRAND+"!";
+  g("land-sub").textContent="Enter your details to download the app and start learning";
+  g("landing-overlay").style.display="flex";
+  g("login-overlay").style.display="none";
+  setTimeout(function(){g("land-name").focus();},300);
+}
+
+function submitLanding(){
+  var name=g("land-name").value.trim();
+  var mob=g("land-mobile").value.replace(/\D/g,"").slice(-10);
+  var err=g("land-error");
+  err.textContent="";
+  if(!name||name.length<2){err.textContent="Please enter your full name";return;}
+  if(mob.length!==10){err.textContent="Enter a valid 10-digit mobile number";return;}
+  var btn=g("land-btn");btn.disabled=true;btn.textContent="Saving...";
+  // Add lead to referrer's sheet
+  api("addLead",{referrerUID:_refUID,leadName:name,leadMobile:mob},function(r){
+    btn.disabled=false;btn.textContent="Get the App \u2192";
+    // Whether ok or duplicate — redirect to Play Store
+    var dest="https://play.google.com/store/apps/details?id="+APP_ID;
+    if(!APP_ID||APP_ID.indexOf(".")<0){
+      // Fallback if AppID not set
+      err.textContent="Details saved! Download the app from your tutor's link.";
+      return;
+    }
+    window.location.href=dest;
+  },function(){
+    btn.disabled=false;btn.textContent="Get the App \u2192";
+    // Even on network error still try to redirect
+    if(APP_ID&&APP_ID.indexOf(".")>=0){window.location.href="https://play.google.com/store/apps/details?id="+APP_ID;}
+    else{err.textContent="Network error. Please try again.";}
+  });
 }
 
 function saveSession(){
@@ -483,8 +560,9 @@ function loginSuccess(){
   g("greet-time").textContent=gr;
   g("greet-name").textContent="\ud83d\udc4b Hey, "+NAME.split(" ")[0]+"!";
   g("hdr-av").textContent=(NAME||"R").split(" ").map(function(w){return w[0];}).join("").slice(0,2).toUpperCase();
-  // Build link
-  var base="https://classplussupport-bot.github.io/refer-earn/lead/?org="+ORG+"&ref="+UID;
+  // Build referral link — points to earn page with ?ref=UID
+  // When clicked, earn page detects ?ref= and shows landing screen (name+mobile) then redirects to Play Store
+  var base="https://classplussupport-bot.github.io/refer-earn/earn/?org="+ORG+"&ref="+UID;
   _myLink=base;
   g("link-url").textContent=base;
   // Load data
