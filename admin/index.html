@@ -367,7 +367,21 @@ function jp(u,cb,eb){
   document.head.appendChild(tag);
 }
 
-function loadAll(){ldOv();ldRf();ldLd();ldPy();ldPol();}
+function loadAll(){
+  // Always fetch fresh data, then render everything with current filter
+  var done=0;
+  function tryRender(){
+    done++;
+    if(done>=3){
+      computeOv();
+      rnTop5();rnRf();rnLd();rnPy();
+    }
+  }
+  api("getAllReferrers",{},function(r){if(r.ok)_refs=r.data||[];tryRender();});
+  api("getAllLeads",{},function(r){if(r.ok)_leads=r.data||[];tryRender();});
+  api("getPayouts",{},function(r){if(r.ok)_pays=r.data||[];tryRender();});
+  ldPol();
+}
 
 function ds(d){var x=new Date(d);x.setHours(0,0,0,0);return x;}
 function de(d){var x=new Date(d);x.setHours(23,59,59,999);return x;}
@@ -398,38 +412,74 @@ function inR(v){
   if(_df.to&&d>_df.to)return false;
   return true;
 }
+// Parse any date string Google Sheets might return — strips time first
 function pd(v){
-  if(!v)return null;var s=v.toString().trim();
+  if(!v)return null;
+  var s=v.toString().trim();
   if(!s||s==="0")return null;
-  if(s.indexOf("T")>0)s=s.split("T")[0];
-  else if(s.indexOf(" ")>0)s=s.split(" ")[0];
-  var d=new Date(s);if(!isNaN(d.getTime()))return d;
-  var m=s.match(/(\d{1,2})\s+(\w{3})\s+(\d{4})/);
-  if(m){d=new Date(m[1]+" "+m[2]+" "+m[3]);if(!isNaN(d.getTime()))return d;}
+  // Strip time portion in all formats: T10:30, " 10:30", ", 10:30"
+  s=s.replace(/[T,]?\s*\d{1,2}:\d{2}(:\d{2})?(\s*(AM|PM))?/i,"").trim();
+  if(!s)return null;
+  // Try direct parse (works for YYYY-MM-DD, "22 Apr 2024", "Apr 22 2024")
+  var d=new Date(s);
+  if(!isNaN(d.getTime()))return d;
+  // Try dd/mm/yyyy
+  var m2=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(m2){d=new Date(m2[3]+"-"+m2[2].padStart(2,"0")+"-"+m2[1].padStart(2,"0"));if(!isNaN(d.getTime()))return d;}
   return null;
 }
+// Format date cleanly — no timestamp, human readable
 function cd(v){
-  if(!v)return "-";var s=v.toString().trim();
+  if(!v)return "-";
+  var s=v.toString().trim();
   if(!s||s==="0")return "-";
-  if(s.indexOf("T")>0)return s.split("T")[0];
-  if(s.indexOf(" ")>0)return s.split(" ")[0];
-  return s;
+  var d=pd(v);
+  if(!d)return s.replace(/[T,]?\s*\d{1,2}:\d{2}.*/,"").trim()||"-";
+  return d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
 }
 
 function ldOv(){
-  api("getStats",{},function(r){
-    if(!r.ok)return;var s=r.data;
-    st("s1",s.totalReferrers);st("s2",s.totalLeads);
-    st("s5",s.downloaded);st("s2b",(s.downloadRate||0)+"% download rate");
-    st("s3",s.converted);st("s3b",(s.conversionRate||0)+"% conversion rate");
-    st("s4",RS+nm(s.tutorRevenue));st("s6",RS+nm(s.totalEarned));
-    st("s7",RS+nm(s.totalPaidOut));st("s8",RS+nm(s.pendingPayouts));
-  });
+  // Compute stats from already-loaded data filtered by date range
+  // If data not loaded yet, load it first then compute
+  if(!_refs.length&&!_leads.length&&!_pays.length){
+    // First load — fetch all data then compute
+    var done=0;
+    function tryCompute(){done++;if(done>=3)computeOv();}
+    api("getAllReferrers",{},function(r){if(r.ok)_refs=r.data||[];rnTop5();rnRf();tryCompute();});
+    api("getAllLeads",{},function(r){if(r.ok)_leads=r.data||[];rnLd();tryCompute();});
+    api("getPayouts",{},function(r){if(r.ok)_pays=r.data||[];rnPy();tryCompute();});
+  } else {
+    computeOv();
+  }
 }
 
-function ldRf(){
-  api("getAllReferrers",{},function(r){if(!r.ok)return;_refs=r.data||[];rnTop5();rnRf();});
+function computeOv(){
+  // Filter leads by date range
+  var leads=_leads.filter(function(l){return inR(l.ReferredDate);});
+  var refs=_refs.filter(function(r){return inR(r.JoinedDate);});
+  var pays=_pays.filter(function(p){return inR(p.ClaimDate);});
+
+  var converted=leads.filter(function(l){return(l.Status||"").toLowerCase()==="converted";});
+  var downloaded=leads.filter(function(l){return["downloaded","converted"].indexOf((l.Status||"").toLowerCase())>=0;});
+  var totalLeads=leads.length||1;
+
+  var totalEarned=converted.reduce(function(s,l){return s+(Number(l.ReferrerReward)||0);},0);
+  var tutorRevenue=converted.reduce(function(s,l){return s+(Number(l.CoursePrice)||0);},0);
+  var totalPaidOut=pays.filter(function(p){return(p.Status||"").toLowerCase()==="paid";}).reduce(function(s,p){return s+(Number(p.Amount)||0);},0);
+  var pendingPayouts=pays.filter(function(p){return(p.Status||"").toLowerCase()==="pending";}).reduce(function(s,p){return s+(Number(p.Amount)||0);},0);
+  var dlRate=Math.round(downloaded.length/totalLeads*100);
+  var convRate=downloaded.length?Math.round(converted.length/downloaded.length*100):0;
+
+  st("s1",refs.length);
+  st("s2",leads.length);
+  st("s5",downloaded.length);st("s2b",dlRate+"% download rate");
+  st("s3",converted.length);st("s3b",convRate+"% conversion rate");
+  st("s4",RS+nm(tutorRevenue));
+  st("s6",RS+nm(totalEarned));
+  st("s7",RS+nm(totalPaidOut));
+  st("s8",RS+nm(pendingPayouts));
 }
+
 function rnTop5(){
   var sorted=_refs.filter(function(r){return inR(r.JoinedDate)||Number(r.TotalConverted)>0;}).slice();
   sorted.sort(function(a,b){return(Number(b.TotalConverted)||0)-(Number(a.TotalConverted)||0);});
@@ -490,9 +540,6 @@ function shP(btn,mob){
   api("getPin",{mobile:mob},function(r){var p=(r.ok&&r.data&&r.data.pin)?r.data.pin:"N/A";btn.dataset.p=p;btn.dataset.sh="1";btn.textContent=p;});
 }
 
-function ldLd(){
-  api("getAllLeads",{},function(r){if(!r.ok)return;_leads=r.data||[];rnLd();});
-}
 function setLF(f,btn){_lf=f;document.querySelectorAll("#s-ld .fp").forEach(function(b){b.classList.remove("on");});if(btn)btn.classList.add("on");rnLd();}
 function rnLd(){
   var q=(g("lds").value||"").toLowerCase().trim();
@@ -523,24 +570,18 @@ function rnLd(){
   }).join(""):"<tr class='er'><td colspan='10'>No leads found"+(q?" for: "+xe(q):"")+"</td></tr>";
 }
 
-function ldPy(){
-  api("getPayouts",{},function(r){
-    if(!r.ok)return;_pays=r.data||[];
-    var total=0,paid=0,pend=0;
-    _pays.forEach(function(p){
-      var amt=Number(p.Amount)||0;total+=amt;
-      if((p.Status||"").toLowerCase()==="paid")paid+=amt;else pend+=amt;
-    });
-    st("py-total",RS+nm(total));st("py-paid",RS+nm(paid));st("py-pend",RS+nm(pend));
-    st("s7",RS+nm(paid));st("s8",RS+nm(pend));
-    rnPy();
-  });
-}
 function setPF(f,btn){_pf=f;document.querySelectorAll("#s-py .fp").forEach(function(b){b.classList.remove("on");});if(btn)btn.classList.add("on");rnPy();}
 function rnPy(){
   var q=(g("pys").value||"").toLowerCase().trim();
-  var list=_pays.filter(function(p){
-    if(!inR(p.ClaimDate))return false;
+  // Compute summary from date-filtered pays (ignore status filter for totals)
+  var filtered=_pays.filter(function(p){return inR(p.ClaimDate);});
+  var total=0,paid=0,pend=0;
+  filtered.forEach(function(p){
+    var amt=Number(p.Amount)||0;total+=amt;
+    if((p.Status||"").toLowerCase()==="paid")paid+=amt;else pend+=amt;
+  });
+  st("py-total",RS+nm(total));st("py-paid",RS+nm(paid));st("py-pend",RS+nm(pend));
+  var list=filtered.filter(function(p){
     if(_pf!=="all"&&(p.Status||"").toLowerCase()!==_pf)return false;
     if(!q)return true;
     return(p.Name||"").toLowerCase().indexOf(q)>=0||(p.UPI||"").toLowerCase().indexOf(q)>=0
@@ -566,7 +607,7 @@ function rnPy(){
 function mkP(id){
   if(!confirm("Mark payout "+id+" as paid?"))return;
   api("updatePayoutStatus",{payoutID:id,status:"paid"},function(r){
-    if(r.ok){toast("Marked as paid","ok");ldPy();ldOv();}else toast("Error: "+r.error,"err");
+    if(r.ok){toast("Marked as paid","ok");loadAll();}else toast("Error: "+r.error,"err");
   });
 }
 
@@ -635,7 +676,7 @@ function clTnC(){g("tnc").classList.remove("open");}
 function doSync(){
   var b=g("sb");b.disabled=true;g("sic").innerHTML="<span class='spin'></span>";
   api("syncAll",{},function(r){
-    b.disabled=false;g("sic").textContent="&#8635;";
+    b.disabled=false;g("sic").innerHTML="&#8635;";
     if(r.ok){var d=r.data;toast("Sync done - "+(d.downloads?d.downloads.updated:0)+" dl, "+(d.transactions?d.transactions.converted:0)+" converted","ok");loadAll();}
     else toast("Sync error: "+r.error,"err");
   });
