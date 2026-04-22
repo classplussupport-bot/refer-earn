@@ -3,159 +3,390 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Refer &amp; Earn - Generator v2</title>
+<title>Refer &amp; Earn — Client Generator</title>
 <style>
-:root{--bg:#0f0f17;--surface:#1a1a27;--surface2:#22223a;--border:#2e2e4a;--text:#e8e8f0;--muted:#8888aa;--green:#22c55e;--green-bg:rgba(34,197,94,.12);--blue:#3b82f6;--blue-bg:rgba(59,130,246,.12);--radius:12px;--radius-sm:8px}
+:root{--bg:#0f0f17;--sf:#1a1a27;--sf2:#22223a;--bd:#2e2e4a;--tx:#e8e8f0;--mu:#8888aa;--gn:#22c55e;--gnb:rgba(34,197,94,.12);--bl:#3b82f6;--blb:rgba(59,130,246,.12);--rd:#ef4444;--rdb:rgba(239,68,68,.12);--am:#f59e0b;--r:12px;--rs:8px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh;padding:20px}
-.wrap{max-width:900px;margin:0 auto}
-h1{font-size:22px;font-weight:800;margin-bottom:4px}
-.sub{color:var(--muted);font-size:13px;margin-bottom:28px}
-.tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--surface2);padding:4px;border-radius:var(--radius-sm);width:fit-content}
-.tab{padding:8px 18px;border-radius:6px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
-.tab.active{background:var(--surface);color:var(--text)}
-.section{display:none}.section.active{display:block}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
-.card-title{font-size:16px;font-weight:700;margin-bottom:6px}
-.card-sub{color:var(--muted);font-size:13px;margin-bottom:20px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.form-group{display:flex;flex-direction:column;gap:6px}
-label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
-input{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text);font-size:13px;outline:none;transition:border .2s;width:100%}
-input:focus{border-color:var(--blue)}
-.hint{font-size:11px;color:var(--muted);margin-top:3px}
-.btn{padding:10px 20px;border-radius:var(--radius-sm);border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
-.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{opacity:.85}
-.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
-.status{padding:8px 12px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;margin-top:8px;display:none}
-.status.ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green);display:block}
-.status.err{background:rgba(239,68,68,.12);color:#ef4444;border:1px solid #ef4444;display:block}
-.output-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-top:16px;display:none}
-.output-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
-.url-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;background:var(--surface2);padding:10px 12px;border-radius:var(--radius-sm)}
-.url-label{font-size:11px;color:var(--muted);font-weight:600;min-width:80px}
-.url-val{flex:1;font-size:12px;word-break:break-all}
-.copy-btn{background:var(--blue-bg);color:var(--blue);border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;font-weight:600}
-.steps{margin-top:20px;display:flex;flex-direction:column;gap:10px}
-.step{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--surface2);border-radius:var(--radius-sm)}
-.step-num{width:24px;height:24px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;min-width:24px}
-.step-title{font-weight:600;font-size:13px;margin-bottom:2px}
-.step-desc{font-size:12px;color:var(--muted)}
-.client-table{width:100%;border-collapse:collapse}
-.client-table th{font-size:11px;color:var(--muted);text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2)}
-.client-table td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border)}
-.client-table tr:last-child td{border-bottom:none}
-.client-table tr:hover td{background:var(--surface2)}
+body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh;padding:24px}
+.wrap{max-width:960px;margin:0 auto}
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.hdr-title{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.hdr-title span{color:var(--bl)}
+.hdr-sub{color:var(--mu);font-size:13px;margin-top:3px}
+.hdr-badge{background:var(--gnb);color:var(--gn);border:1px solid var(--gn);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700}
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--sf2);padding:4px;border-radius:var(--rs);width:fit-content}
+.tab{padding:9px 20px;border-radius:6px;border:none;background:transparent;color:var(--mu);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit}
+.tab.on{background:var(--sf);color:var(--tx)}
+.sec{display:none}.sec.on{display:block}
+/* CARDS */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:24px;margin-bottom:20px}
+.card-title{font-size:16px;font-weight:800;margin-bottom:6px}
+.card-sub{color:var(--mu);font-size:13px;margin-bottom:20px;line-height:1.5}
+/* FORM */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid1{margin-bottom:16px}
+.fg{display:flex;flex-direction:column;gap:6px}
+label{font-size:11px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.06em}
+input,select{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rs);padding:11px 14px;color:var(--tx);font-size:13px;font-family:inherit;outline:none;transition:border .2s;width:100%}
+input:focus,select:focus{border-color:var(--bl)}
+input::placeholder{color:var(--mu)}
+.hint{font-size:11px;color:var(--mu);margin-top:4px;line-height:1.4}
+/* BUTTONS */
+.btn{padding:11px 22px;border-radius:var(--rs);border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--bl);color:#fff}
+.btn-primary:hover{opacity:.88}
+.btn-ghost{background:transparent;border:1px solid var(--bd);color:var(--mu)}
+.btn-ghost:hover{border-color:var(--bl);color:var(--bl)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-danger{background:transparent;border:1px solid var(--rd);color:var(--rd)}
+.btn-danger:hover{background:var(--rdb)}
+/* STATUS */
+.status{padding:10px 14px;border-radius:var(--rs);font-size:13px;font-weight:600;margin-top:12px;display:none;line-height:1.5}
+.status.ok{background:var(--gnb);color:var(--gn);border:1px solid var(--gn);display:block}
+.status.err{background:var(--rdb);color:var(--rd);border:1px solid var(--rd);display:block}
+.status.loading{background:var(--blb);color:var(--bl);border:1px solid var(--bl);display:block}
+/* OUTPUT */
+.out-box{background:var(--bg);border:1px solid var(--bd);border-radius:var(--rs);padding:18px;margin-top:16px;display:none}
+.out-title{font-size:11px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.url-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;background:var(--sf2);padding:10px 14px;border-radius:var(--rs)}
+.url-label{font-size:11px;color:var(--mu);font-weight:700;min-width:100px;flex-shrink:0}
+.url-val{flex:1;font-size:12px;color:var(--bl);word-break:break-all}
+.copy-btn{background:var(--blb);color:var(--bl);border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;font-weight:700;white-space:nowrap;transition:all .15s}
+.copy-btn:hover{background:var(--bl);color:#fff}
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em;font-weight:700;padding:10px 14px;text-align:left;border-bottom:1px solid var(--bd);background:var(--sf2);white-space:nowrap}
+td{font-size:13px;padding:12px 14px;border-bottom:1px solid var(--bd);color:var(--tx);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--sf2)}
+td code{background:var(--sf2);padding:2px 7px;border-radius:4px;font-size:11px;font-family:monospace;color:var(--bl)}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-gn{background:var(--gnb);color:var(--gn)}
+.tw{overflow-x:auto}
+/* STEPS */
+.step-row{display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--sf2);border-radius:var(--rs);margin-bottom:10px}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--bl);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-title{font-weight:700;font-size:14px;margin-bottom:4px}
+.step-desc{font-size:12px;color:var(--mu);line-height:1.6}
+code.inline{background:var(--sf2);padding:2px 7px;border-radius:4px;font-size:12px;color:var(--am);font-family:monospace}
+/* SPINNER */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* EMPTY */
+.empty{text-align:center;color:var(--mu);padding:40px;font-size:13px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>Refer &amp; Earn - Client Generator v2</h1>
-<div class="sub">One master script · Shared dashboards · Register new clients in seconds</div>
-<div class="tabs">
-  <button class="tab active" onclick="showTab('setup',this)">Step 1 - Code.gs</button>
-  <button class="tab" onclick="showTab('register',this)">Step 2 - Register Client</button>
-  <button class="tab" onclick="showTab('clients',this)">Client Log</button>
-</div>
-<div class="section active" id="tab-setup">
-<div class="card">
-<div class="card-title">Generate Client Sheet Script (Code.gs)</div>
-<div class="card-sub">Each client needs their own Google Sheet. Fill in the details and download Code.gs.</div>
-<div class="form-row">
-  <div class="form-group"><label>Brand Name</label><input id="s1-brand" placeholder="e.g. Bhushan Science"></div>
-  <div class="form-group"><label>Org Code</label><input id="s1-org" placeholder="e.g. BSCI001" oninput="this.value=this.value.toUpperCase()"></div>
-</div>
-<div class="form-row">
-  <div class="form-group"><label>Google Sheet ID</label><input id="s1-sheet" placeholder="Paste Sheet ID from URL"></div>
-  <div class="form-group"><label>Play Store URL</label><input id="s1-appurl" placeholder="https://play.google.com/store/apps/details?id=..."><div class="hint">Full URL from Google Play Store listing</div></div>
-</div>
-<button class="btn btn-primary" onclick="genCode()">Download Code.gs</button>
-<div class="status" id="s1-status"></div>
-<div class="steps">
-  <div style="font-weight:700;margin-bottom:4px">After downloading:</div>
-  <div class="step"><span class="step-num">1</span><div><div class="step-title">Paste into Apps Script</div><div class="step-desc">script.google.com -> New project -> replace code -> Save</div></div></div>
-  <div class="step"><span class="step-num">2</span><div><div class="step-title">Run setupSheets()</div><div class="step-desc">Creates all 6 tabs in the client sheet with correct headers</div></div></div>
-  <div class="step"><span class="step-num">3</span><div><div class="step-title">Deploy as Web App</div><div class="step-desc">Deploy -> Web app -> Execute as Me -> Anyone -> Copy URL</div></div></div>
-  <div class="step"><span class="step-num">4</span><div><div class="step-title">Go to Step 2 -> Register Client</div><div class="step-desc">Paste Web App URL - dashboard URLs are auto-generated</div></div></div>
-</div>
-</div>
-</div>
-<div class="section" id="tab-register">
-<div class="card">
-<div class="card-title">Register New Client</div>
-<div class="card-sub">Saves client config to master sheet. No HTML files needed. URLs auto-generated.</div>
-<div class="form-row">
-  <div class="form-group"><label>Brand Name</label><input id="s2-brand" placeholder="e.g. Bhushan Science"></div>
-  <div class="form-group"><label>Org Code</label><input id="s2-org" placeholder="e.g. BSCI001" oninput="this.value=this.value.toUpperCase()"></div>
-</div>
-<div class="form-row">
-  <div class="form-group"><label>Google Sheet ID</label><input id="s2-sheet" placeholder="Paste Sheet ID"></div>
-  <div class="form-group"><label>Play Store URL</label><input id="s2-appurl" placeholder="https://play.google.com/store/apps/details?id=..."></div>
-</div>
-<div class="form-row">
-  <div class="form-group"><label>Admin Password</label><input id="s2-pw" type="text" placeholder="Set admin password"></div>
-</div>
-<button class="btn btn-primary" onclick="registerClient()">Register Client</button>
-<div class="status" id="s2-status"></div>
-<div class="output-box" id="s2-output">
-  <div class="output-title">Client URLs - share these</div>
-  <div class="url-row"><span class="url-label">Admin URL</span><span class="url-val" id="out-admin"></span><button class="copy-btn" onclick="copyEl('out-admin')">Copy</button></div>
-  <div class="url-row"><span class="url-label">Earn URL</span><span class="url-val" id="out-earn"></span><button class="copy-btn" onclick="copyEl('out-earn')">Copy</button></div>
-</div>
-</div>
-</div>
-<div class="section" id="tab-clients">
-<div class="card">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-    <div class="card-title" style="margin-bottom:0">All Clients</div>
-    <button class="btn btn-ghost" onclick="loadClients()">Refresh</button>
+  <div class="hdr">
+    <div>
+      <div class="hdr-title"><span>refer</span>&amp;earn — Client Generator</div>
+      <div class="hdr-sub">One master script &middot; Shared dashboards &middot; Add new clients in seconds</div>
+    </div>
+    <div class="hdr-badge">&#9679; v3.1 live</div>
   </div>
-  <div style="overflow-x:auto">
-    <table class="client-table">
-      <thead><tr><th>Org</th><th>Brand</th><th>Sheet ID</th><th>Added</th><th>Admin</th><th>Earn</th></tr></thead>
-      <tbody id="clients-tbody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">Click Refresh to load</td></tr></tbody>
-    </table>
+
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('register')">&#10133; Register Client</button>
+    <button class="tab" onclick="switchTab('clients')">&#128101; All Clients</button>
+    <button class="tab" onclick="switchTab('setup')">&#9881; Setup Guide</button>
+  </div>
+
+  <!-- REGISTER TAB -->
+  <div class="sec on" id="t-register">
+    <div class="card">
+      <div class="card-title">Register New Client</div>
+      <div class="card-sub">Fill in the client details below. The Admin and Earn dashboard URLs are auto-generated and saved to the master sheet.</div>
+
+      <div class="grid2">
+        <div class="fg">
+          <label>Brand Name *</label>
+          <input id="r-brand" placeholder="e.g. Bhushan Science" oninput="previewUrls()">
+        </div>
+        <div class="fg">
+          <label>Org Code *</label>
+          <input id="r-org" placeholder="e.g. BSCI001" oninput="this.value=this.value.toUpperCase();previewUrls()">
+          <div class="hint">Short unique code — letters &amp; numbers only, no spaces</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="fg">
+          <label>Google Sheet ID *</label>
+          <input id="r-sheet" placeholder="Paste Sheet ID from the URL">
+          <div class="hint">From the sheet URL: /spreadsheets/d/<strong>THIS_PART</strong>/edit</div>
+        </div>
+        <div class="fg">
+          <label>Play Store App ID *</label>
+          <input id="r-appid" placeholder="e.g. co.loki.lvwwd">
+          <div class="hint">Used to build the Play Store link for referrals</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="fg">
+          <label>Admin Password *</label>
+          <input id="r-pw" type="text" placeholder="e.g. BhushanAdmin@2024">
+        </div>
+        <div class="fg">
+          <label>Preview URLs</label>
+          <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 14px;font-size:11px;color:var(--mu);line-height:1.8">
+            <div>Admin: <span id="prev-admin" style="color:var(--bl)">fill org code above</span></div>
+            <div>Earn: <span id="prev-earn" style="color:var(--gn)">fill org code above</span></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="registerClient()" id="reg-btn">&#10003; Register Client</button>
+      <div class="status" id="reg-status"></div>
+
+      <div class="out-box" id="reg-out">
+        <div class="out-title">Client Registered — Share These URLs</div>
+        <div class="url-row"><span class="url-label">Admin URL</span><span class="url-val" id="out-admin"></span><button class="copy-btn" onclick="cp('out-admin')">Copy</button></div>
+        <div class="url-row"><span class="url-label">Earn URL</span><span class="url-val" id="out-earn"></span><button class="copy-btn" onclick="cp('out-earn')">Copy</button></div>
+        <div class="url-row"><span class="url-label">Play Store</span><span class="url-val" id="out-play"></span><button class="copy-btn" onclick="cp('out-play')">Copy</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENTS TAB -->
+  <div class="sec" id="t-clients">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div>
+          <div class="card-title" style="margin-bottom:0">All Registered Clients</div>
+          <div style="font-size:12px;color:var(--mu);margin-top:3px" id="client-count"></div>
+        </div>
+        <button class="btn btn-ghost" onclick="loadClients()">&#8635; Refresh</button>
+      </div>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>Org Code</th>
+              <th>Brand</th>
+              <th>Sheet ID</th>
+              <th>App ID</th>
+              <th>Added</th>
+              <th>Admin</th>
+              <th>Earn</th>
+            </tr>
+          </thead>
+          <tbody id="clients-tbody">
+            <tr><td colspan="7" class="empty">Click Refresh to load clients</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETUP TAB -->
+  <div class="sec" id="t-setup">
+    <div class="card">
+      <div class="card-title">Setup Guide — Onboarding a New Client</div>
+      <div class="card-sub">Follow these steps every time you onboard a new coaching client.</div>
+
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Create a new Google Sheet for the client</div>
+          <div class="step-desc">Go to <strong>sheets.google.com</strong> and create a blank sheet. Name it clearly (e.g. "Bhushan Science - Refer &amp; Earn").<br>Copy the Sheet ID from the URL bar — it's the long string between <code class="inline">/d/</code> and <code class="inline">/edit</code>.</div>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Add required sheet tabs with correct headers</div>
+          <div class="step-desc">
+            The sheet needs 4 tabs. You can create them manually or run <code class="inline">setupClientSheet()</code> in the master Apps Script (change the Sheet ID first).<br><br>
+            <strong>Referrers tab headers (Row 1):</strong><br>
+            <code class="inline">Name | Mobile | UID | PIN | TotalReferred | TotalDownloaded | TotalConverted | TotalEarned | TotalClaimed | JoinedDate</code><br><br>
+            <strong>Leads tab headers (Row 1):</strong><br>
+            <code class="inline">LeadID | ReferrerUID | ReferrerName | LeadName | LeadMobile | Status | ReferredDate | DownloadDate | PurchaseDate | CourseName | CoursePrice | ReferrerReward | RefereePct</code><br><br>
+            <strong>Payouts tab headers (Row 1):</strong><br>
+            <code class="inline">PayoutID | ReferrerUID | Name | UPI | Amount | Status | ClaimDate | PaidDate</code><br><br>
+            <strong>Policy tab headers (Row 1):</strong><br>
+            <code class="inline">Version | Model | ReferrerPct | RefereePct | WindowDays | MinClaim | PolicyName | Status | CreatedDate</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Add a default policy row in the Policy tab</div>
+          <div class="step-desc">In the Policy tab, add Row 2 with these values:<br>
+            <code class="inline">1 | pct | 10 | 0 | 15 | 500 | Default Policy | active | today's date</code><br><br>
+            This sets 10% reward, 15-day window, ₹500 minimum claim.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Register the client using the Register tab</div>
+          <div class="step-desc">Go to the <strong>Register Client</strong> tab above and fill in the Brand name, Org code, Sheet ID, App ID and password. Click Register — it saves everything to the master sheet automatically.</div>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">5</div>
+        <div>
+          <div class="step-title">Share the URLs with the client admin</div>
+          <div class="step-desc">
+            After registering, copy the <strong>Admin URL</strong> and <strong>Earn URL</strong> from the output.<br><br>
+            Admin: <code class="inline">https://classplussupport-bot.github.io/refer-earn/admin/?org=ORGCODE</code><br>
+            Earn: <code class="inline">https://classplussupport-bot.github.io/refer-earn/earn/?org=ORGCODE</code><br><br>
+            The admin uses the Admin URL to manage referrers, leads and payouts.<br>
+            Referrers use the Earn URL to register and share their unique link.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">6</div>
+        <div>
+          <div class="step-title">Set a reward policy from the Admin dashboard</div>
+          <div class="step-desc">Login to the Admin dashboard and go to <strong>Reward Policy</strong>. Set the referrer reward %, referral window and minimum claim amount, then click <strong>Save &amp; Publish</strong>.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-</div>
-</div>
+
 <script>
-var MASTER_URL='https://script.google.com/macros/s/AKfycbz8AUqmXYOnCqv5cmoLssTnJP_hwChHg8fYuj1l5BSJDgAxag7jFRQcfMJzD6sE6CZc/exec';
-var HOST_BASE='https://classplussupport-bot.github.io/refer-earn';
-function showTab(id,btn){document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});document.getElementById('tab-'+id).classList.add('active');if(btn)btn.classList.add('active');if(id==='clients')loadClients();}
-var CODE_GS="// REFER & EARN - Client Sheet Setup Script
-// Run setupSheets() once, then deploy as Web App
+var API = 'https://script.google.com/macros/s/AKfycbz8AUqmXYOnCqv5cmoLssTnJP_hwChHg8fYuj1l5BSJDgAxag7jFRQcfMJzD6sE6CZc/exec';
+var BASE = 'https://classplussupport-bot.github.io/refer-earn';
 
-var SHEET_ID='{{SHEET_ID}}';
-var APP_LINK='{{APP_LINK}}'; // Full Play Store URL
-
-var T_REF='Referrers',T_LEADS='Leads',T_PAY='Payouts',T_POL='Policy',T_DL='downloads',T_TX='transactions';
-
-function setupSheets(){
-  var sheet=SpreadsheetApp.openById(SHEET_ID);
-  var tabs=[
-    {name:T_REF,headers:['Name','Mobile','UID','ReferralLink','TotalReferred','TotalDownloaded','TotalConverted','TotalEarned','TotalClaimable','JoinedDate','PIN']},
-    {name:T_LEADS,headers:['LeadID','ReferrerUID','LeadName','LeadMobile','Status','ReferredDate','DownloadDate','PurchaseDate','CourseName','CoursePrice','ReferrerReward','RefereeReward','PolicyVersion']},
-    {name:T_PAY,headers:['PayoutID','ReferrerUID','Name','UPI','Amount','Status','ClaimDate','PaidDate']},
-    {name:T_POL,headers:['Version','ReferrerPct','RefereePct','WindowDays','MinClaim','CreatedDate','Status','Model','FlatSlabs','PolicyName','AdminPassword']},
-    {name:T_DL,headers:['id','name','mobile','download_date','email']},
-    {name:T_TX,headers:['OrgID','OrgName','CourseID','CourseName','Course_URL','TransDate','UserID','PaymentID','Amount_Paid','HandlingFee','Current_CoursePrice','transactionid','InstallmentType','Backend Trans?','CouponDiscount?','name','mobile','email','expiryDate','isExpired','state','Discount_(%)']}
-  ];
-  tabs.forEach(function(def){
-    var s=sheet.getSheetByName(def.name);
-    if(!s)s=sheet.insertSheet(def.name);else s.clearContents();
-    s.getRange(1,1,1,def.headers.length).setValues([def.headers]).setBackground('#1a1a22').setFontColor('#fff').setFontWeight('bold');
-    s.setFrozenRows(1);
-  });
-  sheet.getSheetByName(T_POL).appendRow([1,10,50,15,500,today(),'active','pct','','Default Policy','']);
-  SpreadsheetApp.getUi().alert('All 6 tabs created! Deploy as Web App next.');
+function switchTab(id) {
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.getElementById('t-'+id).classList.add('on');
+  event.target.classList.add('on');
+  if (id === 'clients') loadClients();
 }
-function today(){return Utilities.formatDate(new Date(),Session.getScriptTimeZone(),'dd MMM yyyy');}";
-function genCode(){var brand=document.getElementById('s1-brand').value.trim();var org=document.getElementById('s1-org').value.trim().toUpperCase();var sheet=document.getElementById('s1-sheet').value.trim();var appurl=document.getElementById('s1-appurl').value.trim();var st=document.getElementById('s1-status');if(!brand||!org||!sheet){st.className='status err';st.textContent='Fill in Brand Name, Org Code and Sheet ID';return;}var code=CODE_GS.replace('{{SHEET_ID}}',sheet).replace('{{APP_LINK}}',appurl||'https://play.google.com/store');var blob=new Blob([code],{type:'text/plain;charset=utf-8'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='Code_'+org+'.gs';a.style.display='none';document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);st.className='status ok';st.textContent='Code_'+org+'.gs downloaded! Run setupSheets() then deploy, then go to Step 2.';document.getElementById('s2-brand').value=brand;document.getElementById('s2-org').value=org;document.getElementById('s2-sheet').value=sheet;document.getElementById('s2-appurl').value=appurl;}
-function registerClient(){var brand=document.getElementById('s2-brand').value.trim();var org=document.getElementById('s2-org').value.trim().toUpperCase();var sheet=document.getElementById('s2-sheet').value.trim();var appurl=document.getElementById('s2-appurl').value.trim();var pw=document.getElementById('s2-pw').value.trim();var st=document.getElementById('s2-status');if(!brand||!org||!sheet||!pw){st.className='status err';st.textContent='Fill in all required fields';return;}var adminUrl=HOST_BASE+'/admin/?org='+org;var earnUrl=HOST_BASE+'/earn/?org='+org;st.className='status ok';st.textContent='Saving...';var cbName='reg_'+Date.now();window[cbName]=function(d){delete window[cbName];if(d.ok){st.textContent='Registered! '+brand+' ('+org+')';document.getElementById('out-admin').textContent=adminUrl;document.getElementById('out-earn').textContent=earnUrl;document.getElementById('s2-output').style.display='block';}else{st.className='status err';st.textContent='Error: '+d.error;}};var s=document.createElement('script');s.src=MASTER_URL+'?action=saveClient&org='+encodeURIComponent(org)+'&brand='+encodeURIComponent(brand)+'&sheetId='+encodeURIComponent(sheet)+'&appId='+encodeURIComponent(appurl)+'&pw='+encodeURIComponent(pw)+'&adminUrl='+encodeURIComponent(adminUrl)+'&earnUrl='+encodeURIComponent(earnUrl)+'&callback='+cbName;document.head.appendChild(s);}
-function loadClients(){var tbody=document.getElementById('clients-tbody');tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted)">Loading...</td></tr>';var cbName='cl_'+Date.now();window[cbName]=function(d){delete window[cbName];if(!d.ok||!d.data||!d.data.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted)">No clients yet</td></tr>';return;}tbody.innerHTML=d.data.map(function(c){return'<tr><td><b>'+esc(c.OrgCode)+'</b></td><td>'+esc(c.Brand)+'</td><td><code style="font-size:11px">'+esc((c.SheetID||'').slice(0,20))+'...</code></td><td>'+esc(c.AddedDate||'-')+'</td><td>'+(c.AdminURL?'<a href="'+esc(c.AdminURL)+'" target="_blank" style="color:var(--blue)">Open</a>':'-')+'</td><td>'+(c.EarnURL?'<a href="'+esc(c.EarnURL)+'" target="_blank" style="color:var(--green)">Open</a>':'-')+'</td></tr>';}).join('');};var s=document.createElement('script');s.src=MASTER_URL+'?action=getClients&callback='+cbName;document.head.appendChild(s);}
-function esc(s){return(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function copyEl(id){var t=document.getElementById(id).textContent;navigator.clipboard.writeText(t).then(function(){alert('Copied!');}).catch(function(){prompt('Copy:',t);});}
+
+function previewUrls() {
+  var org = (document.getElementById('r-org').value || '').trim().toUpperCase();
+  var admin = org ? BASE+'/admin/?org='+org : 'fill org code above';
+  var earn  = org ? BASE+'/earn/?org='+org  : 'fill org code above';
+  document.getElementById('prev-admin').textContent = admin;
+  document.getElementById('prev-earn').textContent  = earn;
+}
+
+function jp(url, cb) {
+  var n = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  var s = document.createElement('script');
+  var tid = setTimeout(function(){ delete window[n]; s.remove(); cb({ok:false,error:'Timeout — check your internet connection'}); }, 15000);
+  window[n] = function(d) { clearTimeout(tid); delete window[n]; s.remove(); cb(d); };
+  s.onerror = function() { clearTimeout(tid); delete window[n]; s.remove(); cb({ok:false,error:'Script load error — check the API URL'}); };
+  s.src = url + (url.indexOf('?')>=0?'&':'?') + 'callback=' + n;
+  document.head.appendChild(s);
+}
+
+function registerClient() {
+  var brand = document.getElementById('r-brand').value.trim();
+  var org   = document.getElementById('r-org').value.trim().toUpperCase();
+  var sheet = document.getElementById('r-sheet').value.trim();
+  var appId = document.getElementById('r-appid').value.trim();
+  var pw    = document.getElementById('r-pw').value.trim();
+  var st    = document.getElementById('reg-status');
+  var btn   = document.getElementById('reg-btn');
+
+  if (!brand) { showStatus(st,'err','Enter brand name'); return; }
+  if (!org)   { showStatus(st,'err','Enter org code'); return; }
+  if (!/^[A-Z0-9]+$/.test(org)) { showStatus(st,'err','Org code: letters and numbers only, no spaces'); return; }
+  if (!sheet) { showStatus(st,'err','Enter Google Sheet ID'); return; }
+  if (!pw)    { showStatus(st,'err','Enter admin password'); return; }
+
+  var adminUrl = BASE+'/admin/?org='+org;
+  var earnUrl  = BASE+'/earn/?org='+org;
+  var playUrl  = appId ? 'https://play.google.com/store/apps/details?id='+appId : '';
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Registering...';
+  showStatus(st, 'loading', 'Saving to master sheet...');
+  document.getElementById('reg-out').style.display = 'none';
+
+  var url = API+'?action=saveClient'
+    +'&org='+encodeURIComponent(org)
+    +'&brand='+encodeURIComponent(brand)
+    +'&sheetId='+encodeURIComponent(sheet)
+    +'&appId='+encodeURIComponent(appId)
+    +'&pw='+encodeURIComponent(pw)
+    +'&adminUrl='+encodeURIComponent(adminUrl)
+    +'&earnUrl='+encodeURIComponent(earnUrl);
+
+  jp(url, function(res) {
+    btn.disabled = false;
+    btn.innerHTML = '&#10003; Register Client';
+
+    if (res.ok) {
+      showStatus(st, 'ok', '&#10003; ' + brand + ' (' + org + ') registered successfully!');
+      document.getElementById('out-admin').textContent = adminUrl;
+      document.getElementById('out-earn').textContent  = earnUrl;
+      document.getElementById('out-play').textContent  = playUrl || '(no app ID entered)';
+      document.getElementById('reg-out').style.display = 'block';
+      ['r-brand','rorg','r-sheet','r-appid','p-pw'].forEach(function(id){ document.getElementById(id).value=''; });
+      document.getElementById('prev-admin').textContent = 'fill org code above';
+      document.getElementById('prev-earn').textContent  = 'fill org code above';
+    } else {
+      showStatus(st, 'err', '&#10007; Error: ' + (res.error || 'Unknown error'));
+    }
+  });
+}
+
+function loadClients() {
+  var tbody = document.getElementById('clients-tbody');
+  var count = document.getElementById('client-count');
+  tbody.innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
+
+  jp(API + '?action=getClients', function(res) {
+    if (!res.ok || !res.data || !res.data.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty">' + (res.error || 'No clients registered yet') + '</td></tr>';
+      count.textContent = '';
+      return;
+    }
+    var clients = res.data;
+    count.textContent = clients.length + ' client' + (clients.length !== 1 ? 's' : '') + ' registered';
+    tbody.innerHTML = clients.map(function(c) {
+      var adminUrl = c.AdminURL || (BASE+'/admin/?org='+c.OrgCode);
+      var earnUrl  = c.EarnURL  || (BASE+'/earn/?org='+c.OrgCode);
+      return '<tr>'
+        +'<td><span class="badge badge-gn">'+esc(c.OrgCode)+'</span></td>'
+        +'<td style="font-weight:700">'+esc(c.Brand)+'</td>'
+        +'<td><code title="'+esc(c.SheetID)+'">'+esc((c.SheetID||'').slice(0,18))+'...</code></td>'
+        +'<td><code>'+esc(c.AppID||'—')+'</code></td>'
+        +'<td style="color:var(--mu);font-size:12px;white-space:nowrap">'+esc(c.AddedDate||'—')+'</td>'
+        +'<td><a href="'+esc(adminUrl)+'" target="_blank" style="color:var(--bl);font-size:12px;font-weight:700;text-decoration:none">Open &#8599;</a></td>'
+        +'<td><a href="'+esc(earnUrl)+'" target="_blank" style="color:var(--gn);font-size:12px;font-weight:700;text-decoration:none">Open &#8599;</a></td>'
+        +'</tr>';
+    }).join('');
+  });
+}
+
+function cp(id) {
+  var val = document.getElementById(id).textContent;
+  if (!val || val === '(no app ID entered)') return;
+  navigator.clipboard.writeText(val).then(function() {
+    var btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(function(){ btn.textContent = 'Copy'; }, 2000);
+  }).catch(function() { prompt('Copy this:', val); });
+}
+
+function showStatus(el, type, msg) {
+  el.className = 'status ' + type;
+  el.innerHTML = msg;
+}
+
+function esc(s) {
+  return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 </script>
 </body>
 </html>
