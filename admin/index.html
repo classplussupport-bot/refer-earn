@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
   /* Core palette */
@@ -25,7 +26,7 @@
   --sh2:0 2px 8px rgba(0,0,0,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;min-height:100vh}
+body{background:var(--bg);color:var(--tx);font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-feature-settings:"cv02","cv03","cv04","cv11";-webkit-font-smoothing:antialiased;min-height:100vh}
 
 /* ── LOGIN ── */
 #ls{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(145deg,#EEF2FF 0%,#F5F7FB 40%,#F0FAFA 100%)}
@@ -91,12 +92,16 @@ body{background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSyst
 .sc{border-radius:var(--r);padding:22px 20px;box-shadow:var(--s0);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:default;border:1px solid transparent}
 .sc:hover{transform:translateY(-3px);box-shadow:var(--sh)}
 .sc::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
-.sc-b{background:linear-gradient(145deg,#EFF6FF,#DBEAFE);border-color:#C7D8FD}.sc-b::before{background:linear-gradient(90deg,#6366F1,#93C5FD)}.sc-b .sv{color:#3730A3}.sc-b .sl{color:#6366F1}
-.sc-g{background:linear-gradient(145deg,#F0FDF4,#DCFCE7);border-color:#A7F3D0}.sc-g::before{background:linear-gradient(90deg,#059669,#6EE7B7)}.sc-g .sv{color:#065F46}.sc-g .sl{color:#059669}
-.sc-a{background:linear-gradient(145deg,#FFFBEB,#FEF3C7);border-color:#FDE68A}.sc-a::before{background:linear-gradient(90deg,#D97706,#FCD34D)}.sc-a .sv{color:#92400E}.sc-a .sl{color:#D97706}
-.sc-p{background:linear-gradient(145deg,#FAF5FF,#EDE9FE);border-color:#DDD6FE}.sc-p::before{background:linear-gradient(90deg,#7C3AED,#C4B5FD)}.sc-p .sv{color:#4C1D95}.sc-p .sl{color:#7C3AED}
-.sc-r{background:linear-gradient(145deg,#FFF1F2,#FFE4E6);border-color:#FECDD3}.sc-r::before{background:linear-gradient(90deg,#E11D48,#FDA4AF)}.sc-r .sv{color:#9F1239}.sc-r .sl{color:#E11D48}
-.sc-t{background:linear-gradient(145deg,#F0FDFA,#CCFBF1);border-color:#99F6E4}.sc-t::before{background:linear-gradient(90deg,#0F766E,#5EEAD4)}.sc-t .sv{color:#134E4A}.sc-t .sl{color:#0F766E}
+/* Indigo — pipeline/acquisition metrics */
+.sc-b{background:linear-gradient(145deg,#F5F7FF,#EEF2FF);border-color:#C7D2FE}.sc-b::before{background:linear-gradient(90deg,#6366F1,#A5B4FC)}.sc-b .sv{color:#3730A3}.sc-b .sl{color:#4F46E5}
+/* Emerald — money/revenue metrics */
+.sc-g{background:linear-gradient(145deg,#F0FDF8,#DCFCE7);border-color:#A7F3D0}.sc-g::before{background:linear-gradient(90deg,#059669,#6EE7B7)}.sc-g .sv{color:#065F46}.sc-g .sl{color:#059669}
+/* Slate — secondary/neutral (pending, misc) */
+.sc-s{background:linear-gradient(145deg,#F8FAFC,#F1F5F9);border-color:#CBD5E1}.sc-s::before{background:linear-gradient(90deg,#64748B,#94A3B8)}.sc-s .sv{color:#1E293B}.sc-s .sl{color:#475569}
+/* Aliases — map old class names to new 2-colour system */
+.sc-a,.sc-t{background:linear-gradient(145deg,#F5F7FF,#EEF2FF);border-color:#C7D2FE}.sc-a::before,.sc-t::before{background:linear-gradient(90deg,#6366F1,#A5B4FC)}.sc-a .sv,.sc-t .sv{color:#3730A3}.sc-a .sl,.sc-t .sl{color:#4F46E5}
+.sc-p{background:linear-gradient(145deg,#F0FDF8,#DCFCE7);border-color:#A7F3D0}.sc-p::before{background:linear-gradient(90deg,#059669,#6EE7B7)}.sc-p .sv{color:#065F46}.sc-p .sl{color:#059669}
+.sc-r{background:linear-gradient(145deg,#F8FAFC,#F1F5F9);border-color:#CBD5E1}.sc-r::before{background:linear-gradient(90deg,#64748B,#94A3B8)}.sc-r .sv{color:#1E293B}.sc-r .sl{color:#475569}
 .si{font-size:26px;margin-bottom:10px}
 .sl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
 .sv{font-size:28px;font-weight:900;letter-spacing:-.5px;line-height:1}
@@ -289,14 +294,16 @@ input[type=range]{width:100%;accent-color:var(--bl)}
     </div>
     <div class="sec on" id="s-ov">
       <div class="sg">
+        <!-- Row 1: Pipeline / Acquisition (indigo) -->
         <div class="sc sc-b"><div class="si">&#128101;</div><div class="sl">Referrers</div><div class="sv" id="s1">-</div></div>
-        <div class="sc sc-g"><div class="si">&#128203;</div><div class="sl">Total Leads</div><div class="sv" id="s2">-</div><div class="ss" id="s2b"></div></div>
-        <div class="sc sc-a"><div class="si">&#127919;</div><div class="sl">Conversions</div><div class="sv" id="s3">-</div><div class="ss" id="s3b"></div></div>
-        <div class="sc sc-p"><div class="si">&#128176;</div><div class="sl">Tutor Revenue</div><div class="sv" id="s4">-</div></div>
-        <div class="sc sc-t"><div class="si">&#128229;</div><div class="sl">Downloads</div><div class="sv" id="s5">-</div></div>
+        <div class="sc sc-b"><div class="si">&#128203;</div><div class="sl">Total Leads</div><div class="sv" id="s2">-</div><div class="ss" id="s2b"></div></div>
+        <div class="sc sc-b"><div class="si">&#128229;</div><div class="sl">Downloads</div><div class="sv" id="s5">-</div></div>
+        <div class="sc sc-b"><div class="si">&#127919;</div><div class="sl">Conversions</div><div class="sv" id="s3">-</div><div class="ss" id="s3b"></div></div>
+        <!-- Row 2: Money / Revenue (emerald) -->
         <div class="sc sc-g"><div class="si">&#128184;</div><div class="sl">Total Earned</div><div class="sv" id="s6">-</div></div>
-        <div class="sc sc-b"><div class="si">&#9989;</div><div class="sl">Paid Out</div><div class="sv" id="s7">-</div></div>
-        <div class="sc sc-r"><div class="si">&#9203;</div><div class="sl">Pending Claims</div><div class="sv" id="s8">-</div></div>
+        <div class="sc sc-g"><div class="si">&#128176;</div><div class="sl">Tutor Revenue</div><div class="sv" id="s4">-</div></div>
+        <div class="sc sc-g"><div class="si">&#9989;</div><div class="sl">Paid Out</div><div class="sv" id="s7">-</div></div>
+        <div class="sc sc-s"><div class="si">&#9203;</div><div class="sl">Pending Claims</div><div class="sv" id="s8">-</div></div>
       </div>
       <div class="cd">
         <div class="ch"><div class="ct">&#127942; Top 5 Referrers</div><span style="font-size:12px;color:var(--mu);font-weight:600">Based on conversions</span></div>
