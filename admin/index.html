@@ -122,6 +122,11 @@ td code{background:var(--bi);padding:2px 8px;border-radius:6px;font-size:12px;fo
 .sr2{margin-bottom:18px}
 .sl2{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);font-weight:700;margin-bottom:7px}
 .sv2{color:var(--bl);font-weight:800;font-size:14px}
+.manual-row{display:flex;align-items:center;gap:6px;margin-top:8px}
+.manual-unit{font-size:12px;font-weight:700;color:var(--t2);flex-shrink:0}
+.manual-inp{flex:1;background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--rs);padding:8px 10px;color:var(--tx);font-size:13px;font-weight:700;outline:none;transition:border .2s;-moz-appearance:textfield}
+.manual-inp:focus{border-color:var(--bl);background:var(--sf)}
+.manual-inp::-webkit-inner-spin-button,.manual-inp::-webkit-outer-spin-button{-webkit-appearance:none}
 input[type=range]{width:100%;accent-color:var(--bl)}
 .pv{background:linear-gradient(135deg,var(--gi),#d1fae5);border:1.5px solid #6ee7b7;border-radius:var(--rs);padding:14px 18px;font-size:13px;color:#15803d;margin-top:16px;line-height:1.7;font-weight:600}
 .pni{width:100%;background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--rs);padding:11px 16px;color:var(--tx);font-size:13px;outline:none;margin-top:14px;transition:all .2s;font-weight:500}
@@ -286,13 +291,44 @@ input[type=range]{width:100%;accent-color:var(--bl)}
             <div class="ch"><div class="ct">Reward Settings</div><button class="bs" onclick="opTnC()">Student Preview</button></div>
             <div class="cb">
               <div class="lb2"><span><span class="lp"></span><span id="lvt">Loading...</span></span><span id="lvv" class="badge bb2"></span></div>
-              <div class="mr"><button class="mb on" id="mp" onclick="setMdl('pct')">% Percentage</button><button class="mb" id="mf" onclick="setMdl('flat')">Flat Amount</button></div>
+              <div class="mr"><button class="mb on" id="mp" onclick="setMdl('pct')">% Percentage</button><button class="mb" id="mf" onclick="setMdl('flat')">&#8377; Flat Amount</button></div>
+              <!-- PCT MODEL -->
               <div id="pc2">
-                <div class="sr2"><div class="sl2">Referrer gets (% of course price) <span class="sv2" id="vr">10%</span></div><input type="range" id="sr" min="1" max="50" value="10" oninput="updP()"></div>
-                <div class="sr2"><div class="sl2">Referee discount (% of referrer reward) <span class="sv2" id="ve">0%</span></div><input type="range" id="se" min="0" max="100" step="5" value="0" oninput="updP()"></div>
+                <div class="sr2">
+                  <div class="sl2">Referrer gets (% of course price) <span class="sv2" id="vr">10%</span></div>
+                  <input type="range" id="sr" min="1" max="50" value="10" oninput="syncFromSlider('sr','ir');updP()">
+                  <div class="manual-row"><input type="number" class="manual-inp" id="ir" min="1" max="50" value="10" placeholder="1-50" oninput="syncFromInput('ir','sr',1,50);updP()"><span class="manual-unit">%</span></div>
+                </div>
+                <div class="sr2">
+                  <div class="sl2">Referee discount (% of referrer reward) <span class="sv2" id="ve">0%</span></div>
+                  <input type="range" id="se" min="0" max="100" step="5" value="0" oninput="syncFromSlider('se','ie');updP()">
+                  <div class="manual-row"><input type="number" class="manual-inp" id="ie" min="0" max="100" value="0" placeholder="0-100" oninput="syncFromInput('ie','se',0,100);updP()"><span class="manual-unit">%</span></div>
+                </div>
               </div>
-              <div class="sr2"><div class="sl2">Referral window <span class="sv2" id="vw">15 days</span></div><input type="range" id="sw" min="7" max="60" value="15" oninput="updP()"></div>
-              <div class="sr2"><div class="sl2">Minimum claim amount <span class="sv2" id="vm">Rs 500</span></div><input type="range" id="sm" min="100" max="5000" step="100" value="500" oninput="updP()"></div>
+              <!-- FLAT MODEL -->
+              <div id="pf2" style="display:none">
+                <div class="sr2">
+                  <div class="sl2">Referrer gets (flat &#8377; per conversion) <span class="sv2" id="vrf">&#8377;200</span></div>
+                  <input type="range" id="srf" min="50" max="5000" step="50" value="200" oninput="syncFromSlider('srf','irf');updP()">
+                  <div class="manual-row"><span class="manual-unit">&#8377;</span><input type="number" class="manual-inp" id="irf" min="50" max="5000" value="200" placeholder="50-5000" oninput="syncFromInput('irf','srf',50,5000);updP()"></div>
+                </div>
+                <div class="sr2">
+                  <div class="sl2">Referee gets (flat &#8377; discount) <span class="sv2" id="vef">&#8377;0</span></div>
+                  <input type="range" id="sef" min="0" max="2000" step="50" value="0" oninput="syncFromSlider('sef','ief');updP()">
+                  <div class="manual-row"><span class="manual-unit">&#8377;</span><input type="number" class="manual-inp" id="ief" min="0" max="2000" value="0" placeholder="0-2000" oninput="syncFromInput('ief','sef',0,2000);updP()"></div>
+                </div>
+              </div>
+              <!-- COMMON -->
+              <div class="sr2">
+                <div class="sl2">Referral window <span class="sv2" id="vw">15 days</span></div>
+                <input type="range" id="sw" min="7" max="60" value="15" oninput="syncFromSlider('sw','iw');updP()">
+                <div class="manual-row"><input type="number" class="manual-inp" id="iw" min="7" max="60" value="15" placeholder="7-60" oninput="syncFromInput('iw','sw',7,60);updP()"><span class="manual-unit">days</span></div>
+              </div>
+              <div class="sr2">
+                <div class="sl2">Minimum claim amount <span class="sv2" id="vm">&#8377;500</span></div>
+                <input type="range" id="sm" min="100" max="10000" step="100" value="500" oninput="syncFromSlider('sm','im');updP()">
+                <div class="manual-row"><span class="manual-unit">&#8377;</span><input type="number" class="manual-inp" id="im" min="100" max="10000" value="500" placeholder="100-10000" oninput="syncFromInput('im','sm',100,10000);updP()"></div>
+              </div>
               <div class="pv" id="ppv"></div>
               <input class="pni" id="pnm" placeholder="Policy name (e.g. Summer 2025)">
               <button class="bs pm" style="width:100%;margin-top:12px;padding:13px;font-size:14px" onclick="saveP()">Save &amp; Publish New Policy</button>
@@ -621,37 +657,72 @@ function ldPol(){
   });
 }
 function ldPolFb(){api("getPolicy",{},function(r){if(r.ok){_pol=r.data;apPol(r.data);}else updP();});}
+function syncFromSlider(sliderId,inputId){g(inputId).value=g(sliderId).value;}
+function syncFromInput(inputId,sliderId,mn,mx){var v=Number(g(inputId).value)||0;if(v<mn)v=mn;if(v>mx)v=mx;g(sliderId).value=v;g(inputId).value=v;}
+function setMdl(m,s){
+  _mdl=m;var isPct=m==="pct";
+  g("pc2").style.display=isPct?"block":"none";
+  g("pf2").style.display=isPct?"none":"block";
+  g("mp").classList.toggle("on",isPct);
+  g("mf").classList.toggle("on",!isPct);
+  if(!s)updP();
+}
+function updP(){
+  var isPct=_mdl==="pct";
+  var win=parseInt(g("sw").value)||15;var min=parseInt(g("sm").value)||500;
+  g("vw").textContent=win+" days";g("vm").textContent=RS+nm(min);
+  g("iw").value=win;g("im").value=min;
+  var preview="";
+  if(isPct){
+    var ref=parseInt(g("sr").value)||10;var ree=parseInt(g("se").value)||0;
+    g("vr").textContent=ref+"%";g("ve").textContent=ree+"%";
+    g("ir").value=ref;g("ie").value=ree;
+    var rE=Math.round(5000*ref/100);var reE=Math.round(rE*ree/100);
+    preview="Example: "+RS+"5,000 course — Referrer earns <strong>"+RS+nm(rE)+"</strong>"+(ree>0?", Referee gets <strong>"+RS+nm(reE)+"</strong> discount":"")+". Window: <strong>"+win+" days</strong>. Min claim: <strong>"+RS+nm(min)+"</strong>";
+  } else {
+    var rf=parseInt(g("srf").value)||200;var ef=parseInt(g("sef").value)||0;
+    g("vrf").textContent=RS+nm(rf);g("vef").textContent=RS+nm(ef);
+    g("irf").value=rf;g("ief").value=ef;
+    preview="Example: Any course — Referrer earns flat <strong>"+RS+nm(rf)+"</strong>"+(ef>0?", Referee gets flat <strong>"+RS+nm(ef)+"</strong> discount":"")+". Window: <strong>"+win+" days</strong>. Min claim: <strong>"+RS+nm(min)+"</strong>";
+  }
+  g("ppv").innerHTML=preview;
+}
 function apPol(p){
   _mdl=(p.Model||"pct").toLowerCase();
-  g("sr").value=Number(p.ReferrerPct)||10;g("se").value=Number(p.RefereePct)||0;
-  g("sw").value=Number(p.WindowDays)||15;g("sm").value=Number(p.MinClaim)||500;
+  var isPct=_mdl==="pct";
+  if(isPct){
+    var ref=Number(p.ReferrerPct)||10;var ree=Number(p.RefereePct)||0;
+    g("sr").value=ref;g("ir").value=ref;g("se").value=ree;g("ie").value=ree;
+  } else {
+    var rf=Number(p.ReferrerPct)||200;var ef=Number(p.RefereePct)||0;
+    g("srf").value=Math.min(rf,5000);g("irf").value=rf;
+    g("sef").value=Math.min(ef,2000);g("ief").value=ef;
+  }
+  var win=Number(p.WindowDays)||15;var min=Number(p.MinClaim)||500;
+  g("sw").value=win;g("iw").value=win;
+  g("sm").value=Math.min(min,10000);g("im").value=min;
   setMdl(_mdl,true);updP();
-  g("lvt").textContent="Earn "+(Number(p.ReferrerPct)||10)+"% per conversion - Window: "+(Number(p.WindowDays)||15)+"d - Min: "+RS+(Number(p.MinClaim)||500);
+  var refLabel=isPct?((Number(p.ReferrerPct)||10)+"% per conversion"):(RS+nm(Number(p.ReferrerPct)||200)+" flat");
+  g("lvt").textContent="Earn "+refLabel+" — Window: "+(Number(p.WindowDays)||15)+"d — Min: "+RS+nm(Number(p.MinClaim)||500);
   g("lvv").textContent="v"+(Number(p.Version)||1)+" live";
-}
-function setMdl(m,s){_mdl=m;var ip=m==="pct";g("pc2").style.display=ip?"block":"none";g("mp").classList.toggle("on",ip);g("mf").classList.toggle("on",!ip);if(!s)updP();}
-function updP(){
-  var ref=parseInt(g("sr").value)||10;var ree=parseInt(g("se").value)||0;
-  var win=parseInt(g("sw").value)||15;var min=parseInt(g("sm").value)||500;
-  g("vr").textContent=ref+"%";g("ve").textContent=ree+"%";
-  g("vw").textContent=win+" days";g("vm").textContent=RS+nm(min);
-  var rE=Math.round(5000*ref/100);var reE=Math.round(rE*ree/100);
-  g("ppv").innerHTML="Example: "+RS+"5,000 course - Referrer earns <strong>"+RS+nm(rE)+"</strong>"+(ree>0?", Referee gets <strong>"+RS+nm(reE)+"</strong>":"")+". Window: <strong>"+win+" days</strong>. Min claim: <strong>"+RS+nm(min)+"</strong>";
 }
 function rnVer(pvs){
   var rev=pvs.slice().reverse();
   g("verl").innerHTML=rev.length?rev.map(function(p,i){
     var isL=(p.Status||"").toLowerCase()==="active";
+    var isFlat=(p.Model||"pct").toLowerCase()==="flat";
     var pn=p.PolicyName?'"'+xe(p.PolicyName)+'"':"Version "+p.Version;
     return "<div class='vi'><div class='vt'><div><div class='vn'>"+pn+(isL?" <span class='badge bg2' style='font-size:10px;padding:3px 8px'>Live</span>":"")+"</div><div class='vd'>"+cd(p.CreatedDate)+"</div></div>"
       +(!isL?"<div class='va'><button class='bs' onclick='reuV("+i+")' style='font-size:11px;padding:5px 10px'>Reuse</button><button class='bs dn' onclick='delV("+p.Version+")' style='font-size:11px;padding:5px 10px'>Delete</button></div>":"<span class='badge bg2'>Active</span>")
-      +"</div><div class='vg'><span class='vta r'>Ref "+(p.ReferrerPct||10)+"%</span><span class='vta e'>Ree "+(p.RefereePct||0)+"%</span><span class='vta w'>"+(p.WindowDays||15)+" days</span><span class='vta m'>Min "+RS+(p.MinClaim||500)+"</span></div></div>";
+      +"</div><div class='vg'>"+(isFlat?"<span class='vta r'>"+RS+nm(p.ReferrerPct||200)+" flat</span><span class='vta e'>Ree "+RS+nm(p.RefereePct||0)+"</span>":"<span class='vta r'>Ref "+(p.ReferrerPct||10)+"%</span><span class='vta e'>Ree "+(p.RefereePct||0)+"%</span>")+"<span class='vta w'>"+(p.WindowDays||15)+" days</span><span class='vta m'>Min "+RS+nm(p.MinClaim||500)+"</span></div></div>";
   }).join(""):"<div style='color:var(--mu);font-size:13px;font-weight:600'>No versions yet</div>";
 }
 function reuV(i){var rev=_pvs.slice().reverse();apPol(rev[i]);toast("Settings loaded - save to publish");}
 function delV(ver){if(!confirm("Delete policy v"+ver+"?"))return;api("deletePolicy",{version:ver},function(r){if(r.ok){toast("Deleted");ldPol();}else toast("Error: "+r.error,"err");});}
 function saveP(){
-  var ref=parseInt(g("sr").value)||10;var ree=parseInt(g("se").value)||0;
+  var isPct=_mdl==="pct";
+  var ref=isPct?(parseInt(g("sr").value)||10):(parseInt(g("srf").value)||200);
+  var ree=isPct?(parseInt(g("se").value)||0):(parseInt(g("sef").value)||0);
   var win=parseInt(g("sw").value)||15;var min=parseInt(g("sm").value)||500;
   api("savePolicy",{referrerPct:ref,refereePct:ree,windowDays:win,minClaim:min,model:_mdl,policyName:g("pnm").value.trim()},function(r){
     if(r.ok){toast("Policy v"+r.data.version+" published","ok");g("pnm").value="";ldPol();}
@@ -659,7 +730,9 @@ function saveP(){
   });
 }
 function opTnC(){
-  var ref=parseInt(g("sr").value)||10;var ree=parseInt(g("se").value)||0;
+  var isPct=_mdl==="pct";
+  var ref=isPct?(parseInt(g("sr").value)||10):(parseInt(g("srf").value)||200);
+  var ree=isPct?(parseInt(g("se").value)||0):(parseInt(g("sef").value)||0);
   var win=parseInt(g("sw").value)||15;var min=parseInt(g("sm").value)||500;
   var pn=g("pnm").value.trim()||(_pol&&_pol.PolicyName?_pol.PolicyName:"Current Reward Policy");
   var rE=Math.round(5000*ref/100);var reE=Math.round(rE*ree/100);
