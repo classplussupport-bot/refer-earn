@@ -1043,7 +1043,11 @@ function submitClaim(){
       closeClaimModal();
       showToast("\ud83c\udf89 Claim submitted! You'll be paid via UPI soon.","ok");
       loadDash();
-    } else showToast(r.error||"Claim failed","err");
+    } else {
+      var msg=r.error||"Claim failed";
+      if(msg.indexOf("pending")>=0)msg="⏳ You already have a pending payout. Wait for it to be processed first.";
+      showToast(msg,"err");
+    }
   },function(){btn.disabled=false;btn.textContent="\u2705 Submit Claim";showToast("Network error","err");});
 }
 
