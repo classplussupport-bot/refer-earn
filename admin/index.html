@@ -397,6 +397,12 @@ input[type=range]{width:100%;accent-color:var(--bl)}
                 <input type="range" id="sm" min="100" max="10000" step="100" value="500" oninput="syncFromSlider('sm','im');updP()">
                 <div class="manual-row"><span class="manual-unit">&#8377;</span><input type="number" class="manual-inp" id="im" min="100" max="10000" value="500" placeholder="100-10000" oninput="syncFromInput('im','sm',100,10000);updP()"></div>
               </div>
+              <div class="sr2">
+                <div class="sl2">Min. course price to qualify <span class="sv2" id="vmcp">&#8377;0 (all courses)</span></div>
+                <input type="range" id="smcp" min="0" max="500" step="10" value="0" oninput="syncFromSlider('smcp','imcp');updP()">
+                <div class="manual-row"><span class="manual-unit">&#8377;</span><input type="number" class="manual-inp" id="imcp" min="0" max="500" value="0" placeholder="0-500" oninput="syncFromInput('imcp','smcp',0,500);updP()"></div>
+                <div style="font-size:11px;color:var(--mu);margin-top:6px;font-weight:600;">&#8377;0 = applies to all courses &nbsp;|&nbsp; Set above &#8377;0 to restrict to higher-priced courses only</div>
+              </div>
               <div class="pv" id="ppv"></div>
               <input class="pni" id="pnm" placeholder="Policy name (e.g. Summer 2025)">
               <button class="bs pm" style="width:100%;margin-top:12px;padding:13px;font-size:14px" onclick="saveP()">Save &amp; Publish New Policy</button>
@@ -738,20 +744,22 @@ function setMdl(m,s){
 function updP(){
   var isPct=_mdl==="pct";
   var win=parseInt(g("sw").value)||15;var min=parseInt(g("sm").value)||500;
+  var mcp=parseInt(g("smcp").value)||0;
   g("vw").textContent=win+" days";g("vm").textContent=RS+nm(min);
-  g("iw").value=win;g("im").value=min;
+  g("vmcp").textContent=mcp>0?(RS+nm(mcp)+" & above"):RS+"0 (all courses)";
+  g("iw").value=win;g("im").value=min;g("imcp").value=mcp;
   var preview="";
   if(isPct){
     var ref=parseInt(g("sr").value)||10;var ree=parseInt(g("se").value)||0;
     g("vr").textContent=ref+"%";g("ve").textContent=ree+"%";
     g("ir").value=ref;g("ie").value=ree;
     var rE=Math.round(5000*ref/100);var reE=Math.round(rE*ree/100);
-    preview="Example: "+RS+"5,000 course — Referrer earns <strong>"+RS+nm(rE)+"</strong>"+(ree>0?", Referee gets <strong>"+RS+nm(reE)+"</strong> discount":"")+". Window: <strong>"+win+" days</strong>. Min claim: <strong>"+RS+nm(min)+"</strong>";
+    preview="Example: "+RS+"5,000 course — Referrer earns <strong>"+RS+nm(rE)+"</strong>"+(ree>0?", Referee gets <strong>"+RS+nm(reE)+"</strong> discount":"")+(mcp>0?". Qualifies if course ≥ <strong>"+RS+nm(mcp)+"</strong>":". Applies to all courses")+". Min claim: <strong>"+RS+nm(min)+"</strong>";
   } else {
     var rf=parseInt(g("srf").value)||200;var ef=parseInt(g("sef").value)||0;
     g("vrf").textContent=RS+nm(rf);g("vef").textContent=RS+nm(ef);
     g("irf").value=rf;g("ief").value=ef;
-    preview="Example: Any course — Referrer earns flat <strong>"+RS+nm(rf)+"</strong>"+(ef>0?", Referee gets flat <strong>"+RS+nm(ef)+"</strong> discount":"")+". Window: <strong>"+win+" days</strong>. Min claim: <strong>"+RS+nm(min)+"</strong>";
+    preview="Example: Any course — Referrer earns flat <strong>"+RS+nm(rf)+"</strong>"+(ef>0?", Referee gets flat <strong>"+RS+nm(ef)+"</strong> discount":"")+(mcp>0?". Qualifies if course ≥ <strong>"+RS+nm(mcp)+"</strong>":". Applies to all courses")+". Min claim: <strong>"+RS+nm(min)+"</strong>";
   }
   g("ppv").innerHTML=preview;
 }
@@ -767,8 +775,10 @@ function apPol(p){
     g("sef").value=Math.min(ef,2000);g("ief").value=ef;
   }
   var win=Number(p.WindowDays)||15;var min=Number(p.MinClaim)||500;
+  var mcp=Number(p.MinCoursePrice||p.minCoursePrice)||0;
   g("sw").value=win;g("iw").value=win;
   g("sm").value=Math.min(min,10000);g("im").value=min;
+  g("smcp").value=Math.min(mcp,500);g("imcp").value=mcp;
   setMdl(_mdl,true);updP();
   var refLabel=isPct?((Number(p.ReferrerPct)||10)+"% per conversion"):(RS+nm(Number(p.ReferrerPct)||200)+" flat");
   g("lvt").textContent="Earn "+refLabel+" — Window: "+(Number(p.WindowDays)||15)+"d — Min: "+RS+nm(Number(p.MinClaim)||500);
@@ -782,7 +792,7 @@ function rnVer(pvs){
     var pn=p.PolicyName?'"'+xe(p.PolicyName)+'"':"Version "+p.Version;
     return "<div class='vi'><div class='vt'><div><div class='vn'>"+pn+(isL?" <span class='badge bg2' style='font-size:10px;padding:3px 8px'>Live</span>":"")+"</div><div class='vd'>"+cd(p.CreatedDate)+"</div></div>"
       +(!isL?"<div class='va'><button class='bs' onclick='reuV("+i+")' style='font-size:11px;padding:5px 10px'>Reuse</button><button class='bs dn' onclick='delV("+p.Version+")' style='font-size:11px;padding:5px 10px'>Delete</button></div>":"<span class='badge bg2'>Active</span>")
-      +"</div><div class='vg'>"+(isFlat?"<span class='vta r'>"+RS+nm(p.ReferrerPct||200)+" flat</span><span class='vta e'>Ree "+RS+nm(p.RefereePct||0)+"</span>":"<span class='vta r'>Ref "+(p.ReferrerPct||10)+"%</span><span class='vta e'>Ree "+(p.RefereePct||0)+"%</span>")+"<span class='vta w'>"+(p.WindowDays||15)+" days</span><span class='vta m'>Min "+RS+nm(p.MinClaim||500)+"</span></div></div>";
+      +"</div><div class='vg'>"+(isFlat?"<span class='vta r'>"+RS+nm(p.ReferrerPct||200)+" flat</span><span class='vta e'>Ree "+RS+nm(p.RefereePct||0)+"</span>":"<span class='vta r'>Ref "+(p.ReferrerPct||10)+"%</span><span class='vta e'>Ree "+(p.RefereePct||0)+"%</span>")+"<span class='vta w'>"+(p.WindowDays||15)+" days</span><span class='vta m'>Min "+RS+nm(p.MinClaim||500)+"</span>"+(Number(p.MinCoursePrice||0)>0?"<span class='vta m'>Course ≥"+RS+nm(p.MinCoursePrice)+"</span>":"")+"</div></div>";
   }).join(""):"<div style='color:var(--mu);font-size:13px;font-weight:600'>No versions yet</div>";
 }
 function reuV(i){var rev=_pvs.slice().reverse();apPol(rev[i]);toast("Settings loaded - save to publish");}
@@ -792,7 +802,8 @@ function saveP(){
   var ref=isPct?(parseInt(g("sr").value)||10):(parseInt(g("srf").value)||200);
   var ree=isPct?(parseInt(g("se").value)||0):(parseInt(g("sef").value)||0);
   var win=parseInt(g("sw").value)||15;var min=parseInt(g("sm").value)||500;
-  api("savePolicy",{referrerPct:ref,refereePct:ree,windowDays:win,minClaim:min,model:_mdl,policyName:g("pnm").value.trim()},function(r){
+  var mcp2=parseInt(g("smcp").value)||0;
+  api("savePolicy",{referrerPct:ref,refereePct:ree,windowDays:win,minClaim:min,model:_mdl,policyName:g("pnm").value.trim(),minCoursePrice:mcp2},function(r){
     if(r.ok){toast("Policy v"+r.data.version+" published","ok");g("pnm").value="";ldPol();}
     else toast("Error: "+r.error,"err");
   });
