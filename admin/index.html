@@ -445,7 +445,14 @@ window.onload=function(){
     g("lgl").style.display="none";g("lgf").style.display="block";
     st("sbr",_brd);st("sbt","org: "+_org);
     setDF("month",document.querySelector(".dp.on"),false);
-    try{if(sessionStorage.getItem("ra_"+_org)==="ok")unlock();}catch(e){}
+    try{
+      var sess=sessionStorage.getItem("ra_"+_org);
+      if(sess&&sess==="pw:"+_pw){
+        unlock();startPwWatchdog();
+      } else if(sess){
+        sessionStorage.removeItem("ra_"+_org);
+      }
+    }catch(e){}
   },function(){st("lgl","Network error. Retry.");});
 };
 
@@ -456,11 +463,54 @@ function chk(){
   api("getAdminPassword",{},function(r){_pw=(r.ok&&r.data&&r.data.pw)?r.data.pw:"";vfy(v);});
 }
 function vfy(v){
-  if(v===_pw){try{sessionStorage.setItem("ra_"+_org,"ok");}catch(e){}unlock();}
-  else{st("lerr","Incorrect password");g("pwi").value="";}
+  if(v===_pw){
+    try{sessionStorage.setItem("ra_"+_org,"pw:"+_pw);}catch(e){}
+    unlock();
+    startPwWatchdog();
+  } else {
+    st("lerr","Incorrect password");g("pwi").value="";
+  }
 }
 function unlock(){g("ls").style.display="none";g("app").style.display="block";loadAll();}
 function logout(){try{sessionStorage.removeItem("ra_"+_org);}catch(e){}location.reload();}
+
+// ── Password watchdog ────────────────────────────────────────────
+// Silently re-fetches password from sheet every 60 seconds.
+// If password changed, clears session and forces logout immediately.
+var _pwWatchdog=null;
+function startPwWatchdog(){
+  if(_pwWatchdog)clearInterval(_pwWatchdog);
+  _pwWatchdog=setInterval(function(){
+    // Fetch latest client record to get current password
+    var url=MU+"?action=getClient&org="+encodeURIComponent(_org);
+    var n="cb_wd_"+Date.now();
+    window[n]=function(r){
+      var tag=document.querySelector('script[data-wd="'+n+'"]');
+      if(tag&&tag.parentNode)tag.parentNode.removeChild(tag);
+      delete window[n];
+      if(r&&r.ok&&r.data){
+        var latestPw=(r.data.AdminPassword||"").trim();
+        if(latestPw&&latestPw!==_pw){
+          // Password changed — force logout
+          clearInterval(_pwWatchdog);
+          try{sessionStorage.removeItem("ra_"+_org);}catch(e){}
+          showBanner("Password changed. Please log in again.");
+          setTimeout(function(){location.reload();},2500);
+        }
+      }
+    };
+    var tag=document.createElement("script");
+    tag.setAttribute("data-wd",n);
+    tag.src=url+"&callback="+n;
+    document.head.appendChild(tag);
+  },60000); // check every 60 seconds
+}
+function showBanner(msg){
+  var b=document.createElement("div");
+  b.style.cssText="position:fixed;top:0;left:0;right:0;z-index:9999;background:#DC2626;color:#fff;text-align:center;padding:16px;font-size:15px;font-weight:700;";
+  b.textContent=msg;
+  document.body.appendChild(b);
+}
 
 function api(a,p,cb,eb){
   var u=MU+"?action="+a+"&sheetId="+encodeURIComponent(_sid);
