@@ -515,32 +515,44 @@ function showBanner(msg){
 function api(a,p,cb,eb){
   var u=MU+"?action="+a+"&sheetId="+encodeURIComponent(_sid);
   Object.keys(p||{}).forEach(function(k){u+="&"+k+"="+encodeURIComponent(p[k]);});
-  jp(u,cb,eb);
+  apiFetch(u,cb,eb,1);
 }
-function jp(u,cb,eb){
-  var n="cb_"+Date.now()+"_"+Math.random().toString(36).slice(2);var tid;
-  window[n]=function(d){clearTimeout(tid);delete window[n];if(tag&&tag.parentNode)tag.parentNode.removeChild(tag);cb(d);};
-  var tag=document.createElement("script");
-  tag.src=u+(u.indexOf("?")>=0?"&":"?")+"callback="+n;
-  tag.onerror=function(){clearTimeout(tid);delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();else toast("API error","err");};
-  tid=setTimeout(function(){delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();else toast("Timeout","err");},15000);
-  document.head.appendChild(tag);
+function apiFetch(u,cb,eb,attempt){
+  var ctrl=typeof AbortController!=="undefined"?new AbortController():null;
+  var tid=ctrl?setTimeout(function(){ctrl.abort();},25000):null; // 25s covers GAS cold start
+  fetch(u,{method:"GET",redirect:"follow",signal:ctrl?ctrl.signal:undefined})
+    .then(function(res){
+      if(tid)clearTimeout(tid);
+      if(!res.ok)throw new Error("HTTP "+res.status);
+      return res.text();
+    })
+    .then(function(txt){
+      var json=txt.trim();
+      if(json[0]!=="{"&&json[0]!=="["){
+        json=json.replace(/^[^(]+[(]/,"").replace(/[)][;]?\s*$/,"");
+      }
+      try{cb(JSON.parse(json));}catch(e){if(eb)eb(e);else toast("Parse error","err");}
+    })
+    .catch(function(err){
+      if(tid)clearTimeout(tid);
+      if(attempt<2){apiFetch(u,cb,eb,2);return;}
+      if(eb)eb(err);else toast("Network error","err");
+    });
 }
+function jp(u,cb,eb){apiFetch(u,cb,eb,1);}
+
 
 function loadAll(){
-  // Always fetch fresh data, then render everything with current filter
-  var done=0;
-  function tryRender(){
-    done++;
-    if(done>=3){
-      computeOv();
-      rnTop5();rnRf();rnLd();rnPy();
-    }
-  }
-  api("getAllReferrers",{},function(r){if(r.ok)_refs=r.data||[];tryRender();});
-  api("getAllLeads",{},function(r){if(r.ok)_leads=r.data||[];tryRender();});
-  api("getPayouts",{},function(r){if(r.ok)_pays=r.data||[];tryRender();});
-  ldPol();
+  // Single bulk call — fetches referrers + leads + payouts + policy in one round trip
+  api("getAdminData",{},function(r){
+    if(!r.ok){toast("Error loading data: "+(r.error||"Please refresh"),"err");return;}
+    var d=r.data||{};
+    _refs=d.referrers||[];
+    _leads=d.leads||[];
+    _pays=d.payouts||[];
+    if(d.policy&&(d.policy.Model||d.policy.ReferrerPct)){apPol(d.policy);}
+    computeOv();rnTop5();rnRf();rnLd();rnPy();
+  },function(){toast("Network error loading data. Please refresh.","err");});
 }
 
 function ds(d){var x=new Date(d);x.setHours(0,0,0,0);return x;}
