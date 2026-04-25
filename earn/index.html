@@ -564,6 +564,7 @@ window.onload=function(){
 
 // ── LOGIN FLOW ──
 var _isNewUser=false; // flag — never rely on display style for this
+var _cachedUID="",_cachedName="",_cachedPIN=""; // cached from getMobileUser step 1
 
 function loginNext(){
   var mob=g("login-mobile").value.trim();
@@ -573,8 +574,11 @@ function loginNext(){
   api("getMobileUser",{mobile:mob},function(r){
     btn.disabled=false;btn.textContent="Continue \u2192";
     if(r.ok&&r.data&&r.data.exists){
-      // Returning user — PIN only
+      // Returning user — PIN only — cache data for local verification
       _isNewUser=false;
+      _cachedUID=r.data.uid||"";
+      _cachedName=r.data.name||"";
+      _cachedPIN=(r.data.pin||"").toString().trim();
       g("login-step1").style.display="none";
       g("login-step2").style.display="block";
       g("name-field").style.display="none";
@@ -609,17 +613,11 @@ function loginSubmit(){
       else setLE(r.error||"Registration failed");
     },function(){btn.disabled=false;btn.textContent="Sign In \u2192";setLE("Network error. Retry.");});
   } else {
-    // Returning user — verify PIN
+    // Returning user — verify PIN locally (no API call needed, PIN cached from step 1)
     if(!/^\d{4}$/.test(pin)){setLE("Enter your 4-digit PIN");return;}
-    var btn=g("login-btn2");btn.disabled=true;btn.textContent="Signing in...";setLE("");
-    api("verifyPin",{mobile:MOBILE,pin:pin},function(r){
-      btn.disabled=false;btn.textContent="Sign In \u2192";
-      if(!r.ok){setLE(r.error||"Verification failed. Retry.");return;}
-      var d=r.data||{};
-      if(!d.valid){setLE("Incorrect PIN. Try again.");g("login-pin").value="";g("login-pin").focus();return;}
-      // verifyPin returns uid + name directly — no second API call needed
-      UID=d.uid;NAME=d.name||MOBILE;PIN=pin;saveSession();loginSuccess();
-    },function(){btn.disabled=false;btn.textContent="Sign In \u2192";setLE("Network error. Retry.");});
+    if(!_cachedPIN){setLE("Session expired. Go back and re-enter your mobile.");return;}
+    if(pin!==_cachedPIN){setLE("Incorrect PIN. Try again.");g("login-pin").value="";g("login-pin").focus();return;}
+    UID=_cachedUID;NAME=_cachedName||MOBILE;PIN=pin;saveSession();loginSuccess();
   }
 }
 
