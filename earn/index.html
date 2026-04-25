@@ -352,7 +352,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
     <div class="hdr-top">
       <div class="hdr-brand" id="hdr-brand">refer&amp;earn</div>
       <div style="display:flex;gap:8px;align-items:center">
-        <div class="hdr-av" id="hdr-refresh" title="Refresh data" onclick="loadDash();loadLeads();loadPolicy();loadLeaderboard();showToast('Refreshing...','ok')" style="font-size:18px;width:36px;height:36px">&#8635;</div>
+        <div class="hdr-av" id="hdr-refresh" title="Refresh data" onclick="loadAllData(true);showToast('Refreshing...','ok')" style="font-size:18px;width:36px;height:36px">&#8635;</div>
         <div class="hdr-av" id="hdr-av" onclick="showToast('Logged in as '+NAME,'ok')">R</div>
       </div>
     </div>
@@ -548,34 +548,54 @@ window.onload=function(){
     var lb=g("land-btn");lb.disabled=true;lb.textContent="Loading…";
   }
 
-  jp(MU+"?action=getClient&org="+ORG,function(r){
-    if(!r.ok){
-      if(REF){g("landing-overlay").style.display="none";} // hide landing on error
-      g("login-error").textContent="Error: "+(r.error||"Not found");
+  // Disable Continue during boot so getMobileUser can't fire with empty SID
+  var b1=g("login-btn1");
+  if(b1){b1.disabled=true;b1.textContent="Loading…";}
+
+  var _bootAttempt=0;
+  function doBoot(){
+    _bootAttempt++;
+    apiFetch(MU+"?action=getClient&org="+ORG,function(r){
+      if(!r.ok){
+        if(REF){g("landing-overlay").style.display="none";}
+        g("login-error").textContent="Error: "+(r.error||"Not found. Check your link.");
+        g("login-overlay").style.display="flex";
+        // Re-enable with retry button
+        if(b1){b1.disabled=false;b1.textContent="Retry ↻";b1.onclick=function(){doBoot();};}
+        return;
+      }
+      var c=r.data;
+      SID=(c.SheetID||"").trim();
+      BRAND=(c.Brand||ORG).trim();
+      APP_ID=(c.AppID||"").trim();
+      g("hdr-brand").textContent=BRAND.toLowerCase();
+      g("login-title").textContent=BRAND+" - Refer & Earn";
+      if(REF){
+        // SID loaded — enable landing submit
+        var lb=g("land-btn");lb.disabled=false;lb.textContent="Get the App →";
+        var bt=g("land-brand-name");if(bt)bt.textContent=BRAND;
+        g("land-title").textContent="You've been invited to "+BRAND+"!";
+      } else {
+        // Re-enable Continue button
+        if(b1){b1.disabled=false;b1.textContent="Continue →";b1.onclick=loginNext;}
+        // Check for existing session
+        try{
+          var sm=sessionStorage.getItem("re_m_"+ORG);
+          var su=sessionStorage.getItem("re_u_"+ORG);
+          var sn=sessionStorage.getItem("re_n_"+ORG);
+          if(sm&&su&&sn){MOBILE=sm;UID=su;NAME=sn;loginSuccess();}
+        }catch(e){}
+      }
+    },function(){
+      // Boot failed — retry once automatically, then show error
+      if(_bootAttempt<2){doBoot();return;}
+      if(REF){g("landing-overlay").style.display="none";}
+      g("login-error").textContent="Could not connect. Tap Retry or check your internet.";
       g("login-overlay").style.display="flex";
-      return;
-    }
-    var c=r.data;
-    SID=(c.SheetID||"").trim();
-    BRAND=(c.Brand||ORG).trim();
-    APP_ID=(c.AppID||"").trim();
-    g("hdr-brand").textContent=BRAND.toLowerCase();
-    g("login-title").textContent=BRAND+" - Refer & Earn";
-    if(REF){
-      // SID now loaded — enable submit button and update branding
-      var lb=g("land-btn");lb.disabled=false;lb.textContent="Get the App →";
-      var bt=g("land-brand-name");if(bt)bt.textContent=BRAND;
-      g("land-title").textContent="You've been invited to "+BRAND+"!";
-    } else {
-      // Normal login flow
-      try{
-        var sm=sessionStorage.getItem("re_m_"+ORG);
-        var su=sessionStorage.getItem("re_u_"+ORG);
-        var sn=sessionStorage.getItem("re_n_"+ORG);
-        if(sm&&su&&sn){MOBILE=sm;UID=su;NAME=sn;loginSuccess();}
-      }catch(e){}
-    }
-  },function(){g("login-error").textContent="Network error. Retry.";});
+      if(b1){b1.disabled=false;b1.textContent="Retry ↻";b1.onclick=function(){_bootAttempt=0;doBoot();};}
+    },1);
+  }
+  doBoot();
 };
 
 // ── LOGIN FLOW ──
@@ -583,6 +603,7 @@ var _isNewUser=false; // flag — never rely on display style for this
 var _cachedUID="",_cachedName="",_cachedPIN=""; // cached from getMobileUser step 1
 
 function loginNext(){
+  if(!SID){setLE("Still loading… please wait a moment and try again.");return;}
   var mob=g("login-mobile").value.trim();
   if(!/^\d{10}$/.test(mob)){setLE("Enter a valid 10-digit mobile number");return;}
   MOBILE=mob;
@@ -729,169 +750,99 @@ function loginSuccess(){
   var base="https://classplussupport-bot.github.io/refer-earn/earn/?org="+ORG+"&ref="+UID;
   _myLink=base;
   g("link-url").textContent=base;
-  // Load data
-  loadDash();loadLeads();loadPolicy();loadLeaderboard();
+  // Load data — single bulk call instead of 4 separate round trips
+  loadAllData();
 }
 
 // ── DATA ──
 function api(a,p,cb,eb){
   var u=MU+"?action="+a+"&sheetId="+encodeURIComponent(SID);
   Object.keys(p||{}).forEach(function(k){u+="&"+k+"="+encodeURIComponent(p[k]);});
-  jp(u,cb,eb);
+  apiFetch(u,cb,eb,1);
 }
-function jp(u,cb,eb){
-  var n="cb_"+Date.now()+"_"+Math.random().toString(36).slice(2);var tid;
-  window[n]=function(d){clearTimeout(tid);delete window[n];if(tag&&tag.parentNode)tag.parentNode.removeChild(tag);cb(d);};
-  var tag=document.createElement("script");
-  tag.src=u+(u.indexOf("?")>=0?"&":"?")+"callback="+n;
-  tag.onerror=function(){clearTimeout(tid);delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();};
-  tid=setTimeout(function(){delete window[n];if(tag.parentNode)tag.parentNode.removeChild(tag);if(eb)eb();},12000);
-  document.head.appendChild(tag);
+function apiFetch(u,cb,eb,attempt){
+  var ctrl=typeof AbortController!=="undefined"?new AbortController():null;
+  var tid=ctrl?setTimeout(function(){ctrl.abort();},25000):null; // 25s covers GAS cold start
+  fetch(u,{method:"GET",redirect:"follow",signal:ctrl?ctrl.signal:undefined})
+    .then(function(res){
+      if(tid)clearTimeout(tid);
+      if(!res.ok)throw new Error("HTTP "+res.status);
+      return res.text();
+    })
+    .then(function(txt){
+      var json=txt.trim();
+      if(json[0]!=="{"&&json[0]!=="["){
+        json=json.replace(/^[^(]+[(]/,"").replace(/[)][;]?\s*$/,"");
+      }
+      try{cb(JSON.parse(json));}catch(e){if(eb)eb(e);}
+    })
+    .catch(function(err){
+      if(tid)clearTimeout(tid);
+      if(attempt<2){apiFetch(u,cb,eb,2);return;}
+      if(eb)eb(err);
+    });
 }
+function jp(u,cb,eb){apiFetch(u,cb,eb,1);}
 
-function loadDash(){
-  if(!UID){showToast("Session error. Please log out and log in again.","err");return;}
-  api("getReferrerStats",{uid:UID},function(r){
-    if(!r.ok){showToast("Dashboard error: "+(r.error||"Failed to load stats"),"err");return;}
-    var d=r.data||{};
-    _stats={leads:Number(d.totalLeads)||0,downloaded:Number(d.totalDownloaded)||0,
-            converted:Number(d.totalConverted)||0,earned:Number(d.totalEarned)||0};
-    g("st-leads").textContent=_stats.leads;
-    g("st-dl").textContent=_stats.downloaded;
-    g("st-conv").textContent=_stats.converted;
-    g("st-earn").textContent=RS+nm(_stats.earned);
-    // Claim card
-    g("cl-avail").textContent=RS+nm(_stats.earned);
+
+// ── Single bulk load — replaces 4 separate API calls ──────────
+// First load: one round trip. Subsequent renders use in-memory cache.
+var _dataCache=null;
+function loadAllData(forceRefresh){
+  if(!UID){showToast("Session error. Please log in again.","err");return;}
+  if(!forceRefresh&&_dataCache){applyDashboardData(_dataCache);}
+  api("getDashboard",{uid:UID},function(r){
+    if(!r.ok){if(!_dataCache)showToast("Error: "+(r.error||"Please refresh"),"err");return;}
+    _dataCache=r.data;
+    applyDashboardData(r.data);
+  },function(){if(!_dataCache)showToast("Network error. Tap \u21bb to retry.","err");});
+}
+function applyDashboardData(data){
+  // Stats
+  var d=data.stats||{};
+  _stats={leads:Number(d.totalLeads)||0,downloaded:Number(d.totalDownloaded)||0,
+          converted:Number(d.totalConverted)||0,earned:Number(d.totalEarned)||0};
+  g("st-leads").textContent=_stats.leads;
+  g("st-dl").textContent=_stats.downloaded;
+  g("st-conv").textContent=_stats.converted;
+  g("st-earn").textContent=RS+nm(_stats.earned);
+  g("cl-avail").textContent=RS+nm(_stats.earned);
+  updateClaimBtn();updateGameCard();
+  // Leads
+  _leads=data.leads||[];
+  renderPending();renderLeadsTab();
+  // Leaderboard
+  var top=data.leaderboard||[];
+  _topEarned=top.length?Number(top[0].TotalEarned||0):0;
+  updateGameCard();
+  // Policy
+  var p=data.policy||{};
+  if(p.Model||p.ReferrerPct){
+    _pol.model=(p.Model||p.model||"pct").toString().toLowerCase();
+    _pol.referrerPct=Number(p.ReferrerPct||p.referrerPct)||10;
+    _pol.windowDays=Number(p.WindowDays||p.windowDays)||15;
+    _pol.reePct=Number(p.RefereePct||p.refereePct)||0;
+    _pol.minClaim=Number(p.MinClaim||p.minClaim)||500;
+    _pol.version=p.Version||p.version||1;
+    _pol.policyName=p.PolicyName||p.policyName||"";
+    g("cl-min").textContent=RS+nm(_pol.minClaim);
     updateClaimBtn();
-    // Gamification
-    updateGameCard();
-  },function(){showToast("Network error loading dashboard. Pull down to retry.","err");});
-}
-
-function loadLeads(){
-  api("getReferrerLeads",{uid:UID},function(r){
-    if(!r.ok)return;
-    _leads=r.data||[];
-    renderPending();
-    renderLeadsTab();
-  });
-}
-
-function loadPolicy(){
-  api("getPolicy",{},function(r){
-    if(r.ok&&r.data){
-      var p=r.data;
-      _pol.model=(p.Model||p.model||"pct").toString().toLowerCase();
-      _pol.referrerPct=Number(p.ReferrerPct||p.referrerPct)||10;
-      _pol.windowDays=Number(p.WindowDays||p.windowDays)||15;
-      _pol.reePct=Number(p.RefereePct||p.refereePct)||0;
-      _pol.minClaim=Number(p.MinClaim||p.minClaim)||500;
-      _pol.version=p.Version||p.version||1;
-      _pol.policyName=p.PolicyName||p.policyName||"";
-      g("cl-min").textContent=RS+nm(_pol.minClaim);
-      updateClaimBtn();
-      // Terms summary line under the link
-      var isFlat=_pol.model==="flat";
-      var refStr=isFlat?(RS+nm(_pol.referrerPct)+" flat"):(_pol.referrerPct+"%");
-      g("terms-summary").textContent="Earn "+refStr+" per referral \u00b7 window: "+_pol.windowDays+" days";
-      // Inline terms rows
-      g("tp-ref").textContent=isFlat?(RS+nm(_pol.referrerPct)+" flat per conversion"):(_pol.referrerPct+"% of course price");
-      if(_pol.reePct>0){g("tp-ree-row").style.display="";g("tp-ree").textContent=_pol.reePct+"% of referrer reward";}else{g("tp-ree-row").style.display="none";}
-      g("tp-win").textContent=_pol.windowDays+" days from referral";
-      g("tp-min").textContent=RS+nm(_pol.minClaim);
-      g("tp-ver").textContent="v"+_pol.version+(_pol.policyName?" \u2014 "+_pol.policyName:"");
-    }
-  });
-}
-
-function toggleTermsExpand(){
-  openTermsModal();
-}
-
-function openTermsModal(){
-  var isFlat=_pol.model==="flat";
-  var refAmt=_pol.referrerPct||10;  // In flat mode this IS the flat ₹ amount
-  var reePct=_pol.reePct||0;
-  var win=_pol.windowDays||15;
-  var min=_pol.minClaim||500;
-  var ver=_pol.version||1;
-  var pname=_pol.policyName||"";
-
-  g("tm-brand").textContent=BRAND+" — Refer & Earn Program";
-
-  // Reward grid values
-  if(isFlat){
-    g("tm-ref-pct").textContent=RS+nm(refAmt);
-    document.querySelector("#tm-ref-pct + div").textContent="flat per conversion";
-  } else {
-    g("tm-ref-pct").textContent=refAmt+"%";
-    document.querySelector("#tm-ref-pct + div").textContent="of course price";
+    var isFlat=_pol.model==="flat";
+    var refStr=isFlat?(RS+nm(_pol.referrerPct)+" flat"):(_pol.referrerPct+"%");
+    g("terms-summary").textContent="Earn "+refStr+" per referral \u00b7 window: "+_pol.windowDays+" days";
+    g("tp-ref").textContent=isFlat?(RS+nm(_pol.referrerPct)+" flat per conversion"):(_pol.referrerPct+"% of course price");
+    if(_pol.reePct>0){g("tp-ree-row").style.display="";g("tp-ree").textContent=_pol.reePct+"% of referrer reward";}else{g("tp-ree-row").style.display="none";}
+    g("tp-win").textContent=_pol.windowDays+" days from referral";
+    g("tp-min").textContent=RS+nm(_pol.minClaim);
+    g("tp-ver").textContent="v"+_pol.version+(_pol.policyName?" \u2014 "+_pol.policyName:"");
   }
-
-  if(reePct>0){
-    g("tm-ree-box").style.display="";
-    g("tm-ree-pct").textContent=reePct+"%";
-    document.querySelector("#tm-ree-pct + div").textContent="discount for friend";
-  } else {
-    g("tm-ree-box").style.display="none";
-  }
-
-  g("tm-win").textContent=win+" days";
-  g("tm-min").textContent=RS+nm(min);
-
-  // Example calculation
-  var exCourse=5000;
-  var exEarn=isFlat?refAmt:Math.round(exCourse*refAmt/100);
-  var exDisc=reePct>0?Math.round(exEarn*reePct/100):0;  // referee gets reePct% of referrer reward
-  g("tm-example-title").textContent="On a "+RS+nm(exCourse)+" course purchase";
-  var exDesc="You earn "+RS+nm(exEarn);
-  if(isFlat)exDesc+=" (flat reward)";
-  if(exDisc>0)exDesc+=" \u00b7 Your friend saves "+RS+nm(exDisc);
-  exDesc+=" \u00b7 Credited after purchase confirmation";
-  g("tm-example-desc").textContent=exDesc;
-
-  // Rule details
-  g("tm-rule-window").textContent="Your friend must download the app and purchase a course within "+win+" days of clicking your link.";
-  g("tm-rule-claim-title").textContent="Minimum claim: "+RS+nm(min);
-  g("tm-rule-claim-desc").textContent="You can request a payout once your earnings reach "+RS+nm(min)+" via UPI.";
-
-  // Version + policy name
-  var verStr="v"+ver;
-  if(pname)verStr+=" — "+pname;
-  g("tm-ver-note").textContent=verStr;
-
-  g("terms-modal").classList.add("open");
-  document.body.style.overflow="hidden";
 }
+// Keep individual functions as stubs for backward compat
+function loadDash(){loadAllData();}
+function loadLeads(){loadAllData();}
+function loadPolicy(){loadAllData();}
+function loadLeaderboard(){loadAllData();}
 
-function closeTermsModal(){
-  g("terms-modal").classList.remove("open");
-  document.body.style.overflow="";
-}
-
-function acceptTermsFromModal(){
-  g("terms-check").checked=true;
-  onTermsChange();
-  closeTermsModal();
-  showToast("Terms accepted \u2713 You can now share your link!","ok");
-}
-
-function onTermsChange(){
-  var accepted=g("terms-check").checked;
-  var wa=g("wa-btn");
-  var cp=g("copy-btn");
-  wa.disabled=!accepted;
-  cp.disabled=!accepted;
-}
-
-function loadLeaderboard(){
-  api("getLeaderboard",{},function(r){
-    if(!r.ok)return;
-    var top=r.data||[];
-    _topEarned=top.length?Number(top[0].TotalEarned||0):0;
-    updateGameCard();
-  });
-}
 
 function updateClaimBtn(){
   var avail=_stats.earned;
@@ -1073,7 +1024,7 @@ function submitClaim(){
     if(r.ok){
       closeClaimModal();
       showToast("\ud83c\udf89 Claim submitted! You'll be paid via UPI soon.","ok");
-      loadDash();
+      loadAllData(true);
     } else {
       var msg=r.error||"Claim failed";
       if(msg.indexOf("pending")>=0)msg="⏳ You already have a pending payout. Wait for it to be processed first.";
