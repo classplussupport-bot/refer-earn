@@ -568,7 +568,8 @@ window.onload=function(){
       SID=(c.SheetID||"").trim();
       BRAND=(c.Brand||ORG).trim();
       APP_ID=(c.AppID||"").trim();
-      g("hdr-brand").textContent=BRAND.toLowerCase();
+
+      g("hdr-brand").textContent=BRAND; // case-sensitive as entered in master sheet
       g("login-title").textContent=BRAND+" - Refer & Earn";
       if(REF){
         // SID loaded — enable landing submit
