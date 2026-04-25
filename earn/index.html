@@ -843,6 +843,82 @@ function loadLeads(){loadAllData();}
 function loadPolicy(){loadAllData();}
 function loadLeaderboard(){loadAllData();}
 
+function toggleTermsExpand(){
+  openTermsModal();
+}
+
+function openTermsModal(){
+  var isFlat=_pol.model==="flat";
+  var refAmt=_pol.referrerPct||10;
+  var reePct=_pol.reePct||0;
+  var win=_pol.windowDays||15;
+  var min=_pol.minClaim||500;
+  var ver=_pol.version||1;
+  var pname=_pol.policyName||"";
+
+  g("tm-brand").textContent=BRAND+" — Refer & Earn Program";
+
+  if(isFlat){
+    g("tm-ref-pct").textContent=RS+nm(refAmt);
+    document.querySelector("#tm-ref-pct + div").textContent="flat per conversion";
+  } else {
+    g("tm-ref-pct").textContent=refAmt+"%";
+    document.querySelector("#tm-ref-pct + div").textContent="of course price";
+  }
+
+  if(reePct>0){
+    g("tm-ree-box").style.display="";
+    g("tm-ree-pct").textContent=reePct+"%";
+    document.querySelector("#tm-ree-pct + div").textContent="discount for friend";
+  } else {
+    g("tm-ree-box").style.display="none";
+  }
+
+  g("tm-win").textContent=win+" days";
+  g("tm-min").textContent=RS+nm(min);
+
+  var exCourse=5000;
+  var exEarn=isFlat?refAmt:Math.round(exCourse*refAmt/100);
+  var exDisc=reePct>0?Math.round(exEarn*reePct/100):0;
+  g("tm-example-title").textContent="On a "+RS+nm(exCourse)+" course purchase";
+  var exDesc="You earn "+RS+nm(exEarn);
+  if(isFlat)exDesc+=" (flat reward)";
+  if(exDisc>0)exDesc+=" · Your friend saves "+RS+nm(exDisc);
+  exDesc+=" · Credited after purchase confirmation";
+  g("tm-example-desc").textContent=exDesc;
+
+  g("tm-rule-window").textContent="Your friend must download the app and purchase a course within "+win+" days of clicking your link.";
+  g("tm-rule-claim-title").textContent="Minimum claim: "+RS+nm(min);
+  g("tm-rule-claim-desc").textContent="You can request a payout once your earnings reach "+RS+nm(min)+" via UPI.";
+
+  var verStr="v"+ver;
+  if(pname)verStr+=" — "+pname;
+  g("tm-ver-note").textContent=verStr;
+
+  g("terms-modal").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+
+function closeTermsModal(){
+  g("terms-modal").classList.remove("open");
+  document.body.style.overflow="";
+}
+
+function acceptTermsFromModal(){
+  g("terms-check").checked=true;
+  onTermsChange();
+  closeTermsModal();
+  showToast("Terms accepted ✓ You can now share your link!","ok");
+}
+
+function onTermsChange(){
+  var accepted=g("terms-check").checked;
+  var wa=g("wa-btn");
+  var cp=g("copy-btn");
+  wa.disabled=!accepted;
+  cp.disabled=!accepted;
+}
+
 
 function updateClaimBtn(){
   var avail=_stats.earned;
