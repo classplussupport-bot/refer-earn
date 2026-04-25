@@ -414,7 +414,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
       </div>
       <div class="terms-expand" id="terms-expand">
         <div class="terms-policy-row"><span>💰 Referrer Reward</span><span class="terms-policy-val" id="tp-ref">—</span></div>
-        <div class="terms-policy-row"><span>🎁 Referee Discount</span><span class="terms-policy-val" id="tp-ree">—</span></div>
+        <div class="terms-policy-row" id="tp-ree-row" style="display:none"><span>🎁 Friend Discount</span><span class="terms-policy-val" id="tp-ree">—</span></div>
         <div class="terms-policy-row"><span>⏱️ Valid Window</span><span class="terms-policy-val" id="tp-win">—</span></div>
         <div class="terms-policy-row"><span>💵 Minimum Claim</span><span class="terms-policy-val" id="tp-min">—</span></div>
         <div class="terms-policy-row"><span>📋 Policy Version</span><span class="terms-policy-val" id="tp-ver">—</span></div>
@@ -544,6 +544,8 @@ window.onload=function(){
   if(REF){
     g("login-overlay").style.display="none";
     showLanding(REF);
+    // Disable submit until SID is loaded — otherwise addLead fires with empty sheetId
+    var lb=g("land-btn");lb.disabled=true;lb.textContent="Loading…";
   }
 
   jp(MU+"?action=getClient&org="+ORG,function(r){
@@ -560,8 +562,10 @@ window.onload=function(){
     g("hdr-brand").textContent=BRAND.toLowerCase();
     g("login-title").textContent=BRAND+" - Refer & Earn";
     if(REF){
-      // Update landing with brand name now that we have it
+      // SID now loaded — enable submit button and update branding
+      var lb=g("land-btn");lb.disabled=false;lb.textContent="Get the App →";
       var bt=g("land-brand-name");if(bt)bt.textContent=BRAND;
+      g("land-title").textContent="You've been invited to "+BRAND+"!";
     } else {
       // Normal login flow
       try{
@@ -792,7 +796,7 @@ function loadPolicy(){
       g("terms-summary").textContent="Earn "+refStr+" per referral \u00b7 window: "+_pol.windowDays+" days";
       // Inline terms rows
       g("tp-ref").textContent=isFlat?(RS+nm(_pol.referrerPct)+" flat per conversion"):(_pol.referrerPct+"% of course price");
-      g("tp-ree").textContent=_pol.reePct>0?(_pol.reePct+"% off for friend"):"No discount";
+      if(_pol.reePct>0){g("tp-ree-row").style.display="";g("tp-ree").textContent=_pol.reePct+"% of referrer reward";}else{g("tp-ree-row").style.display="none";}
       g("tp-win").textContent=_pol.windowDays+" days from referral";
       g("tp-min").textContent=RS+nm(_pol.minClaim);
       g("tp-ver").textContent="v"+_pol.version+(_pol.policyName?" \u2014 "+_pol.policyName:"");
@@ -825,11 +829,11 @@ function openTermsModal(){
   }
 
   if(reePct>0){
+    g("tm-ree-box").style.display="";
     g("tm-ree-pct").textContent=reePct+"%";
     document.querySelector("#tm-ree-pct + div").textContent="discount for friend";
   } else {
-    g("tm-ree-pct").textContent="—";
-    document.querySelector("#tm-ree-pct + div").textContent="no discount";
+    g("tm-ree-box").style.display="none";
   }
 
   g("tm-win").textContent=win+" days";
@@ -838,7 +842,7 @@ function openTermsModal(){
   // Example calculation
   var exCourse=5000;
   var exEarn=isFlat?refAmt:Math.round(exCourse*refAmt/100);
-  var exDisc=reePct>0?Math.round(exCourse*reePct/100):0;
+  var exDisc=reePct>0?Math.round(exEarn*reePct/100):0;  // referee gets reePct% of referrer reward
   g("tm-example-title").textContent="On a "+RS+nm(exCourse)+" course purchase";
   var exDesc="You earn "+RS+nm(exEarn);
   if(isFlat)exDesc+=" (flat reward)";
@@ -1146,7 +1150,7 @@ function showToast(msg,cls){
             <div class="terms-reward-val" id="tm-ref-pct">—</div>
             <div style="font-size:11px;color:#7c3aed;font-weight:600;margin-top:2px">of course price</div>
           </div>
-          <div class="terms-reward-box">
+          <div class="terms-reward-box" id="tm-ree-box" style="display:none">
             <div class="terms-reward-icon">🎁</div>
             <div class="terms-reward-label">Friend Gets</div>
             <div class="terms-reward-val" id="tm-ree-pct">—</div>
