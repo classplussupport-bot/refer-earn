@@ -785,17 +785,29 @@ function apiFetch(u,cb,eb,attempt){
 function jp(u,cb,eb){apiFetch(u,cb,eb,1);}
 
 
-// ── Single bulk load — replaces 4 separate API calls ──────────
-// First load: one round trip. Subsequent renders use in-memory cache.
-var _dataCache=null;
+// ── Load all dashboard data via 4 parallel calls ──────────────
 function loadAllData(forceRefresh){
   if(!UID){showToast("Session error. Please log in again.","err");return;}
-  if(!forceRefresh&&_dataCache){applyDashboardData(_dataCache);}
-  api("getDashboard",{uid:UID},function(r){
-    if(!r.ok){if(!_dataCache)showToast("Error: "+(r.error||"Please refresh"),"err");return;}
-    _dataCache=r.data;
-    applyDashboardData(r.data);
-  },function(){if(!_dataCache)showToast("Network error. Tap \u21bb to retry.","err");});
+  var _d={stats:{},leads:[],leaderboard:[],policy:{}};
+  var done=0;
+  function tryApply(key,val){
+    _d[key]=val;
+    done++;
+    if(done>=4)applyDashboardData(_d);
+  }
+  api("getReferrerStats",{uid:UID},function(r){
+    tryApply("stats",r.ok?r.data:{});
+  },function(){tryApply("stats",{});});
+  api("getReferrerLeads",{uid:UID},function(r){
+    tryApply("leads",r.ok?r.data:[]);
+  },function(){tryApply("leads",[]);});
+  api("getLeaderboard",{},function(r){
+    tryApply("leaderboard",r.ok?r.data:[]);
+  },function(){tryApply("leaderboard",[]);});
+  // Policy always fetched fresh — never cached — so terms always reflect latest
+  api("getPolicy",{},function(r){
+    tryApply("policy",r.ok?r.data:{});
+  },function(){tryApply("policy",{});});
 }
 function applyDashboardData(data){
   // Stats
