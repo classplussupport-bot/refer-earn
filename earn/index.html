@@ -615,9 +615,26 @@ function loginSubmit(){
   } else {
     // Returning user — verify PIN locally (no API call needed, PIN cached from step 1)
     if(!/^\d{4}$/.test(pin)){setLE("Enter your 4-digit PIN");return;}
-    if(!_cachedPIN){setLE("Session expired. Go back and re-enter your mobile.");return;}
-    if(pin!==_cachedPIN){setLE("Incorrect PIN. Try again.");g("login-pin").value="";g("login-pin").focus();return;}
-    UID=_cachedUID;NAME=_cachedName||MOBILE;PIN=pin;saveSession();loginSuccess();
+    if(_cachedPIN){
+      // Fast path — PIN cached from step 1, verify locally (no API call)
+      if(pin!==_cachedPIN){setLE("Incorrect PIN. Try again.");g("login-pin").value="";g("login-pin").focus();return;}
+      UID=_cachedUID;NAME=_cachedName||MOBILE;PIN=pin;saveSession();loginSuccess();
+    } else {
+      // Fallback — script not yet returning PIN from getMobileUser, verify via getReferrer
+      var btn2=g("login-btn2");btn2.disabled=true;btn2.textContent="Signing in...";setLE("");
+      api("getReferrer",{mobile:MOBILE},function(r){
+        btn2.disabled=false;btn2.textContent="Sign In →";
+        if(!r.ok||!r.data){setLE("Mobile not found. Contact admin.");return;}
+        var stored=(r.data.PIN||"").toString().trim();
+        if(!stored){setLE("PIN not set. Please re-register.");return;}
+        if(pin===stored){
+          UID=r.data.UID;NAME=r.data.Name||MOBILE;PIN=pin;saveSession();loginSuccess();
+        } else {
+          setLE("Incorrect PIN. Try again.");
+          g("login-pin").value="";g("login-pin").focus();
+        }
+      },function(){btn2.disabled=false;btn2.textContent="Sign In →";setLE("Network error. Retry.");});
+    }
   }
 }
 
