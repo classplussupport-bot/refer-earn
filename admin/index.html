@@ -543,16 +543,16 @@ function jp(u,cb,eb){apiFetch(u,cb,eb,1);}
 
 
 function loadAll(){
-  // Single bulk call — fetches referrers + leads + payouts + policy in one round trip
-  api("getAdminData",{},function(r){
-    if(!r.ok){toast("Error loading data: "+(r.error||"Please refresh"),"err");return;}
-    var d=r.data||{};
-    _refs=d.referrers||[];
-    _leads=d.leads||[];
-    _pays=d.payouts||[];
-    if(d.policy&&(d.policy.Model||d.policy.ReferrerPct)){apPol(d.policy);}
-    computeOv();rnTop5();rnRf();rnLd();rnPy();
-  },function(){toast("Network error loading data. Please refresh.","err");});
+  // Fetch all data in parallel then render
+  var done=0;
+  function tryRender(){done++;if(done>=3){computeOv();rnTop5();}}
+  api("getAllReferrers",{},function(r){if(r.ok)_refs=r.data||[];rnRf();tryRender();},
+    function(){toast("Error loading referrers","err");tryRender();});
+  api("getAllLeads",{},function(r){if(r.ok)_leads=r.data||[];rnLd();tryRender();},
+    function(){toast("Error loading leads","err");tryRender();});
+  api("getPayouts",{},function(r){if(r.ok)_pays=r.data||[];rnPy();tryRender();},
+    function(){toast("Error loading payouts","err");tryRender();});
+  ldPol();
 }
 
 function ds(d){var x=new Date(d);x.setHours(0,0,0,0);return x;}
