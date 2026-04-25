@@ -351,7 +351,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
   <div class="hdr">
     <div class="hdr-top">
       <div class="hdr-brand" id="hdr-brand">refer&amp;earn</div>
-      <div class="hdr-av" id="hdr-av" onclick="showToast('Logged in as '+NAME,'ok')">R</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="hdr-av" id="hdr-refresh" title="Refresh data" onclick="loadDash();loadLeads();loadPolicy();loadLeaderboard();showToast('Refreshing...','ok')" style="font-size:18px;width:36px;height:36px">&#8635;</div>
+        <div class="hdr-av" id="hdr-av" onclick="showToast('Logged in as '+NAME,'ok')">R</div>
+      </div>
     </div>
     <div class="greet">
       <div class="greet-time" id="greet-time">Good morning</div>
@@ -609,17 +612,13 @@ function loginSubmit(){
     // Returning user — verify PIN
     if(!/^\d{4}$/.test(pin)){setLE("Enter your 4-digit PIN");return;}
     var btn=g("login-btn2");btn.disabled=true;btn.textContent="Signing in...";setLE("");
-    api("getReferrer",{mobile:MOBILE},function(r){
+    api("verifyPin",{mobile:MOBILE,pin:pin},function(r){
       btn.disabled=false;btn.textContent="Sign In \u2192";
-      if(!r.ok||!r.data){setLE("Mobile not found. Contact admin.");return;}
-      var stored=(r.data.PIN||"").toString().trim();
-      if(!stored){setLE("PIN not set. Please re-register.");return;}
-      if(pin===stored){
-        UID=r.data.UID;NAME=r.data.Name||MOBILE;PIN=pin;saveSession();loginSuccess();
-      } else {
-        setLE("Incorrect PIN. Try again.");
-        g("login-pin").value="";g("login-pin").focus();
-      }
+      if(!r.ok){setLE(r.error||"Verification failed. Retry.");return;}
+      var d=r.data||{};
+      if(!d.valid){setLE("Incorrect PIN. Try again.");g("login-pin").value="";g("login-pin").focus();return;}
+      // verifyPin returns uid + name directly — no second API call needed
+      UID=d.uid;NAME=d.name||MOBILE;PIN=pin;saveSession();loginSuccess();
     },function(){btn.disabled=false;btn.textContent="Sign In \u2192";setLE("Network error. Retry.");});
   }
 }
@@ -720,8 +719,9 @@ function jp(u,cb,eb){
 }
 
 function loadDash(){
+  if(!UID){showToast("Session error. Please log out and log in again.","err");return;}
   api("getReferrerStats",{uid:UID},function(r){
-    if(!r.ok)return;
+    if(!r.ok){showToast("Dashboard error: "+(r.error||"Failed to load stats"),"err");return;}
     var d=r.data||{};
     _stats={leads:Number(d.totalLeads)||0,downloaded:Number(d.totalDownloaded)||0,
             converted:Number(d.totalConverted)||0,earned:Number(d.totalEarned)||0};
@@ -734,7 +734,7 @@ function loadDash(){
     updateClaimBtn();
     // Gamification
     updateGameCard();
-  });
+  },function(){showToast("Network error loading dashboard. Pull down to retry.","err");});
 }
 
 function loadLeads(){
