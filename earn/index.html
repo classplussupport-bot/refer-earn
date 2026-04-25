@@ -293,7 +293,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
   <div class="login-box">
     <div class="login-logo">&#127891;</div>
     <div class="login-title" id="land-title">You've been invited!</div>
-    <div class="login-sub" id="land-sub">Enter your details to get the app and start learning</div>
+    <div class="login-sub" id="land-sub">Enter your details to get the app and start learning from <span id="land-brand-name"></span></div>
     <div class="login-field">
       <label>Your Name</label>
       <input type="text" id="land-name" placeholder="Enter your full name" autocomplete="name">
@@ -538,8 +538,21 @@ window.onload=function(){
   ORG=(new URLSearchParams(location.search).get("org")||"").trim().toUpperCase();
   var REF=(new URLSearchParams(location.search).get("ref")||"").trim();
   if(!ORG){g("login-error").textContent="Error: No ?org= in URL";return;}
+
+  // ── INSTANT: if this is a referral link, hide login & show landing immediately
+  // Don't wait for the API cold start (10-15s) before showing the correct screen
+  if(REF){
+    g("login-overlay").style.display="none";
+    showLanding(REF);
+  }
+
   jp(MU+"?action=getClient&org="+ORG,function(r){
-    if(!r.ok){g("login-error").textContent="Error: "+(r.error||"Not found");return;}
+    if(!r.ok){
+      if(REF){g("landing-overlay").style.display="none";} // hide landing on error
+      g("login-error").textContent="Error: "+(r.error||"Not found");
+      g("login-overlay").style.display="flex";
+      return;
+    }
     var c=r.data;
     SID=(c.SheetID||"").trim();
     BRAND=(c.Brand||ORG).trim();
@@ -547,9 +560,8 @@ window.onload=function(){
     g("hdr-brand").textContent=BRAND.toLowerCase();
     g("login-title").textContent=BRAND+" - Refer & Earn";
     if(REF){
-      // Referral landing — hide login, show only the name+mobile landing screen
-      g("login-overlay").style.display="none";
-      showLanding(REF);
+      // Update landing with brand name now that we have it
+      var bt=g("land-brand-name");if(bt)bt.textContent=BRAND;
     } else {
       // Normal login flow
       try{
