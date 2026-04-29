@@ -91,6 +91,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-he
 .stat-icon{font-size:20px;margin-bottom:8px;position:relative;z-index:1}
 .stat-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:4px;position:relative;z-index:1}
 .stat-value{font-size:22px;font-weight:900;letter-spacing:-.5px;position:relative;z-index:1}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.shimmer{background:linear-gradient(90deg,var(--sf2) 25%,rgba(255,255,255,.08) 50%,var(--sf2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;color:transparent!important;min-width:40px;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-spinner::after{content:"";display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-left:8px;vertical-align:middle}
 .stat-card.blue .stat-label,.stat-card.blue .stat-value{color:#38bdf8}
 .stat-card.green .stat-label,.stat-card.green .stat-value{color:#34d399}
 .stat-card.amber .stat-label,.stat-card.amber .stat-value{color:#fbbf24}
@@ -619,8 +623,9 @@ function loginNext(){
   if(!/^\d{10}$/.test(mob)){setLE("Enter a valid 10-digit mobile number");return;}
   MOBILE=mob;
   var btn=g("login-btn1");btn.disabled=true;btn.textContent="Checking...";setLE("");
+  btn.classList.add("btn-spinner");
   api("getMobileUser",{mobile:mob},function(r){
-    btn.disabled=false;btn.textContent="Continue \u2192";
+    btn.disabled=false;btn.textContent="Continue \u2192";btn.classList.remove("btn-spinner");
     if(r.ok&&r.data&&r.data.exists){
       // Returning user — PIN only — cache data for local verification
       _isNewUser=false;
@@ -644,7 +649,7 @@ function loginNext(){
       g("login-sub").textContent="New here! Register to start earning.";
       g("login-name").focus();
     }
-  },function(){btn.disabled=false;btn.textContent="Continue \u2192";setLE("Network error. Retry.");});
+  },function(){btn.disabled=false;btn.textContent="Continue \u2192";btn.classList.remove("btn-spinner");setLE("Network error. Retry.");});
 }
 
 function loginSubmit(){
@@ -655,11 +660,12 @@ function loginSubmit(){
     if(!nm){setLE("Enter your name");return;}
     if(!/^\d{4}$/.test(pin)){setLE("PIN must be exactly 4 digits");return;}
     var btn=g("login-btn2");btn.disabled=true;btn.textContent="Registering...";setLE("");
+    btn.classList.add("btn-spinner");
     api("registerReferrer",{name:nm,mobile:MOBILE,pin:pin},function(r){
-      btn.disabled=false;btn.textContent="Sign In \u2192";
+      btn.disabled=false;btn.textContent="Sign In \u2192";btn.classList.remove("btn-spinner");
       if(r.ok){UID=r.data.uid;NAME=nm;PIN=pin;saveSession();loginSuccess();}
       else setLE(r.error||"Registration failed");
-    },function(){btn.disabled=false;btn.textContent="Sign In \u2192";setLE("Network error. Retry.");});
+    },function(){btn.disabled=false;btn.textContent="Sign In \u2192";btn.classList.remove("btn-spinner");setLE("Network error. Retry.");});
   } else {
     // Returning user — verify PIN locally (no API call needed, PIN cached from step 1)
     if(!/^\d{4}$/.test(pin)){setLE("Enter your 4-digit PIN");return;}
@@ -743,6 +749,7 @@ function clearSession(){
     localStorage.removeItem("re_m_"+ORG);
     localStorage.removeItem("re_u_"+ORG);
     localStorage.removeItem("re_n_"+ORG);
+    localStorage.removeItem("re_dash_"+ORG); // clear dashboard cache on logout
   }catch(e){}
 }
 
@@ -806,28 +813,44 @@ function jp(u,cb,eb){apiFetch(u,cb,eb,1);}
 
 
 // ── Load all dashboard data via 4 parallel calls ──────────────
+// Shows skeleton instantly, serves localStorage cache while fresh data loads
+var _CACHE_KEY="re_dash_"+ORG;
+function showDashSkeleton(){
+  // Show shimmer placeholders on stat values instantly
+  ["st-leads","st-dl","st-conv","st-earn"].forEach(function(id){
+    var el=g(id);if(el){el.innerHTML="<span class='shimmer'>&nbsp;&nbsp;&nbsp;&nbsp;</span>";}
+  });
+}
 function loadAllData(forceRefresh){
   if(!UID){showToast("Session error. Please log in again.","err");return;}
+  // Show skeleton immediately
+  showDashSkeleton();
+  // Serve cache instantly for returning users
+  if(!forceRefresh){
+    try{
+      var cached=localStorage.getItem(_CACHE_KEY);
+      if(cached){applyDashboardData(JSON.parse(cached));}
+    }catch(e){}
+  }
+  // Always fetch fresh in background
   var _d={stats:{},leads:[],leaderboard:[],policy:{}};
   var done=0;
   function tryApply(key,val){
-    _d[key]=val;
-    done++;
-    if(done>=4)applyDashboardData(_d);
+    _d[key]=val;done++;
+    if(done>=4){
+      applyDashboardData(_d);
+      // Save to cache for next visit
+      try{localStorage.setItem(_CACHE_KEY,JSON.stringify(_d));}catch(e){}
+    }
   }
-  api("getReferrerStats",{uid:UID},function(r){
-    tryApply("stats",r.ok?r.data:{});
-  },function(){tryApply("stats",{});});
-  api("getReferrerLeads",{uid:UID},function(r){
-    tryApply("leads",r.ok?r.data:[]);
-  },function(){tryApply("leads",[]);});
-  api("getLeaderboard",{},function(r){
-    tryApply("leaderboard",r.ok?r.data:[]);
-  },function(){tryApply("leaderboard",[]);});
-  // Policy always fetched fresh — never cached — so terms always reflect latest
-  api("getPolicy",{},function(r){
-    tryApply("policy",r.ok?r.data:{});
-  },function(){tryApply("policy",{});});
+  api("getReferrerStats",{uid:UID},function(r){tryApply("stats",r.ok?r.data:{});},
+    function(){tryApply("stats",{});});
+  api("getReferrerLeads",{uid:UID},function(r){tryApply("leads",r.ok?r.data:[]);},
+    function(){tryApply("leads",[]);});
+  api("getLeaderboard",{},function(r){tryApply("leaderboard",r.ok?r.data:[]);},
+    function(){tryApply("leaderboard",[]);});
+  api("getPolicy",{},function(r){tryApply("policy",r.ok?r.data:{});},
+    function(){tryApply("policy",{});});
 }
 function applyDashboardData(data){
   // Stats
