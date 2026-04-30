@@ -588,15 +588,11 @@ window.onload=function(){
           var sm=localStorage.getItem("re_m_"+ORG);
           var su=localStorage.getItem("re_u_"+ORG);
           var sn=localStorage.getItem("re_n_"+ORG);
-          if(sm&&su&&sn){
-            // Full session saved — auto login directly
-            MOBILE=sm;UID=su;NAME=sn;loginSuccess();
-          } else if(sm){
-            // Mobile known but no full session — skip step 1, go straight to PIN
+          if(sm){
+            // Mobile known — skip step 1, go straight to PIN screen
             MOBILE=sm;
             g("login-mobile").value=sm;
             g("login-sub").textContent="Welcome back! Enter your PIN to continue.";
-            // Trigger getMobileUser to get cached PIN, then show PIN screen
             loginNext();
           }
         }catch(e){}
