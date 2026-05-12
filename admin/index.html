@@ -425,7 +425,7 @@ input[type=range]{width:100%;accent-color:var(--bl)}
 </div>
 <div id="toast"></div>
 <script>
-var MU="https://script.google.com/macros/s/AKfycbzrf1anKFiEUO86hdZFK-4FO3sYK3fVWRiEgX0L9jb-We7-yBcU6YuYo9xcPGUzAmYm/exec";
+var MU="https://script.google.com/macros/s/AKfycbzDNj_Argrk8Gt6KY2Xt-yO84n2l1A7AykCa2N-jNbgkoaCgSTMDfz5ZjGa3YSYyj-c/exec";
 var RS="\u20B9";
 var _org="",_sid="",_brd="",_pw="",_pwv=false;
 var _refs=[],_leads=[],_pays=[];
@@ -481,13 +481,9 @@ var _pwWatchdog=null;
 function startPwWatchdog(){
   if(_pwWatchdog)clearInterval(_pwWatchdog);
   _pwWatchdog=setInterval(function(){
-    // Fetch latest client record to get current password
+    // Fetch latest client record using fetch() — same as all other API calls
     var url=MU+"?action=getClient&org="+encodeURIComponent(_org);
-    var n="cb_wd_"+Date.now();
-    window[n]=function(r){
-      var tag=document.querySelector('script[data-wd="'+n+'"]');
-      if(tag&&tag.parentNode)tag.parentNode.removeChild(tag);
-      delete window[n];
+    apiFetch(url,function(r){
       if(r&&r.ok&&r.data){
         var latestPw=(r.data.AdminPassword||"").trim();
         if(latestPw&&latestPw!==_pw){
@@ -498,11 +494,7 @@ function startPwWatchdog(){
           setTimeout(function(){location.reload();},2500);
         }
       }
-    };
-    var tag=document.createElement("script");
-    tag.setAttribute("data-wd",n);
-    tag.src=url+"&callback="+n;
-    document.head.appendChild(tag);
+    },function(){/* silent fail — watchdog will retry next interval */},1);
   },60000); // check every 60 seconds
 }
 function showBanner(msg){
@@ -635,17 +627,28 @@ function computeOv(){
   var downloaded=leads.filter(function(l){return["downloaded","converted"].indexOf((l.Status||"").toLowerCase())>=0;});
   var totalLeads=leads.length||1;
 
-  var totalEarned=converted.reduce(function(s,l){return s+(Number(l.ReferrerReward)||0);},0);
-  var tutorRevenue=converted.reduce(function(s,l){return s+(Number(l.CoursePrice)||0);},0);
+  // Tutor Revenue = Amount_Paid for leads converted WITHIN referral window only
+  // Rules: purchase must be AFTER referral date AND within windowDays
+  // Leads with missing dates are EXCLUDED (safer — avoids inflating revenue)
+  var winDays=(_pol&&_pol.windowDays?Number(_pol.windowDays):15);
+  var validConverted=converted.filter(function(l){
+    if(!l.ReferredDate||!l.PurchaseDate) return false; // missing dates — exclude
+    var rd=new Date(l.ReferredDate);var pd=new Date(l.PurchaseDate);
+    if(isNaN(rd)||isNaN(pd)) return false; // invalid dates — exclude
+    var diff=(pd-rd)/(1000*60*60*24);
+    return diff>=0 && diff<=winDays; // must be on/after referral AND within window
+  });
+  var totalEarned=validConverted.reduce(function(s,l){return s+(Number(l.ReferrerReward)||0);},0);
+  var tutorRevenue=validConverted.reduce(function(s,l){return s+(Number(l.Amount_Paid)||0);},0);
   var totalPaidOut=pays.filter(function(p){return(p.Status||"").toLowerCase()==="paid";}).reduce(function(s,p){return s+(Number(p.Amount)||0);},0);
   var pendingPayouts=pays.filter(function(p){return(p.Status||"").toLowerCase()==="pending";}).reduce(function(s,p){return s+(Number(p.Amount)||0);},0);
   var dlRate=Math.round(downloaded.length/totalLeads*100);
-  var convRate=downloaded.length?Math.round(converted.length/downloaded.length*100):0;
+  var convRate=downloaded.length?Math.round(validConverted.length/downloaded.length*100):0;
 
   st("s1",refs.length);
   st("s2",leads.length);
   st("s5",downloaded.length);st("s2b",dlRate+"% download rate");
-  st("s3",converted.length);st("s3b",convRate+"% conversion rate");
+  st("s3",validConverted.length);st("s3b",convRate+"% conversion rate");
   st("s4",RS+nm(tutorRevenue));
   st("s6",RS+nm(totalEarned));
   st("s7",RS+nm(totalPaidOut));
@@ -737,7 +740,13 @@ function rnLd(){
       +"<td style='white-space:nowrap;font-weight:600'>"+cd(l.DownloadDate)+"</td>"
       +"<td style='white-space:nowrap;font-weight:600'>"+cd(l.PurchaseDate)+"</td>"
       +"<td style='color:var(--mu);font-weight:600'>"+xe(l.CourseName||"-")+"</td>"
-      +"<td style='font-weight:900;color:#15803d'>"+(l.ReferrerReward?RS+nm(l.ReferrerReward):"-")+"</td>"
+      +"<td style='font-weight:900;color:"+(l.ReferrerReward&&Number(l.ReferrerReward)>0?"#15803d":"var(--mu)")+"'>"+(
+        l.ReferrerReward===undefined||l.ReferrerReward===''?
+          "<span title='Sync pending'>&#8212;</span>":          // blank = not yet synced
+        Number(l.ReferrerReward)===0?
+          "<span title='Outside window or below threshold'>&#8377;0</span>":  // 0 = calculated, no reward
+          RS+nm(l.ReferrerReward)                                // actual reward amount
+      )+"</td>"
       +"</tr>";
   }).join(""):"<tr class='er'><td colspan='10'>No leads found"+(q?" for: "+xe(q):"")+"</td></tr>";
 }
